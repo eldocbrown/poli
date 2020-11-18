@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime, timedelta
 from django.utils import timezone
-from .models import Availability, Location, Task
+from policorp.models import Availability, Location, Task
 import json
 
 # Create your tests here.
