@@ -2,6 +2,7 @@ from django.test import TestCase
 from datetime import datetime, timedelta
 from django.utils import timezone
 from .models import Availability, Location, Task
+import json
 
 # Create your tests here.
 class TestAvailability(TestCase):
@@ -113,6 +114,13 @@ class TestTask(TestCase):
         t = Task.objects.create_task(task_name)
         self.assertEqual(len(Task.objects.get_all()), 1)
         self.assertEqual(Task.objects.get_all()[0].name, task_name)
+
+    def test_task_serialize(self):
+        """ GIVEN 1 task with name "Device Installation"; WHEN requesting json serialization; THEN id and name should be returned in json format """
+        task_name = "Device Installation"
+        t = Task.objects.create_task(task_name)
+        j = {'id': 1, 'name': task_name}
+        self.assertJSONEqual(json.dumps(t.json()), json.dumps(j))
 
 if __name__ == "__main__":
     unittest.main()

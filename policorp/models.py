@@ -20,3 +20,10 @@ class Task(models.Model):
 
     # Managers
     objects = TaskManager()
+
+    # Serializer
+    def json(self):
+        return {
+                'id': self.id,
+                'name': self.name
+        }
