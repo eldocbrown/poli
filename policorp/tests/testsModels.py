@@ -81,22 +81,43 @@ class TestAvailability(TestCase):
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0].what, repair)
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[1].what, repair)
 
+    def test_availability_serialize(self):
+        loc_name = "Córdoba"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name)
+        now = datetime.now(timezone.utc)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
+
+        expected = {'id': 1, 'when': (now + timedelta(days = 3)).isoformat(), 'where': l1.json(), 'what': t1.json()}
+
+        self.assertJSONEqual(json.dumps(a1.json()), expected)
+
 class TestLocation(TestCase):
 
-    def test_get_location_all(self):
-        """ GIVEN 1 location; WHEN requesting all locations; THEN 1 location should be returned """
+    fixtures = ['testsdata.json']
 
-        loc_name = "Buenos Aires"
-        l = Location.objects.create_location(loc_name)
-        self.assertEqual(len(Location.objects.get_all()), 1)
+    loc1 = "Buenos Aires"
+    loc2 = "Córdoba"
+    loc3 = "Rosario"
+
+    def test_get_location_all(self):
+        """ GIVEN 3 locations; WHEN requesting all locations; THEN 3 locations should be returned """
+
+        self.assertEqual(len(Location.objects.get_all()), 3)
 
     def test_get_location_all_gets_name(self):
-        """ GIVEN 1 location with name "Buenos Aires"; WHEN requesting all locations; THEN 1 location should be returned with name "Buenos Aires" """
+        """ GIVEN 3 locations; WHEN requesting all locations; THEN location names should be returned """
 
-        loc_name = "Buenos Aires"
-        l = Location.objects.create_location(loc_name)
-        self.assertEqual(len(Location.objects.get_all()), 1)
-        self.assertEqual(Location.objects.get_all()[0].name, loc_name)
+        self.assertEqual(Location.objects.get_all()[0].name, self.loc1)
+        self.assertEqual(Location.objects.get_all()[1].name, self.loc2)
+        self.assertEqual(Location.objects.get_all()[2].name, self.loc3)
+
+    def test_location_serialize(self):
+        """ GIVEN 3 locations; WHEN requesting json serialization; THEN id and name should be returned in json format """
+        l1 = Location.objects.get(pk=1)
+        expected = {'id': 1, 'name': self.loc1}
+        self.assertJSONEqual(json.dumps(l1.json()), expected)
 
 class TestTask(TestCase):
 

@@ -9,11 +9,26 @@ class Availability(models.Model):
     # Managers
     objects = AvailabilityManager()
 
+    def json(self):
+        return {
+                'id': self.id,
+                'when': self.when.isoformat(),
+                'where': self.where.json(),
+                'what': self.what.json()
+        }
+
 class Location(models.Model):
     name = models.CharField(max_length=255)
 
     # Managers
     objects = LocationManager()
+
+    # Serializer
+    def json(self):
+        return {
+                'id': self.id,
+                'name': self.name
+        }
 
 class Task(models.Model):
     name = models.CharField(max_length=255)
