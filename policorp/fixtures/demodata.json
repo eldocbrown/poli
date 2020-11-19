@@ -1,0 +1,16 @@
+[
+  {
+    "model": "policorp.task",
+    "pk": 1,
+    "fields": {
+      "name": "Device Installation"
+    }
+  },
+  {
+    "model": "policorp.task",
+    "pk": 2,
+    "fields": {
+      "name": "Repair"
+    }
+  }
+]

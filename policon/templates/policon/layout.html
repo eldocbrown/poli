@@ -2,12 +2,15 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Poli</title>
+    <title>{% block title %}Poli{% endblock %}</title>
+
+    {% block script %}
+    {% endblock %}
   </head>
   <body>
     <div class="body">
-            {% block body %}
-            {% endblock %}
+      {% block body %}
+      {% endblock %}
     </div>
   </body>
 </html>
