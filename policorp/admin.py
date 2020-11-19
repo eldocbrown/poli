@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(Location)
 admin.site.register(Task)
 admin.site.register(Availability)
+admin.site.register(User)

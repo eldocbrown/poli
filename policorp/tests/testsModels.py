@@ -2,6 +2,7 @@ from django.test import TestCase
 from datetime import datetime, timedelta
 from django.utils import timezone
 from policorp.models import Availability, Location, Task
+import aux
 import json
 
 # Create your tests here.
@@ -142,6 +143,17 @@ class TestTask(TestCase):
         t = Task.objects.create_task(task_name)
         j = {'id': 1, 'name': task_name}
         self.assertJSONEqual(json.dumps(t.json()), json.dumps(j))
+
+class TestBooking(TestCase):
+
+    fixtures = ['testsdata.json']
+
+    def test_book_availability_user(self):
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        b = Booking.book(availability, user)
+        self.assertEqual(Booking.objects.get(pk=1).user, user)
+        self.assertEqual(Booking.objects.get(pk=1).availability, availability)
 
 if __name__ == "__main__":
     unittest.main()

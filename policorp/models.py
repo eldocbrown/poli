@@ -1,7 +1,12 @@
 from django.db import models
 from .managers import AvailabilityManager, LocationManager, TaskManager
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+
+class User(AbstractUser):
+    pass
+
 class Availability(models.Model):
     when = models.DateTimeField()
     where = models.ForeignKey('Location', on_delete=models.CASCADE, related_name="availableLocations")
