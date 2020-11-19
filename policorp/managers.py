@@ -29,3 +29,10 @@ class TaskManager(models.Manager):
 
     def get_all(self):
         return super().get_queryset().all()
+
+class BookingManager(models.Manager):
+
+    def book(self, availability, user):
+        b = self.create(availability=availability, user=user)
+        availability.book()
+        return b

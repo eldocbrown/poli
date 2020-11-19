@@ -69,5 +69,13 @@ class TestViews(TestCase):
         response = availabilities(request, 1)
         self.assertEqual(response.status_code, 400)
 
+    @tag('book_view')
+    def test_view_book(self):
+        """ GIVEN ; WHEN POST /policorp/availabilities/1 ; THEN code 201 is returned """
+        request = self.factory.post(reverse('policorp:book', kwargs={'availabilityid': 1}))
+        response = book(request, 1)
+        self.assertEqual(response.status_code, 201)
+
+
 if __name__ == "__main__":
     unittest.main()

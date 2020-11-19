@@ -51,6 +51,8 @@ function handleTaskSelectionClick(event) {
 function createAvailability(data) {
   // create availability container
   const a = document.createElement('div');
+  a.id = 'availability';
+  a.dataset.availabilityid = data.id;
   a.className = 'container p-3 my-3 border';
 
   // WHEN

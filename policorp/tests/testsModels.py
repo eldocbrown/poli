@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import datetime, timedelta
 from django.utils import timezone
-from policorp.models import Availability, Location, Task
+from policorp.models import Availability, Location, Task, Booking
 import aux
 import json
 
@@ -94,6 +94,29 @@ class TestAvailability(TestCase):
 
         self.assertJSONEqual(json.dumps(a1.json()), expected)
 
+    def test_availability_booked_initially_false(self):
+        """ New availability should be not nooked by default """
+        loc_name = "Córdoba"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name)
+        now = datetime.now(timezone.utc)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
+
+        self.assertFalse(a1.booked)
+
+    def test_availability_book(self):
+        """ Given an availabiliy, when booked, then it is marked as booked """
+        loc_name = "Córdoba"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name)
+        now = datetime.now(timezone.utc)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
+        a1.book()
+
+        self.assertTrue(a1.booked)
+
 class TestLocation(TestCase):
 
     fixtures = ['testsdata.json']
@@ -149,11 +172,19 @@ class TestBooking(TestCase):
     fixtures = ['testsdata.json']
 
     def test_book_availability_user(self):
+        """ Booking an availability registers who boooked it """
         availability = Availability.objects.get(pk=1)
         user = aux.createUser("foo", "foo@example.com", "example")
-        b = Booking.book(availability, user)
+        b = Booking.objects.book(availability, user)
         self.assertEqual(Booking.objects.get(pk=1).user, user)
         self.assertEqual(Booking.objects.get(pk=1).availability, availability)
+
+    def test_book_availability_is_booked(self):
+        """ Booking an availability marks it as booked """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        b = Booking.objects.book(availability, user)
+        self.assertTrue(availability.booked)
 
 if __name__ == "__main__":
     unittest.main()

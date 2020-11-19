@@ -21,3 +21,6 @@ def availabilities(request, taskid):
     availabilities = Availability.objects.get_all_by_task(t.name)
 
     return JsonResponse([a.json() for a in availabilities], status=200, safe=False)
+
+def book(request, availabiliyid):
+    return HttpResponse(status=201)
