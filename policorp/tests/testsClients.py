@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+import aux
 
 
 class TestClient(TestCase):
@@ -17,6 +18,16 @@ class TestClient(TestCase):
         c = Client()
         response = c.get(reverse('policorp:availabilities', kwargs={'taskid': 1}))
         self.assertEqual(response.status_code, 200)
+
+    def test_book_view_return_201(self):
+        """*** Booking an availability with a post request should return 201 ****"""
+        c = Client()
+        u = aux.createUser('foo', 'foo@example.com', 'example')
+        c.login(username='foo', password='example')
+        response = c.post(reverse('policorp:book', kwargs={'availabilityid': 1}))
+        self.assertEqual(response.status_code, 201)
+
+    # TODO: TEST book POST view
 
 if __name__ == "__main__":
     unittest.main()

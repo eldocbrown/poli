@@ -26,6 +26,7 @@ class Availability(models.Model):
 
     def book(self):
         self.booked = True
+        self.save()
         return self
 
 class Location(models.Model):
@@ -60,3 +61,11 @@ class Booking(models.Model):
 
     # Managers
     objects = BookingManager()
+
+    # Serializer
+    def json(self):
+        return {
+                'id': self.id,
+                'availability': self.availability.json(),
+                'username': self.user.username
+        }

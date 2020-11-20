@@ -160,7 +160,7 @@ class TestTask(TestCase):
         self.assertEqual(len(Task.objects.get_all()), 1)
         self.assertEqual(Task.objects.get_all()[0].name, task_name)
 
-    def test_task_serialize(self):
+    def test_task_serialize_json(self):
         """ GIVEN 1 task with name "Device Installation"; WHEN requesting json serialization; THEN id and name should be returned in json format """
         task_name = "Device Installation"
         t = Task.objects.create_task(task_name)
@@ -184,7 +184,18 @@ class TestBooking(TestCase):
         availability = Availability.objects.get(pk=1)
         user = aux.createUser("foo", "foo@example.com", "example")
         b = Booking.objects.book(availability, user)
+        availability = Availability.objects.get(pk=1)
         self.assertTrue(availability.booked)
+
+    def test_booking_serialize_json(self):
+        """ GIVEN a booking; WHEN requesting json serialization; THEN it should be returned in json format """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        booking = Booking.objects.book(availability, user)
+
+        expected_json = {'id': 1, 'availability': availability.json(), 'username': user.username}
+
+        self.assertJSONEqual(json.dumps(booking.json()), json.dumps(expected_json))
 
 if __name__ == "__main__":
     unittest.main()

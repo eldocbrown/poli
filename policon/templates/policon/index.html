@@ -7,6 +7,13 @@
 {% endblock %}
 
 {% block body %}
+
+<script>
+  var loginurl = "{% url 'policon:login' %}"
+  var csrftoken = '{{ csrf_token }}';
+  var username = '{{ user.username }}';
+</script>
+
 <div id="availabilitySelector">
   <div class="dropdown">
     <button id="dropdownTaskButton" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -18,4 +25,5 @@
   <div id="availabilityList">
   </div>
 </div>
+
 {% endblock %}
