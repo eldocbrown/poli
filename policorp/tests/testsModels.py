@@ -34,6 +34,23 @@ class TestAvailability(TestCase):
         self.assertEqual(Availability.objects.get_all()[1], a2)
         self.assertEqual(Availability.objects.get_all()[2], a3)
 
+    def test_get_availability_all_ordered_by_date_ascendant(self):
+        """ GIVEN 3 availabilities, 1 booked; WHEN requesting all availabilities; THEN 2 availabilities should be returned in ascendant order by schedule date """
+
+        loc_name = "Buenos Aires"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name)
+        now = datetime.now(timezone.utc)
+        a3 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 1), l1, t1)
+        a2 = Availability.objects.create_availability(now + timedelta(days = 2), l1, t1)
+        a2.book()
+        self.assertEqual(len(Availability.objects.get_all()), 2)
+        self.assertIn(a1, Availability.objects.get_all())
+        self.assertIn(a3, Availability.objects.get_all())
+        self.assertTrue(Availability.objects.get_all()[0].when < Availability.objects.get_all()[1].when)
+
     def test_get_availability_all_with_location(self):
         """GIVEN 1 availability at Buenos Aires, tomorrow; WHEN requesting all availabilities; THEN 1 availability should be returned at Buenos Aires, tomorrow"""
 
@@ -77,10 +94,45 @@ class TestAvailability(TestCase):
         a2 = Availability.objects.create_availability(now + timedelta(days = 2), l1, repair)
         a1 = Availability.objects.create_availability(now + timedelta(days = 1), l1, repair)
         self.assertEqual(len(Availability.objects.get_all_by_task(repair.name)), 2)
-        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0], a1)
-        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[1], a2)
+        self.assertIn(a1, Availability.objects.get_all_by_task(repair.name))
+        self.assertIn(a2, Availability.objects.get_all_by_task(repair.name))
+        self.assertTrue(Availability.objects.get_all_by_task(repair.name)[0].when < Availability.objects.get_all_by_task(repair.name)[1].when)
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0].what, repair)
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[1].what, repair)
+
+    def test_get_availability_all_by_task_ordered_by_date_ascendant_2(self):
+        """ GIVEN 3 availabilities, 1 for Device Installation, 2 for Repair; WHEN requesting all availabilities for "Repair"; THEN 2 availabilities should be returned in ascendant order by schedule date for task "Repair" """
+
+        loc_name = "Buenos Aires"
+        l1 = Location.objects.create_location(loc_name)
+        install = Task.objects.create_task("Device Installation")
+        repair = Task.objects.create_task("Repair")
+        now = datetime.now(timezone.utc)
+        a3 = Availability.objects.create_availability(now + timedelta(days = 3), l1, install)
+        a2 = Availability.objects.create_availability(now + timedelta(days = 1), l1, repair)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 2), l1, repair)
+        self.assertEqual(len(Availability.objects.get_all_by_task(repair.name)), 2)
+        self.assertIn(a1, Availability.objects.get_all_by_task(repair.name))
+        self.assertIn(a2, Availability.objects.get_all_by_task(repair.name))
+        self.assertTrue(Availability.objects.get_all_by_task(repair.name)[0].when < Availability.objects.get_all_by_task(repair.name)[1].when)
+        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0].what, repair)
+        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[1].what, repair)
+
+    def test_get_availability_all_by_task_ordered_by_date_ascendant(self):
+        """ GIVEN 3 availabilities, 1 for Device Installation, 2 for Repair, 1 Repair is boooked; WHEN requesting all availabilities for "Repair"; THEN 1 availabilities should be returned in ascendant order by schedule date for task "Repair" """
+
+        loc_name = "Buenos Aires"
+        l1 = Location.objects.create_location(loc_name)
+        install = Task.objects.create_task("Device Installation")
+        repair = Task.objects.create_task("Repair")
+        now = datetime.now(timezone.utc)
+        a3 = Availability.objects.create_availability(now + timedelta(days = 3), l1, install)
+        a2 = Availability.objects.create_availability(now + timedelta(days = 2), l1, repair)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 1), l1, repair)
+        a1.book()
+        self.assertEqual(len(Availability.objects.get_all_by_task(repair.name)), 1)
+        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0], a2)
+        self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0].what, repair)
 
     def test_availability_serialize(self):
         loc_name = "Córdoba"

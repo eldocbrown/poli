@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+  loadAvailabilitySelector();
   populateTasks();
 
 });
@@ -45,7 +46,7 @@ function handleBookClick(event) {
     .then(data => {
         console.log(data);
 
-        // TODO: redirect to my Schedule
+        loadMySchedule()
         });
     }
 }
@@ -72,6 +73,16 @@ function populateTasks() {
         document.querySelector('#taskDropdownMenu').append(option);
       });
   })
+}
+
+function loadAvailabilitySelector() {
+  document.querySelector('#availabilitySelector').style.display = 'block';
+  document.querySelector('#mySchedule').style.display = 'none';
+}
+
+function loadMySchedule() {
+  document.querySelector('#availabilitySelector').style.display = 'none';
+  document.querySelector('#mySchedule').style.display = 'block';
 }
 
 function createAvailability(data, booked) {

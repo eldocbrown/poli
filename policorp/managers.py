@@ -7,10 +7,10 @@ class AvailabilityManager(models.Manager):
         return aval
 
     def get_all(self):
-        return super().get_queryset().all().order_by("when")
+        return super().get_queryset().filter(booked=False).order_by("when")
 
     def get_all_by_task(self, task_name):
-        return self.get_all().filter(what__name=task_name)
+        return self.get_all().filter(what__name=task_name).filter(booked=False).order_by("when")
 
 class LocationManager(models.Manager):
 
