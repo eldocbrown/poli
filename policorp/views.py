@@ -29,6 +29,7 @@ def book(request, availabilityid):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
+    # Only authenticated users
     if not request.user.is_authenticated:
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
@@ -36,3 +37,17 @@ def book(request, availabilityid):
     booking = Booking.objects.book(availability, request.user)
 
     return JsonResponse(booking.json(), status=201)
+
+def myschedule(request):
+
+    # Only GET requests allowed
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+
+    # Only authenticated users
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    bookings = Booking.objects.get_by_user(request.user)
+
+    return JsonResponse([b.json() for b in bookings], safe=False)

@@ -36,3 +36,6 @@ class BookingManager(models.Manager):
         b = self.create(availability=availability, user=user)
         availability.book()
         return b
+
+    def get_by_user(self, userObj):
+        return super().get_queryset().filter(user__id=userObj.id).order_by("availability__when")

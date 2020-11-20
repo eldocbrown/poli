@@ -197,5 +197,42 @@ class TestBooking(TestCase):
 
         self.assertJSONEqual(json.dumps(booking.json()), json.dumps(expected_json))
 
+    def test_booking_get_my_bookings(self):
+        """ GIVEN 2 bookings, 1 for user foo and 1 for user juan; WHEN requesting user bookings for foo; THEN 1 booking with user foo should be returned """
+        availability1 = Availability.objects.get(pk=1)
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=2)
+        user2 = aux.createUser("juan", "juan@example.com", "example")
+        b2 = Booking.objects.book(availability2, user2)
+        bookingsforfoo = Booking.objects.get_by_user(user1)
+
+        self.assertEqual(len(bookingsforfoo), 1)
+        self.assertEqual(bookingsforfoo[0].user, user1)
+
+    def test_booking_get_my_bookings_ordered(self):
+        """ GIVEN 2 bookings for user foo; WHEN requesting bookings for user foo; THEN 2 bookings should be returned ordered by ascending availability date """
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        availability1 = Availability.objects.get(pk=2)
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=1)
+        b2 = Booking.objects.book(availability2, user1)
+        bookingsforfoo = Booking.objects.get_by_user(user1)
+
+        self.assertEqual(len(bookingsforfoo), 2)
+        self.assertTrue(bookingsforfoo[0].availability.when < bookingsforfoo[1].availability.when)
+
+    def test_booking_get_my_bookings_ordered_2(self):
+        """ GIVEN 2 bookings for user foo; WHEN requesting bookings for user foo; THEN 2 bookings should be returned ordered by ascending availability date """
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        availability1 = Availability.objects.get(pk=1)
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=2)
+        b2 = Booking.objects.book(availability2, user1)
+        bookingsforfoo = Booking.objects.get_by_user(user1)
+
+        self.assertEqual(len(bookingsforfoo), 2)
+        self.assertTrue(bookingsforfoo[0].availability.when < bookingsforfoo[1].availability.when)
+
 if __name__ == "__main__":
     unittest.main()
