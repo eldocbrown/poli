@@ -9,4 +9,5 @@ urlpatterns = [
     path("availabilities/<int:taskid>", views.availabilities, name="availabilities"),
     path("book/<int:availabilityid>", views.book, name="book"),
     path("myschedule/", views.myschedule, name="myschedule"),
+    path("cancelbooking/<int:bookingid>", views.cancelbooking, name="cancelbooking"),
 ]

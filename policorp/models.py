@@ -16,6 +16,7 @@ class Availability(models.Model):
     # Managers
     objects = AvailabilityManager()
 
+    # Serializer
     def json(self):
         return {
                 'id': self.id,
@@ -24,8 +25,14 @@ class Availability(models.Model):
                 'what': self.what.json()
         }
 
+    # Operations
     def book(self):
         self.booked = True
+        self.save()
+        return self
+
+    def free(self):
+        self.booked = False
         self.save()
         return self
 
@@ -58,6 +65,7 @@ class Task(models.Model):
 class Booking(models.Model):
     availability = models.ForeignKey(Availability, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cancelled = models.BooleanField(default=False)
 
     # Managers
     objects = BookingManager()
@@ -69,3 +77,10 @@ class Booking(models.Model):
                 'availability': self.availability.json(),
                 'username': self.user.username
         }
+
+    # Operations
+    def cancel(self):
+        self.availability.free()
+        self.cancelled = True
+        self.save()
+        return self

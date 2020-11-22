@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 import aux
-
+from policorp.models import Availability, Booking
 
 class TestClient(TestCase):
 
@@ -34,6 +34,16 @@ class TestClient(TestCase):
         c.login(username='foo', password='example')
         response = c.get(reverse('policorp:myschedule'))
         self.assertEqual(response.status_code, 200)
+
+    def test_cancelbooking_view_return_201(self):
+        """*** Cancelling a booking with a post request should return 201 ****"""
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        availability1 = Availability.objects.get(pk=1)
+        b1 = Booking.objects.book(availability1, user1)
+        c = Client()
+        c.login(username='foo', password='example')
+        response = c.post(reverse('policorp:cancelbooking', kwargs={'bookingid': 1}))
+        self.assertEqual(response.status_code, 201)
 
 if __name__ == "__main__":
     unittest.main()

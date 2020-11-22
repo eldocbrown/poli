@@ -51,3 +51,22 @@ def myschedule(request):
     bookings = Booking.objects.get_by_user(request.user)
 
     return JsonResponse([b.json() for b in bookings], safe=False)
+
+def cancelbooking(request, bookingid):
+    # Only POST requests allowed
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Only authenticated users
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    b = Booking.objects.get(pk=bookingid)
+
+    # Only user who booked allowed to cancel
+    if request.user != b.user:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    b = b.cancel()
+
+    return JsonResponse (b.json(),status=201)

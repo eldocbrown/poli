@@ -147,7 +147,7 @@ class TestAvailability(TestCase):
         self.assertJSONEqual(json.dumps(a1.json()), expected)
 
     def test_availability_booked_initially_false(self):
-        """ New availability should be not nooked by default """
+        """ New availability should be not booked by default """
         loc_name = "Córdoba"
         l1 = Location.objects.create_location(loc_name)
         task_name = "Device Installation"
@@ -168,6 +168,19 @@ class TestAvailability(TestCase):
         a1.book()
 
         self.assertTrue(a1.booked)
+
+    def test_availability_free(self):
+        """ Given a booked availabiliy, when freed, then it is marked as not booked """
+        loc_name = "Córdoba"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name)
+        now = datetime.now(timezone.utc)
+        a1 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
+        a1.book()
+        self.assertTrue(a1.booked)
+        a1.free()
+        self.assertFalse(a1.booked)
 
 class TestLocation(TestCase):
 
@@ -285,6 +298,45 @@ class TestBooking(TestCase):
 
         self.assertEqual(len(bookingsforfoo), 2)
         self.assertTrue(bookingsforfoo[0].availability.when < bookingsforfoo[1].availability.when)
+
+    def test_booking_get_my_bookings_not_cancelled(self):
+        """ GIVEN 2 bookings for user foo, 1 cancelled; WHEN requesting bookings for user foo; THEN 1 bookings not cancelled should be returned """
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        availability1 = Availability.objects.get(pk=1)
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=2)
+        b2 = Booking.objects.book(availability2, user1)
+        b1 = b1.cancel()
+        bookingsforfoo = Booking.objects.get_by_user(user1)
+
+        self.assertEqual(len(bookingsforfoo), 1)
+        self.assertFalse(bookingsforfoo[0].cancelled)
+
+    def test_booking_cancel(self):
+        """ GIVEN a booking, WHEN it is cancelled; THEN it is marked as cancelled """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        booking = Booking.objects.book(availability, user)
+        booking = booking.cancel()
+
+        self.assertTrue(booking.cancelled)
+
+    def test_booking_initially_not_cancelled(self):
+        """ GIVEN a booking, WHEN ; THEN it is initially not marked as cancelled """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        booking = Booking.objects.book(availability, user)
+
+        self.assertFalse(booking.cancelled)
+
+    def test_booking_cancel(self):
+        """ GIVEN a booking, WHEN it is cancelled; THEN it's availability is freed """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        booking = Booking.objects.book(availability, user)
+        booking = booking.cancel()
+
+        self.assertFalse(booking.availability.booked)
 
 if __name__ == "__main__":
     unittest.main()
