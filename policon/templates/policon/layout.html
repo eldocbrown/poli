@@ -28,11 +28,11 @@
                 </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="/" id="posts-link">Openings</a>
+              <a class="nav-link" href="/">Openings</a>
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="new-post-link">My Schedule</a>
+                    <a class="nav-link" href="#" id="my-schedule-link">My Schedule</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'policon:logout' %}">Log Out</a>
