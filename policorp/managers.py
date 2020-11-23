@@ -23,8 +23,8 @@ class LocationManager(models.Manager):
 
 class TaskManager(models.Manager):
 
-    def create_task(self, name):
-        t = self.create(name=name)
+    def create_task(self, name, duration):
+        t = self.create(name=name, duration=duration)
         return t
 
     def get_all(self):

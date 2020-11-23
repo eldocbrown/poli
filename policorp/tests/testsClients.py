@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-import aux
+from policorp.tests import aux
 from policorp.models import Availability, Booking
 
 class TestClient(TestCase):

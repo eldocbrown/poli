@@ -1,6 +1,7 @@
 from django.db import models
 from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
@@ -51,6 +52,7 @@ class Location(models.Model):
 
 class Task(models.Model):
     name = models.CharField(max_length=255)
+    duration = models.PositiveIntegerField()
 
     # Managers
     objects = TaskManager()
@@ -59,7 +61,8 @@ class Task(models.Model):
     def json(self):
         return {
                 'id': self.id,
-                'name': self.name
+                'name': self.name,
+                'duration': self.duration
         }
 
 class Booking(models.Model):

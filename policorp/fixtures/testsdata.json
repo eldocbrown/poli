@@ -3,14 +3,16 @@
     "model": "policorp.task",
     "pk": 1,
     "fields": {
-      "name": "Device Installation"
+      "name": "Device Installation",
+      "duration": 120
     }
   },
   {
     "model": "policorp.task",
     "pk": 2,
     "fields": {
-      "name": "Repair"
+      "name": "Repair",
+      "duration": 60
     }
   },
   {

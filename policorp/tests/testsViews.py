@@ -5,14 +5,14 @@ import json
 import sys
 from policorp.models import Availability, Location, Task, Booking
 from policorp.views import *
-import aux
+from policorp.tests import aux
 
 class TestViews(TestCase):
 
     fixtures = ['testsdata.json']
 
-    task1 = {'id': 1, 'name': 'Device Installation'}
-    task2 = {'id': 2, 'name': 'Repair'}
+    task1 = {'id': 1, 'name': 'Device Installation', 'duration': 120}
+    task2 = {'id': 2, 'name': 'Repair', 'duration': 60}
 
     def setUp(self):
         # Every test needs access to the request factory.

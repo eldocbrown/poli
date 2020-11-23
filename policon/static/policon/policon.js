@@ -47,8 +47,10 @@ function handleBookClick(event) {
     .then(data => {
         if (!data.error) {
           const task = data.availability.what.name;
-          const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)));
-          showMessage('Booking confirmed', `You have successfully booked the task ${task} on ${datetime}`);
+          const fromDatetime = new Date(Date.parse(data.availability.when));
+          const fromDatetimeStr = toFormattedDateTime(fromDatetime, data.availability.what.duration);
+
+          showMessage('Booking confirmed', `You have successfully booked the task ${task} on ${fromDatetimeStr}`);
         } else {
           console.error(data);
         }
@@ -68,7 +70,7 @@ function handleCancelClick(event) {
   .then(data => {
       if (!data.error) {
         const task = data.availability.what.name;
-        const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)));
+        const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
         showMessage('Booking cancelled', `You have successfully cancelled the task ${task} on ${datetime}`);
       } else {
         console.error(data);
@@ -113,7 +115,7 @@ function populateTasks() {
         option.classList.add('dropdown-item');
         option.id = 'taskOption';
         option.dataset.taskid = task.id;
-        option.innerHTML = task.name;
+        option.innerHTML = task.name + ' (' + toFormattedDuration(task.duration) + ')';
 
         option.addEventListener('click', (event) => handleTaskSelectionClick(event));
 
@@ -136,7 +138,7 @@ function createAvailability(data, booked) {
 
   // WHEN
   const whenContainer = document.createElement('div');
-  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.when)));
+  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.when)), data.what.duration);
   aInfo.append(whenContainer);
 
   // WHERE
@@ -184,7 +186,7 @@ function createBooking(data) {
 
   // WHEN
   const whenContainer = document.createElement('div');
-  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.availability.when)));
+  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
   aInfo.append(whenContainer);
 
   // WHAT
@@ -221,13 +223,27 @@ function clearNode(node) {
   node.innerHTML = '';
 }
 
-function toFormattedDateTime(datetimeObj) {
+function toFormattedDateTime(datetimeObj, duration) {
   const locale = 'en-US';
   dayOfWeek = datetimeObj.toLocaleString(locale, { weekday: "long" });
   month = datetimeObj.toLocaleString(locale, { month: "long" });
   date = datetimeObj.getDate();
-  time = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-  return (dayOfWeek + ', ' + month + ' ' + date + ' at ' + time);
+  timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  let timeTo = datetimeObj;
+  timeTo.setMinutes(datetimeObj.getMinutes() + duration);
+  timeTo = timeTo.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  return (dayOfWeek + ', ' + month + ' ' + date + ' from ' + timeFrom + ' to ' + timeTo);
+}
+
+function toFormattedDuration(duration) {
+  if (duration < 60) {
+    return `${duration} min`;
+  } else {
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    if (minutes !== 0) { return `${hours} hs ${minutes} min`; }
+    else { return `${hours} hs`; }
+  }
 }
 
 function showMessage(title, message) {
