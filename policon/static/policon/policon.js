@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
+  if (username !==   "") document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
 
   loadAvailabilities();
 
@@ -53,13 +53,29 @@ function handleBookClick(event) {
           console.error(data);
         }
 
-
         loadMySchedule()
         });
     }
 }
 
 function handleCancelClick(event) {
+  fetch(`/policorp/cancelbooking/${event.currentTarget.dataset.bookingid}`, {
+  method: 'POST',
+  headers: {'X-CSRFToken': csrftoken},
+  mode: 'same-origin'
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (!data.error) {
+        const task = data.availability.what.name;
+        const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)));
+        showMessage('Booking cancelled', `You have successfully cancelled the task ${task} on ${datetime}`);
+      } else {
+        console.error(data);
+      }
+
+      loadMySchedule()
+  });
 }
 
 // ***************************
@@ -78,7 +94,7 @@ function loadMySchedule() {
 
   const sectionContent = document.querySelector('#mySchedule');
   clearNode(sectionContent);
-  heading = document.createElement('h4');
+  heading = document.createElement('h5');
   heading.innerHTML = 'My Schedule';
   sectionContent.append(heading);
 
