@@ -80,6 +80,14 @@ function handleCancelClick(event) {
   });
 }
 
+function handleDownloadCalClick(event) {
+  const button = event.currentTarget;
+  const dateStart = new Date(Date.parse(button.dataset.when));
+  const dateEnd = dateStart;
+  dateEnd.setMinutes(dateStart.getMinutes() + button.dataset.duration);
+  downloadIcsFile(dateStart, dateEnd, button.dataset.what, button.dataset.what, button.dataset.where);
+}
+
 // ***************************
 // *** AUXILIARY Functions ***
 // ***************************
@@ -214,6 +222,18 @@ function createBooking(data) {
 
   aAction.append(aActionButton);
 
+  // create download calendar button
+  const aCalButton = document.createElement('button');
+
+  aCalButton.innerHTML = 'Download';
+  aCalButton.dataset.what = data.availability.what.name;
+  aCalButton.dataset.when = data.availability.when;
+  aCalButton.dataset.duration = data.availability.what.duration;
+  aCalButton.dataset.where = data.availability.where.name;
+  aCalButton.addEventListener('click', (event) => handleDownloadCalClick(event));
+
+  aAction.append(aCalButton);
+
   return a;
 }
 
@@ -250,4 +270,54 @@ function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;
   document.querySelector('#messageModalBody').innerHTML = message;
   $("#messageModal").modal('show');
+}
+
+function downloadIcsFile(dateStart, dateEnd, summary, description, location) {
+
+  this._zp = function(s) { return ("0"+s).slice(-2); }
+
+  this._isofix = function(d) {
+		  var offset = ("0"+((new Date()).getTimezoneOffset()/60)).slice(-2);
+
+	    if(typeof d=='string'){
+		    return d.replace(/\-/g, '')+'T'+offset+'0000Z';
+	    }else{
+				return d.getFullYear()+this._zp(d.getMonth()+1)+this._zp(d.getDate())+'T'+this._zp(d.getHours())+"0000Z";
+		  }
+	}
+
+  const now = new Date();
+
+  var ics_lines = [
+    "BEGIN:VCALENDAR",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "PRODID:-//Poli Cal//EN",
+    "VERSION:2.0",
+    "BEGIN:VEVENT",
+    "UID:event-" + now.getTime() + "@poli.com",
+    "DTSTAMP:"+ this._isofix(now),
+    "DTSTART:" + this._isofix(dateStart),
+    "DTEND:" + this._isofix(dateEnd),
+    "SUMMARY:" + summary,
+    "LOCATION:" + location,
+    "DESCRIPTION:" + description,
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ];
+
+  var dlurl = 'data:text/calendar;base64,'+btoa(ics_lines.join('\r\n'));
+
+  var save = document.createElement('a');
+  save.href = dlurl;
+  save.target = '_blank';
+  save.download = 'calendar.ics';
+  var evt = new MouseEvent('click', {
+	   'view': window,
+     'bubbles': true,
+     'cancelable': false
+  });
+  save.dispatchEvent(evt);
+
+  (window.URL || window.webkitURL).revokeObjectURL(save.href);
 }
