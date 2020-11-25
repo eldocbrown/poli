@@ -87,6 +87,12 @@ function handleDownloadCalClick(event) {
   downloadIcsFile(dateStart, dateEnd, button.dataset.what, button.dataset.what, button.dataset.where);
 }
 
+function handleLocationLinkClick(event) {
+  const link = event.currentTarget;
+  const query = event.currentTarget.dataset.where.replace(/  */g, '+');
+  const url = `https://www.google.com/maps/search/?api=1&query=${query}`;
+  window.open(url);
+}
 // ***************************
 // *** AUXILIARY Functions ***
 // ***************************
@@ -151,6 +157,8 @@ function createAvailability(data, booked) {
   // WHERE
   const whereContainer = document.createElement('div');
   whereContainer.innerHTML = data.where.name;
+  const link = createLocationLink(data.where.name);
+  whereContainer.append(link);
   aInfo.append(whereContainer);
 
   // create action button whenContainer
@@ -215,6 +223,9 @@ function createBooking(data) {
   // WHERE
   const whereContainer = document.createElement('div');
   whereContainer.innerHTML = data.availability.where.name;
+  const link = createLocationLink(data.availability.where.name);
+  whereContainer.append(link);
+
   aInfo.append(whereContainer);
 
   // create action button whenContainer
@@ -233,6 +244,16 @@ function createBooking(data) {
   aAction.append(aActionButton);
 
   return a;
+}
+
+function createLocationLink(location) {
+  const link = document.createElement('img');
+  link.id = 'downloadCalIcon';
+  link.src = 'static/policon/image/geo-alt-fill.svg';
+  link.title = 'Open in Google Maps';
+  link.dataset.where = location;
+  link.addEventListener('click', (event) => handleLocationLinkClick(event));
+  return link;
 }
 
 function clearNode(node) {
