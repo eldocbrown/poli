@@ -194,6 +194,17 @@ function createBooking(data) {
   // WHEN
   const whenContainer = document.createElement('div');
   whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
+  const icon = document.createElement('img');
+  icon.id = 'downloadCalIcon';
+  icon.src = 'static/policon/image/calendar2-event-fill.svg';
+  icon.title = 'Download event file';
+  icon.dataset.what = data.availability.what.name;
+  icon.dataset.when = data.availability.when;
+  icon.dataset.duration = data.availability.what.duration;
+  icon.dataset.where = data.availability.where.name;
+  icon.addEventListener('click', (event) => handleDownloadCalClick(event));
+  whenContainer.append(icon);
+
   aInfo.append(whenContainer);
 
   // WHAT
@@ -220,18 +231,6 @@ function createBooking(data) {
   aActionButton.addEventListener('click', (event) => handleCancelClick(event));
 
   aAction.append(aActionButton);
-
-  // create download calendar button
-  const aCalButton = document.createElement('button');
-
-  aCalButton.innerHTML = 'Download';
-  aCalButton.dataset.what = data.availability.what.name;
-  aCalButton.dataset.when = data.availability.when;
-  aCalButton.dataset.duration = data.availability.what.duration;
-  aCalButton.dataset.where = data.availability.where.name;
-  aCalButton.addEventListener('click', (event) => handleDownloadCalClick(event));
-
-  aAction.append(aCalButton);
 
   return a;
 }

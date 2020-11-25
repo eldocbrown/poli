@@ -5,3 +5,9 @@
 #availabilityList {
   padding-top: 10px;
 }
+
+#downloadCalIcon {
+  padding-left: 10px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
