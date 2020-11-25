@@ -83,8 +83,7 @@ function handleCancelClick(event) {
 function handleDownloadCalClick(event) {
   const button = event.currentTarget;
   const dateStart = new Date(Date.parse(button.dataset.when));
-  const dateEnd = dateStart;
-  dateEnd.setMinutes(dateStart.getMinutes() + button.dataset.duration);
+  const dateEnd = new Date(dateStart.getTime() + button.dataset.duration*60000);
   downloadIcsFile(dateStart, dateEnd, button.dataset.what, button.dataset.what, button.dataset.where);
 }
 
@@ -274,16 +273,13 @@ function showMessage(title, message) {
 
 function downloadIcsFile(dateStart, dateEnd, summary, description, location) {
 
-  this._zp = function(s) { return ("0"+s).slice(-2); }
+  this._isofix2 = function(d) {
+      const dateStr = d.toISOString();
 
-  this._isofix = function(d) {
-		  var offset = ("0"+((new Date()).getTimezoneOffset()/60)).slice(-2);
-
-	    if(typeof d=='string'){
-		    return d.replace(/\-/g, '')+'T'+offset+'0000Z';
-	    }else{
-				return d.getFullYear()+this._zp(d.getMonth()+1)+this._zp(d.getDate())+'T'+this._zp(d.getHours())+"0000Z";
-		  }
+      let fixedDateStr = dateStr.replace(/\-/g, '');
+      fixedDateStr = fixedDateStr.replace(/\:/g, '');
+      fixedDateStr = fixedDateStr.replace(/\.[0-9][0-9][0-9]/g, '');
+		  return fixedDateStr;
 	}
 
   const now = new Date();
@@ -296,9 +292,9 @@ function downloadIcsFile(dateStart, dateEnd, summary, description, location) {
     "VERSION:2.0",
     "BEGIN:VEVENT",
     "UID:event-" + now.getTime() + "@poli.com",
-    "DTSTAMP:"+ this._isofix(now),
-    "DTSTART:" + this._isofix(dateStart),
-    "DTEND:" + this._isofix(dateEnd),
+    "DTSTAMP:"+ this._isofix2(now),
+    "DTSTART:" + this._isofix2(dateStart),
+    "DTEND:" + this._isofix2(dateEnd),
     "SUMMARY:" + summary,
     "LOCATION:" + location,
     "DESCRIPTION:" + description,
