@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from policorp.models import Availability, Location, Task, Booking
+from policorp.models import Availability, Location, Task, Booking, User
 from policorp.tests import aux
 import json
 
@@ -209,6 +209,52 @@ class TestLocation(TestCase):
         l1 = Location.objects.get(pk=1)
         expected = {'id': 1, 'name': self.loc1}
         self.assertJSONEqual(json.dumps(l1.json()), expected)
+
+    def test_location_supervisor(self):
+        """ GIVEN 1 location; WHEN assigning a supervisor; THEN a user is saved in supervisors field """
+        l1 = Location.objects.get(pk=1)
+        u = aux.createUser("foo", "foo@example.com", "example")
+        l1.assign_supervisor(u)
+        l1 = Location.objects.get(pk=1)
+        self.assertIn(u, l1.supervisors.all())
+
+    def test_location_supervisor_twice(self):
+        """ GIVEN 1 location with an assigned supervisor; WHEN assigning a supervisor twice; THEN an exception occurs """
+        l1 = Location.objects.get(pk=1)
+        u = aux.createUser("foo", "foo@example.com", "example")
+        l1.assign_supervisor(u)
+        with self.assertRaises(ValidationError):
+            l1.assign_supervisor(u)
+
+    def test_location_remove_supervisor(self):
+        """ GIVEN 1 location with an assigned supervisor; WHEN removing that supervisor; THEN the user is removed from supervisors field """
+        l1 = Location.objects.get(pk=1)
+        u = aux.createUser("foo", "foo@example.com", "example")
+        l1.assign_supervisor(u)
+        l1 = Location.objects.get(pk=1)
+        self.assertIn(u, l1.supervisors.all())
+        l1.remove_supervisor(u)
+        self.assertNotIn(u, l1.supervisors.all())
+
+    def test_location_remove_not_existant_supervisor(self):
+        """ GIVEN 1 location; WHEN removing a not assigned supervisor; THEN an exception is raised """
+        l1 = Location.objects.get(pk=1)
+        u = aux.createUser("foo", "foo@example.com", "example")
+        with self.assertRaises(ValidationError):
+            l1.remove_supervisor(u)
+
+    def test_get_supervised_locations(self):
+        """ GIVEN a user supervising a location; WHEN I request all supervised locations for user; THEN location is in returned array """
+        user = aux.createUser("foo", "foo@example.com", "example")
+        location = Location.objects.get(pk=1)
+        location.assign_supervisor(user)
+        self.assertIn(location, user.supervisedLocations.all())
+
+    def test_get_supervised_locations_not_included(self):
+        """ GIVEN a user not supervising a location; WHEN I request all supervised locations for user; THEN location is not in returned array """
+        user = aux.createUser("foo", "foo@example.com", "example")
+        location = Location.objects.get(pk=1)
+        self.assertNotIn(location, user.supervisedLocations.all())
 
 class TestTask(TestCase):
 

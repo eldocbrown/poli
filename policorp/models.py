@@ -2,6 +2,7 @@ from django.db import models
 from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -39,6 +40,7 @@ class Availability(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=255)
+    supervisors = models.ManyToManyField(User, related_name="supervisedLocations")
 
     # Managers
     objects = LocationManager()
@@ -49,6 +51,17 @@ class Location(models.Model):
                 'id': self.id,
                 'name': self.name
         }
+
+    # Operations
+    def assign_supervisor(self, user):
+        if user in self.supervisors.all():
+            raise ValidationError("Error: User is already supervising this location")
+        self.supervisors.add(user)
+
+    def remove_supervisor(self, user):
+        if user not in self.supervisors.all():
+            raise ValidationError("Error: User is not supervising this location")
+        self.supervisors.remove(user)
 
 class Task(models.Model):
     name = models.CharField(max_length=255)
