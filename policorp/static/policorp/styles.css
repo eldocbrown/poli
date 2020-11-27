@@ -11,3 +11,11 @@
   margin-bottom: 2px;
   cursor: pointer;
 }
+
+#datepicker, #lookupBookingsButton {
+  margin-left: 10px;
+}
+
+#lookupBookingsButton {
+  cursor: not-allowed;
+}

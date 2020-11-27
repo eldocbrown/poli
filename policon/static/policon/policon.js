@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function handleTaskSelectionClick(event) {
 
-  taskid = event.currentTarget.dataset.taskid;
+  const taskid = event.currentTarget.dataset.taskid;
 
   document.querySelector('#dropdownTaskButton').innerHTML = event.currentTarget.innerHTML;
 

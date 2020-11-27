@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //if (username !==   "") document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
 
-  loadLocations();
+  loadFilters();
+
+  document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
 
 });
 
@@ -10,29 +12,44 @@ document.addEventListener('DOMContentLoaded', () => {
 // *** EVENT HANDLERS Functions ***
 // ********************************
 
+function handleLocationSelectionClick(event) {
+
+  const dropdownLocationButton = document.querySelector('#dropdownLocationButton');
+  dropdownLocationButton.innerHTML = event.currentTarget.innerHTML;
+  dropdownLocationButton.dataset.locationid = event.currentTarget.dataset.locationid;
+
+  const lookupBookingsButton = document.querySelector('#lookupBookingsButton');
+  lookupBookingsButton.style.cursor = 'pointer';
+  lookupBookingsButton.disabled = false;
+
 /*
-function handleTaskSelectionClick(event) {
-
-  taskid = event.currentTarget.dataset.taskid;
-
-  document.querySelector('#dropdownTaskButton').innerHTML = event.currentTarget.innerHTML;
-
-  fetch(`/policorp/availabilities/${taskid}`)
+  fetch(url)
   .then(response => response.json())
   .then(data => {
-      const list = document.querySelector('#availabilityList');
+      const list = document.querySelector('#locationList');
       clearNode(list);
       const listHeading = document.createElement('h5');
-      listHeading.innerHTML = 'Available Openings'
+      listHeading.innerHTML = 'Schedule for: '
       list.append(listHeading);
 
       data.forEach( (availabilityData)  => {
         element = createAvailability(availabilityData, false);
         document.querySelector('#availabilityList').append(element);
       });
-  })
+  })*/
 }
 
+function handleSearchClick(event) {
+  dropdownLocationButton = document.querySelector('#dropdownLocationButton');
+
+  const date = new Date($datepicker.value());
+
+  const url = constructUrlLocationSchedule(dropdownLocationButton.dataset.locationid, date);
+
+  console.log(url);
+}
+
+/*
 function handleBookClick(event) {
 
   // if user is not logged in, then redirect to login page
@@ -99,13 +116,15 @@ function handleDownloadCalClick(event) {
 // *** AUXILIARY Functions ***
 // ***************************
 
-function loadLocations() {
+function loadFilters() {
 
   populateLocations(document.querySelector('#taskDropdownMenu'));
 
   document.querySelector('#locationSelector').style.display = 'block';
   document.querySelector('#locationSchedule').style.display = 'none';
+
 }
+
 /*
 function loadMySchedule() {
 
@@ -131,12 +150,15 @@ function populateLocations(dropDown) {
         option.id = 'locationOption';
         option.dataset.locationid = location.id;
         option.innerHTML = location.name;
-        // TODO: handle location selection
-        //option.addEventListener('click', (event) => handleTaskSelectionClick(event));
+        option.addEventListener('click', (event) => handleLocationSelectionClick(event));
 
         dropDown.append(option);
       });
   })
+}
+
+function constructUrlLocationSchedule(locationid, date) {
+  return `/policorp/locationschedule/${locationid}/${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`
 }
 /*
 function createAvailability(data, booked) {
