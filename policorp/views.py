@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import Task, Availability, Booking
+from .models import Task, Availability, Booking, User
 
 # Create your views here.
 def tasks(request):
@@ -70,3 +70,16 @@ def cancelbooking(request, bookingid):
     b = b.cancel()
 
     return JsonResponse (b.json(),status=201)
+
+def mysupervisedlocations(request):
+    # Only GET requests allowed
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+
+    # Only authenticated users
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    user = User.objects.get(username=request.user.username)
+
+    return JsonResponse([l.json() for l in user.get_supervised_locations()], safe=False)

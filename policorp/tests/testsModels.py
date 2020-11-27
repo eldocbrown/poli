@@ -213,7 +213,7 @@ class TestLocation(TestCase):
     def test_location_supervisor(self):
         """ GIVEN 1 location; WHEN assigning a supervisor; THEN a user is saved in supervisors field """
         l1 = Location.objects.get(pk=1)
-        u = aux.createUser("foo", "foo@example.com", "example")
+        u = User.objects.create_supervisor("foo", "foo@example.com", "example")
         l1.assign_supervisor(u)
         l1 = Location.objects.get(pk=1)
         self.assertIn(u, l1.supervisors.all())
@@ -221,15 +221,22 @@ class TestLocation(TestCase):
     def test_location_supervisor_twice(self):
         """ GIVEN 1 location with an assigned supervisor; WHEN assigning a supervisor twice; THEN an exception occurs """
         l1 = Location.objects.get(pk=1)
-        u = aux.createUser("foo", "foo@example.com", "example")
+        u = User.objects.create_supervisor("foo", "foo@example.com", "example")
         l1.assign_supervisor(u)
+        with self.assertRaises(ValidationError):
+            l1.assign_supervisor(u)
+
+    def test_location_supervisor_user_is_not_supervisor_error(self):
+        """ GIVEN 1 location; WHEN assigning a consumer user; THEN a ValidationError is raised """
+        l1 = Location.objects.get(pk=1)
+        u = aux.createUser("foo", "foo@example.com", "example")
         with self.assertRaises(ValidationError):
             l1.assign_supervisor(u)
 
     def test_location_remove_supervisor(self):
         """ GIVEN 1 location with an assigned supervisor; WHEN removing that supervisor; THEN the user is removed from supervisors field """
         l1 = Location.objects.get(pk=1)
-        u = aux.createUser("foo", "foo@example.com", "example")
+        u = User.objects.create_supervisor("foo", "foo@example.com", "example")
         l1.assign_supervisor(u)
         l1 = Location.objects.get(pk=1)
         self.assertIn(u, l1.supervisors.all())
@@ -239,20 +246,20 @@ class TestLocation(TestCase):
     def test_location_remove_not_existant_supervisor(self):
         """ GIVEN 1 location; WHEN removing a not assigned supervisor; THEN an exception is raised """
         l1 = Location.objects.get(pk=1)
-        u = aux.createUser("foo", "foo@example.com", "example")
+        u = User.objects.create_supervisor("foo", "foo@example.com", "example")
         with self.assertRaises(ValidationError):
             l1.remove_supervisor(u)
 
     def test_get_supervised_locations(self):
         """ GIVEN a user supervising a location; WHEN I request all supervised locations for user; THEN location is in returned array """
-        user = aux.createUser("foo", "foo@example.com", "example")
+        user = User.objects.create_supervisor("foo", "foo@example.com", "example")
         location = Location.objects.get(pk=1)
         location.assign_supervisor(user)
         self.assertIn(location, user.supervisedLocations.all())
 
     def test_get_supervised_locations_not_included(self):
         """ GIVEN a user not supervising a location; WHEN I request all supervised locations for user; THEN location is not in returned array """
-        user = aux.createUser("foo", "foo@example.com", "example")
+        user = User.objects.create_supervisor("foo", "foo@example.com", "example")
         location = Location.objects.get(pk=1)
         self.assertNotIn(location, user.supervisedLocations.all())
 
@@ -396,6 +403,23 @@ class TestBooking(TestCase):
         booking = booking.cancel()
 
         self.assertFalse(booking.availability.booked)
+
+class TestUser(TestCase):
+
+    def test_user_is_supervisor_false_default(self):
+        """ GIVEN ; WHEN creating a consumer user; THEN it is not supervisor by default """
+        u = User()
+        u.username = "foo"
+        u.email = "foo@example.com"
+        u.set_password("example")
+        u.save()
+        u = User.objects.get(username="foo")
+        self.assertFalse(u.is_supervisor)
+
+    def test_user_create_supervisor(self):
+        """ GIVEN ; WHEN creating a supervisor user; THEN it is supervisor """
+        u = User.objects.create_supervisor("foo", "foo@example.com", "example")
+        self.assertTrue(u.is_supervisor)
 
 if __name__ == "__main__":
     unittest.main()

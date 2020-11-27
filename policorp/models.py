@@ -1,5 +1,5 @@
 from django.db import models
-from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager
+from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager, MyUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
@@ -7,7 +7,15 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 
 class User(AbstractUser):
-    pass
+
+    is_supervisor = models.BooleanField(default=False)
+
+    # Managers
+    objects = MyUserManager()
+
+    # Operations
+    def get_supervised_locations(self):
+        return self.supervisedLocations.all().order_by("name")
 
 class Availability(models.Model):
     when = models.DateTimeField()
@@ -56,6 +64,8 @@ class Location(models.Model):
     def assign_supervisor(self, user):
         if user in self.supervisors.all():
             raise ValidationError("Error: User is already supervising this location")
+        if not user.is_supervisor:
+            raise ValidationError("Error: Unauthorized user")
         self.supervisors.add(user)
 
     def remove_supervisor(self, user):
