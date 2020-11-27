@@ -419,6 +419,7 @@ class TestUser(TestCase):
     def test_user_create_supervisor(self):
         """ GIVEN ; WHEN creating a supervisor user; THEN it is supervisor """
         u = User.objects.create_supervisor("foo", "foo@example.com", "example")
+        u = User.objects.filter(username="foo").first()
         self.assertTrue(u.is_supervisor)
 
 if __name__ == "__main__":

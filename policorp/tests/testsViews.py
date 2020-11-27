@@ -224,7 +224,7 @@ class TestViews(TestCase):
     @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_locations(self):
         """ GIVEN user foo that supervises a location; WHEN GET /mysupervisedlocation with user foo; THEN json with that location should be returned """
-        user = aux.createUser('foo', 'foo@example.com', 'example')
+        user = User.objects.create_supervisor("foo", "foo@example.com", "example")
         location = Location.objects.get(pk=1)
         location.assign_supervisor(user)
         request = self.factory.get(reverse('policorp:mysupervisedlocations'))
@@ -237,8 +237,8 @@ class TestViews(TestCase):
     @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_locations_2(self):
         """ GIVEN user foo that supervises a location and user juan that supervises another location; WHEN GET /mysupervisedlocation with user foo; THEN json with that 1 location should be returned """
-        user = aux.createUser('foo', 'foo@example.com', 'example')
-        user2 = aux.createUser('juan', 'juan@example.com', 'example')
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        user2 = User.objects.create_supervisor('juan', 'juan@example.com', 'example')
         location = Location.objects.get(pk=1)
         location2 = Location.objects.get(pk=2)
         location.assign_supervisor(user)
@@ -253,8 +253,8 @@ class TestViews(TestCase):
     @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_locations_3(self):
         """ GIVEN user foo that supervises 2 locations and user juan that supervises another location; WHEN GET /mysupervisedlocation with user foo; THEN json with 2 locations should be returned """
-        user = aux.createUser('foo', 'foo@example.com', 'example')
-        user2 = aux.createUser('juan', 'juan@example.com', 'example')
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        user2 = User.objects.create_supervisor('juan', 'juan@example.com', 'example')
         location = Location.objects.get(pk=1)
         location2 = Location.objects.get(pk=2)
         location3 = Location.objects.get(pk=3)
@@ -271,13 +271,30 @@ class TestViews(TestCase):
     @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_locations_ordered(self):
         """ GIVEN user foo that supervises 3 locations; WHEN GET /mysupervisedlocation with user foo; THEN json with 2 locations should be returned ordered ascending by location name """
-        user = aux.createUser('foo', 'foo@example.com', 'example')
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         locationBA = Location.objects.filter(name="Buenos Aires").first()
         locationC = Location.objects.filter(name="Córdoba").first()
         locationR = Location.objects.filter(name="Rosario").first()
         locationC.assign_supervisor(user)
         locationBA.assign_supervisor(user)
         locationR.assign_supervisor(user)
+        request = self.factory.get(reverse('policorp:mysupervisedlocations'))
+        request.user = user
+        response = mysupervisedlocations(request)
+
+        expected_json = [locationBA.json(), locationC.json(), locationR.json()]
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('mysupervisedlocations')
+    def test_view_mysupervisedlocations_returns_locations_ordered_2(self):
+        """ GIVEN user foo that supervises 3 locations; WHEN GET /mysupervisedlocation with user foo; THEN json with 2 locations should be returned ordered ascending by location name """
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        locationBA = Location.objects.filter(name="Buenos Aires").first()
+        locationC = Location.objects.filter(name="Córdoba").first()
+        locationR = Location.objects.filter(name="Rosario").first()
+        locationR.assign_supervisor(user)
+        locationC.assign_supervisor(user)
+        locationBA.assign_supervisor(user)
         request = self.factory.get(reverse('policorp:mysupervisedlocations'))
         request.user = user
         response = mysupervisedlocations(request)
