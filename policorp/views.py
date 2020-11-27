@@ -6,6 +6,9 @@ from .models import Task, Availability, Booking, User
 
 # Create your views here.
 def index(request):
+    if not request.user.is_authenticated:
+        return render(request, "policorp/login.html")
+
     return render(request, "policorp/index.html");
 
 def login_view(request):

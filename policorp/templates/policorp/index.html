@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block script %}
-<!--<script src="{% static 'policorp/policorp.js' %}"></script>-->
+<script src="{% static 'policorp/policorp.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -13,6 +13,8 @@
   var csrftoken = '{{ csrf_token }}';
   var username = '{{ user.username }}';
 </script>
+
+{% if user.is_supervisor %}
 
 <div id="locationSelector">
   <div class="dropdown">
@@ -25,7 +27,7 @@
   <div id="taskList"></div>
 </div>
 
-<div id="mySchedule"></div>
+<div id="locationSchedule"></div>
 
 <!-- Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -46,5 +48,9 @@
     </div>
   </div>
 </div>
+
+{% else %}
+Unauthorized
+{% endif %}
 
 {% endblock %}
