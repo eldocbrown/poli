@@ -1,0 +1,13 @@
+.body {
+  margin: 20px;
+}
+
+#taskList {
+  padding-top: 10px;
+}
+
+#locationLink {
+  padding-left: 10px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
