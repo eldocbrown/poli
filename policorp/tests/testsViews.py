@@ -55,8 +55,8 @@ class TestViews(TestCase):
 
     @tag('availabilities')
     def test_view_availabilities_return_1_availability(self):
-        """ GIVEN ; WHEN GET /policorp/availabilities/1 ; THEN availabiliy 1 json is returned """
-        expected_json = [Availability.objects.get(pk=2).json()]
+        """ GIVEN 2 availabilities for task 1; WHEN GET /policorp/availabilities/1 ; THEN availabiliy 2 json availabilities are returned """
+        expected_json = [Availability.objects.get(pk=3).json(), Availability.objects.get(pk=2).json()]
 
         # Create an instance of a GET request.
         request = self.factory.get(reverse('policorp:availabilities', kwargs={'taskid': 1}))

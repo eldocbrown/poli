@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  //if (username !==   "") document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
-
   loadFilters();
 
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));

@@ -53,5 +53,14 @@
       "where": 3,
       "what": 1
     }
+  },
+  {
+    "model": "policorp.availability",
+    "pk": 3,
+    "fields": {
+      "when": "2021-01-02T11:00:00.000Z",
+      "where": 3,
+      "what": 1
+    }
   }
 ]

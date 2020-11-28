@@ -41,6 +41,9 @@ class BookingManager(models.Manager):
     def get_by_user(self, userObj):
         return super().get_queryset().filter(cancelled=False).filter(user__id=userObj.id).order_by("availability__when")
 
+    def get_by_location_and_date(self, locationObj, date):
+        return super().get_queryset().filter(cancelled=False).filter(availability__where=locationObj).filter(availability__when__date=date).order_by("availability__when")
+
 class MyUserManager(BaseUserManager):
 
     def create_supervisor(self, username, email, password):

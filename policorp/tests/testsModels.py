@@ -404,6 +404,32 @@ class TestBooking(TestCase):
 
         self.assertFalse(booking.availability.booked)
 
+    def test_booking_get_by_location_and_date(self):
+        """ GIVEN 2 bookings, 1 for user foo and 1 for user juan; WHEN requesting user bookings for Buenos Aires on the 2th of January 2020; THEN 1 booking with user foo should be returned """
+        availability1 = Availability.objects.get(pk=1)
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=2)
+        user2 = aux.createUser("juan", "juan@example.com", "example")
+        b2 = Booking.objects.book(availability2, user2)
+        result = Booking.objects.get_by_location_and_date(availability1.where, datetime(2021,1,2, 0, 0, 0, 0, timezone.utc) )
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].user, user1)
+        self.assertEqual(result[0].availability, availability1)
+
+    def test_booking_get_by_location_and_date_no_results(self):
+        """ GIVEN 2 bookings, 1 for user foo and 1 for user juan; WHEN requesting user bookings for Buenos Aires on the 10th of January 2020; THEN 1 booking with user foo should be returned """
+        availability1 = Availability.objects.get(pk=1)
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        b1 = Booking.objects.book(availability1, user1)
+        availability2 = Availability.objects.get(pk=2)
+        user2 = aux.createUser("juan", "juan@example.com", "example")
+        b2 = Booking.objects.book(availability2, user2)
+        result = Booking.objects.get_by_location_and_date(availability1.where, datetime(2021,1,10, 0, 0, 0, 0, timezone.utc) )
+
+        self.assertEqual(len(result), 0)
+
 class TestUser(TestCase):
 
     def test_user_is_supervisor_false_default(self):
