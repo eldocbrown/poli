@@ -20,21 +20,6 @@ function handleLocationSelectionClick(event) {
   lookupBookingsButton.style.cursor = 'pointer';
   lookupBookingsButton.disabled = false;
 
-/*
-  fetch(url)
-  .then(response => response.json())
-  .then(data => {
-      const list = document.querySelector('#locationList');
-      clearNode(list);
-      const listHeading = document.createElement('h5');
-      listHeading.innerHTML = 'Schedule for: '
-      list.append(listHeading);
-
-      data.forEach( (availabilityData)  => {
-        element = createAvailability(availabilityData, false);
-        document.querySelector('#availabilityList').append(element);
-      });
-  })*/
 }
 
 function handleSearchClick(event) {
@@ -44,7 +29,25 @@ function handleSearchClick(event) {
 
   const url = constructUrlLocationSchedule(dropdownLocationButton.dataset.locationid, date);
 
-  console.log(url);
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+
+      console.log(data);
+      const list = document.querySelector('#locationSchedule');
+      clearNode(list);
+      const listHeading = document.createElement('h5');
+      if (data.length === 0) {listHeading.innerHTML = 'No Bookings';}
+      else { listHeading.innerHTML = 'Bookings';}
+      list.append(listHeading);
+      data.forEach( (bookingData)  => {
+        element = createBooking(bookingData);
+        list.append(element);
+      });
+      list.style.display = 'block';
+  })
+
+
 }
 
 /*
@@ -208,7 +211,7 @@ function populateSchedule() {
       data.forEach( (booking) => document.querySelector('#mySchedule').append(createBooking(booking)));
   })
 }
-
+*/
 function createBooking(data) {
   // create booking container
   a = document.createElement('div');
@@ -223,18 +226,7 @@ function createBooking(data) {
 
   // WHEN
   const whenContainer = document.createElement('div');
-  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
-  const icon = document.createElement('img');
-  icon.id = 'downloadCalIcon';
-  icon.src = 'static/policon/image/calendar2-event-fill.svg';
-  icon.title = 'Download event file';
-  icon.dataset.what = data.availability.what.name;
-  icon.dataset.when = data.availability.when;
-  icon.dataset.duration = data.availability.what.duration;
-  icon.dataset.where = data.availability.where.name;
-  icon.addEventListener('click', (event) => handleDownloadCalClick(event));
-  whenContainer.append(icon);
-
+  whenContainer.innerHTML = toFormattedTime(new Date(Date.parse(data.availability.when)));
   aInfo.append(whenContainer);
 
   // WHAT
@@ -242,14 +234,11 @@ function createBooking(data) {
   whatContainer.innerHTML = data.availability.what.name;
   aInfo.append(whatContainer);
 
-  // WHERE
-  const whereContainer = document.createElement('div');
-  whereContainer.innerHTML = data.availability.where.name;
-  const link = createLocationLink(data.availability.where.name);
-  whereContainer.append(link);
-
-  aInfo.append(whereContainer);
-
+  // WHO
+  const whoContainer = document.createElement('div');
+  whoContainer.innerHTML = data.username;
+  aInfo.append(whoContainer);
+/*
   // create action button whenContainer
   const aAction = document.createElement('div');
   aAction.id = 'bookingAction';
@@ -264,10 +253,10 @@ function createBooking(data) {
   aActionButton.addEventListener('click', (event) => handleCancelClick(event));
 
   aAction.append(aActionButton);
-
+*/
   return a;
 }
-
+/*
 function createLocationLink(location) {
   const link = document.createElement('img');
   link.id = 'downloadCalIcon';
@@ -277,25 +266,18 @@ function createLocationLink(location) {
   link.addEventListener('click', (event) => handleLocationLinkClick(event));
   return link;
 }
-
+*/
 function clearNode(node) {
   var children = Array.from(node.children);
   if (children !== undefined) { children.forEach((child) => { child.remove(); }) };
   node.innerHTML = '';
 }
 
-function toFormattedDateTime(datetimeObj, duration) {
-  const locale = 'en-US';
-  dayOfWeek = datetimeObj.toLocaleString(locale, { weekday: "long" });
-  month = datetimeObj.toLocaleString(locale, { month: "long" });
-  date = datetimeObj.getDate();
+function toFormattedTime(datetimeObj) {
   timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-  let timeTo = datetimeObj;
-  timeTo.setMinutes(datetimeObj.getMinutes() + duration);
-  timeTo = timeTo.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-  return (dayOfWeek + ', ' + month + ' ' + date + ' from ' + timeFrom + ' to ' + timeTo);
+  return (timeFrom);
 }
-
+/*
 function toFormattedDuration(duration) {
   if (duration < 60) {
     return `${duration} min`;

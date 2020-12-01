@@ -19,3 +19,7 @@
 #lookupBookingsButton {
   cursor: not-allowed;
 }
+
+#locationSchedule {
+  margin-top: 10px;
+}
