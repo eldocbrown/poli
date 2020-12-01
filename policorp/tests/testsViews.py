@@ -201,7 +201,7 @@ class TestViews(TestCase):
     def test_view_mysupervisedlocations_returns_200(self):
         """ GIVEN; WHEN GET /mysupervisedlocation; THEN status code 200 is returned """
         request = self.factory.get(reverse('policorp:mysupervisedlocations'))
-        request.user = aux.createUser('foo', 'foo@example.com', 'example')
+        request.user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         response = mysupervisedlocations(request)
         self.assertEqual(response.status_code, 200)
 
@@ -222,9 +222,17 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 401)
 
     @tag('mysupervisedlocations')
+    def test_view_mysupervisedlocations_only_logged_in_supervisors_requests_allowed(self):
+        """ GIVEN ; WHEN GET /mysupervisedlocations logged in with a consumer user; THEN code 401 (unauthorized) should be returned """
+        request = self.factory.get(reverse('policorp:mysupervisedlocations'))
+        request.user = aux.createUser('foo', 'foo@example.com', 'example')
+        response = mysupervisedlocations(request)
+        self.assertEqual(response.status_code, 401)
+
+    @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_locations(self):
         """ GIVEN user foo that supervises a location; WHEN GET /mysupervisedlocation with user foo; THEN json with that location should be returned """
-        user = User.objects.create_supervisor("foo", "foo@example.com", "example")
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         location = Location.objects.get(pk=1)
         location.assign_supervisor(user)
         request = self.factory.get(reverse('policorp:mysupervisedlocations'))
@@ -301,6 +309,91 @@ class TestViews(TestCase):
 
         expected_json = [locationBA.json(), locationC.json(), locationR.json()]
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_returns_200(self):
+        """ GIVEN; WHEN GET /locationschedule/1/20210102; THEN status code 200 is returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        request.user = user
+        Location.objects.get(pk=1).assign_supervisor(user)
+        response = locationschedule(request, 1, '20210102')
+        self.assertEqual(response.status_code, 200)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_post_not_allowed(self):
+        """ GIVEN ; WHEN POST /locationschedule/1/20210102; THEN code 400 should be returned """
+        # Create an instance of a POST request.
+        request = self.factory.post(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        response = locationschedule(request, 1, '20210102')
+        self.assertEqual(response.status_code, 400)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_only_logged_in_requests_allowed(self):
+        """ GIVEN ; WHEN GET /locationschedule/1/20210102 logged out; THEN code 401 (unauthorized) should be returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        request.user = AnonymousUser()
+        response = locationschedule(request, 1, '20210102')
+        self.assertEqual(response.status_code, 401)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_only_logged_in_rolepervisor_requests_allowed(self):
+        """ GIVEN ; WHEN GET /locationschedule/1/20210102 logged in with a non supervisor user; THEN code 401 (unauthorized) should be returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        request.user = aux.createUser('foo', 'foo@example.com', 'example')
+        response = locationschedule(request, 1, '20210102')
+        self.assertEqual(response.status_code, 401)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_only_requests_for_supervised_locations_allowed(self):
+        """ GIVEN ; WHEN GET /locationschedule/1/20210102 for a location not supervised; THEN code 401 (unauthorized) should be returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        request.user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        response = locationschedule(request, 1, '20210102')
+        self.assertEqual(response.status_code, 401)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_return_1_booking(self):
+        """ GIVEN 1 booking for 2021-01-02 at location 1; WHEN requesting schedule for 2021-01-02 at location 1; 1 json object is returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        request.user = user
+        Location.objects.get(pk=1).assign_supervisor(user)
+        booking = Booking.objects.book(Availability.objects.get(pk=1), aux.createUser('bar', 'bar@example.com', 'example'))
+        response = locationschedule(request, 1, '20210102')
+        expected_data = [Booking.objects.get(id=booking.id).json()]
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_return_1_booking_2(self):
+        """ GIVEN 2 booking for 2021-01-02 and 2021-01-03 at location 3; WHEN requesting schedule for 2021-01-02 at location 1; 1 json object is returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 3, 'date': '20210102'}))
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        request.user = user
+        Location.objects.get(pk=3).assign_supervisor(user)
+        booker = aux.createUser('bar', 'bar@example.com', 'example')
+        booking3 = Booking.objects.book(Availability.objects.get(pk=3), booker)
+        booking2 = Booking.objects.book(Availability.objects.get(pk=2), booker)
+        response = locationschedule(request, 3, '20210102')
+        expected_data = [Booking.objects.get(id=booking3.id).json()]
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+    @tag('locationschedule')
+    def test_view_locationschedule_return_1_booking_ordered_ascending(self):
+        """ GIVEN 3 booking for 2021-01-04 at location 2; WHEN requesting schedule for 2021-01-04 at location 2; 3 json objects are returned in ascending order """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 2, 'date': '20210104'}))
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        request.user = user
+        Location.objects.get(pk=2).assign_supervisor(user)
+        booker4 = aux.createUser('bar', 'bar@example.com', 'example')
+        booker5 = aux.createUser('zoe', 'zoe@example.com', 'example')
+        booker6 = aux.createUser('kari', 'kari@example.com', 'example')
+        booking5 = Booking.objects.book(Availability.objects.get(pk=5), booker5)
+        booking6 = Booking.objects.book(Availability.objects.get(pk=6), booker6)
+        booking4 = Booking.objects.book(Availability.objects.get(pk=4), booker4)
+        response = locationschedule(request, 2, '20210104')
+        expected_data = [Booking.objects.get(id=booking4.id).json(), Booking.objects.get(id=booking5.id).json(), Booking.objects.get(id=booking6.id).json()]
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
 if __name__ == "__main__":
     unittest.main()

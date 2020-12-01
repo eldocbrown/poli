@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Task, Availability, Booking, User
+from .models import Task, Availability, Booking, User, Location
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -113,4 +114,30 @@ def mysupervisedlocations(request):
 
     user = User.objects.get(username=request.user.username)
 
+    if not user.is_supervisor:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
     return JsonResponse([l.json() for l in user.get_supervised_locations()], safe=False)
+
+def locationschedule(request, locationid, date):
+    # Only GET requests allowed
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+
+    # Only authenticated, supervisor users allowed
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    user = User.objects.get(username=request.user.username)
+
+    if not user.is_supervisor:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    location = Location.objects.get(pk=locationid)
+
+    if user not in location.supervisors.all():
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    dateObj = datetime.strptime(date, "%Y%m%d")
+
+    return JsonResponse([b.json() for b in Booking.objects.get_by_location_and_date(location, dateObj)], safe=False)

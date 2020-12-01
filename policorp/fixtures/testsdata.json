@@ -62,5 +62,32 @@
       "where": 3,
       "what": 1
     }
+  },
+  {
+    "model": "policorp.availability",
+    "pk": 4,
+    "fields": {
+      "when": "2021-01-04T11:00:00.000Z",
+      "where": 2,
+      "what": 2
+    }
+  },
+  {
+    "model": "policorp.availability",
+    "pk": 5,
+    "fields": {
+      "when": "2021-01-04T12:00:00.000Z",
+      "where": 2,
+      "what": 2
+    }
+  },
+  {
+    "model": "policorp.availability",
+    "pk": 6,
+    "fields": {
+      "when": "2021-01-04T13:00:00.000Z",
+      "where": 2,
+      "what": 2
+    }
   }
 ]

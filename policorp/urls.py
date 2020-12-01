@@ -13,5 +13,6 @@ urlpatterns = [
     path("book/<int:availabilityid>/", views.book, name="book"),
     path("myschedule/", views.myschedule, name="myschedule"),
     path("cancelbooking/<int:bookingid>/", views.cancelbooking, name="cancelbooking"),
-    path("mysupervisedlocations/", views.mysupervisedlocations, name="mysupervisedlocations")
+    path("mysupervisedlocations/", views.mysupervisedlocations, name="mysupervisedlocations"),
+    path("locationschedule/<int:locationid>/<str:date>/", views.locationschedule, name="locationschedule")
 ]
