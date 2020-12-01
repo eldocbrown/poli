@@ -204,7 +204,7 @@ function createBooking(data) {
   whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
   const icon = document.createElement('img');
   icon.id = 'downloadCalIcon';
-  icon.src = 'static/policon/image/calendar2-event-fill.svg';
+  icon.src = icon_calendar2_event_fill;
   icon.title = 'Download event file';
   icon.dataset.what = data.availability.what.name;
   icon.dataset.when = data.availability.when;
@@ -249,7 +249,7 @@ function createBooking(data) {
 function createLocationLink(location) {
   const link = document.createElement('img');
   link.id = 'downloadCalIcon';
-  link.src = 'static/policon/image/geo-alt-fill.svg';
+  link.src = icon_geo_alt_fill;
   link.title = 'Open in Google Maps';
   link.dataset.where = location;
   link.addEventListener('click', (event) => handleLocationLinkClick(event));
