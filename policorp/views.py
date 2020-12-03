@@ -3,7 +3,11 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from .models import Task, Availability, Booking, User, Location
-from datetime import datetime
+from datetime import datetime, timezone
+import json
+
+import sys
+from django.core.serializers.json import DjangoJSONEncoder
 
 # Create your views here.
 def index(request):
@@ -141,3 +145,30 @@ def locationschedule(request, locationid, date):
     dateObj = datetime.strptime(date, "%Y%m%d")
 
     return JsonResponse([b.json() for b in Booking.objects.get_by_location_and_date(location, dateObj)], safe=False)
+
+def createavailabilitysingle(request):
+    # Only POST requests allowed
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Only authenticated, supervisor users allowed
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    user = User.objects.get(username=request.user.username)
+
+    if not user.is_supervisor:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    data = json.loads(request.body)
+
+    # User needs to be supervising requested location
+    location = Location.objects.get(pk=data.get("locationid"))
+    if user not in location.supervisors.all():
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    when = datetime.fromisoformat(data.get("when"))
+    task = Task.objects.get(pk=data.get("taskid"))
+    a = Availability.objects.create_availability(when, location, task)
+
+    return JsonResponse(a.json(), safe=False, status=201)
