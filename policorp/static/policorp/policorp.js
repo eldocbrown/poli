@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   loadFilters();
-
+  document.querySelector('#locationScheduleContainer').style.display = 'block';
+  document.querySelector('#locationConfigurationContainer').style.display = 'none';
+  document.querySelector('#location-schedule-link').addEventListener('click', () => handleLocationScheduleLinkClick());
+  document.querySelector('#location-config-link').addEventListener('click', () => handleLocationConfigurationLinkClick());
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
 
 });
@@ -9,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // ********************************
 // *** EVENT HANDLERS Functions ***
 // ********************************
+
+function handleLocationScheduleLinkClick() {
+  document.querySelector('#locationScheduleContainer').style.display = 'block';
+  document.querySelector('#locationConfigurationContainer').style.display = 'none';
+}
+
+function handleLocationConfigurationLinkClick() {
+  document.querySelector('#locationScheduleContainer').style.display = 'none';
+  document.querySelector('#locationConfigurationContainer').style.display = 'block';
+}
 
 function handleLocationSelectionClick(event) {
 

@@ -16,38 +16,54 @@
   var username = '{{ user.username }}';
 </script>
 
-{% if user.is_supervisor %}
+<div id="locationScheduleContainer">
 
-<div id="filter" class="d-flex ">
-  <div id="locationSelector">
-    <div class="dropdown">
-      <button id="dropdownLocationButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select Location
-      </button>
-      <div id="taskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  {% if user.is_supervisor %}
+
+  <div id="filter" class="d-flex">
+    <div id="locationSelector">
+      <div class="dropdown">
+        <button id="dropdownLocationButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Location
+        </button>
+        <div id="taskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        </div>
+      </div>
+      <div id="locationList">
       </div>
     </div>
-    <div id="locationList">
-    </div>
+    <input id="datepicker" width="276" />
+    <script>
+      let date = new Date();
+      var $datepicker = $('#datepicker').datepicker({
+        uiLibrary: 'bootstrap4',
+        value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
+        width: 180
+      });
+    </script>
+    <button id="lookupBookingsButton" type="button" class="btn btn-primary" aria-label="Search" disabled>
+      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
+        <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"></path>
+      </svg>
+    </button>
   </div>
-  <input id="datepicker" width="276" />
-  <script>
-    let date = new Date();
-    var $datepicker = $('#datepicker').datepicker({
-      uiLibrary: 'bootstrap4',
-      value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
-      width: 180
-    });
-  </script>
-  <button id="lookupBookingsButton" type="button" class="btn btn-primary" aria-label="Search" disabled>
-    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
-      <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"></path>
-    </svg>
-  </button>
+
+  <div id="locationSchedule"></div>
+</div>
+{% else %}
+Unauthorized
+{% endif %}
+
+
+<div id="locationConfigurationContainer">
+  {% if user.is_supervisor %}
+  Config container
+  {% else %}
+  Unauthorized
+  {% endif %}
 </div>
 
-<div id="locationSchedule"></div>
 
 <!-- Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -69,8 +85,6 @@
   </div>
 </div>
 
-{% else %}
-Unauthorized
-{% endif %}
+
 
 {% endblock %}

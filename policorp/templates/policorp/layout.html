@@ -26,8 +26,14 @@
                 <li class="nav-item" id="userNavItem">
                     <a class="nav-link text-muted" href="#"><strong>{{ user.username }}</strong></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" id="my-schedule-link">Schedule</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="location-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Location
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" id="location-schedule-link" href="#">Schedule</a>
+                      <a class="dropdown-item" id="location-config-link" href="#">Configuration</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white" href="{% url 'policorp:logout' %}">Log Out</a>
