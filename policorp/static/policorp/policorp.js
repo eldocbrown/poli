@@ -13,15 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
 // *** EVENT HANDLERS Functions ***
 // ********************************
 
+// *** NAVBAR EVENTS ***
+
 function handleLocationScheduleLinkClick() {
   document.querySelector('#locationScheduleContainer').style.display = 'block';
   document.querySelector('#locationConfigurationContainer').style.display = 'none';
 }
 
 function handleLocationConfigurationLinkClick() {
+
+  clearNode(document.querySelector('#configLocationDropdownMenu'));
+  populateLocations(document.querySelector('#configLocationDropdownMenu'));
+  clearNode(document.querySelector('#configTaskDropdownMenu'));
+  populateTasks(document.querySelector('#configTaskDropdownMenu'));
+
   document.querySelector('#locationScheduleContainer').style.display = 'none';
   document.querySelector('#locationConfigurationContainer').style.display = 'block';
 }
+
+// *** SCHEDULE EVENTS ***
 
 function handleLocationSelectionClick(event) {
 
@@ -59,7 +69,26 @@ function handleSearchClick(event) {
       });
       list.style.display = 'block';
   })
+}
 
+// *** CONFIGURATION EVENTS ***
+
+function handleConfigLocationSelectionClick(event) {
+
+  const dropdownConfigLocationButton = document.querySelector('#configLocationDropdownButton');
+  dropdownConfigLocationButton.innerHTML = event.currentTarget.innerHTML;
+  dropdownConfigLocationButton.dataset.locationid = event.currentTarget.dataset.locationid;
+
+  evaluateCreateSingleAvailabilityState();
+}
+
+function handleConfigTaskSelectionClick(event) {
+
+  const dropdownConfigTaskButton = document.querySelector('#configTaskDropdownButton');
+  dropdownConfigTaskButton.innerHTML = event.currentTarget.innerHTML;
+  dropdownConfigTaskButton.dataset.taskid = event.currentTarget.dataset.taskid;
+
+  evaluateCreateSingleAvailabilityState();
 
 }
 
@@ -132,7 +161,7 @@ function handleDownloadCalClick(event) {
 
 function loadFilters() {
 
-  populateLocations(document.querySelector('#taskDropdownMenu'));
+  populateLocations(document.querySelector('#locationDropdownMenu'));
 
   document.querySelector('#locationSelector').style.display = 'block';
   document.querySelector('#locationSchedule').style.display = 'none';
@@ -164,7 +193,24 @@ function populateLocations(dropDown) {
         option.id = 'locationOption';
         option.dataset.locationid = location.id;
         option.innerHTML = location.name;
-        option.addEventListener('click', (event) => handleLocationSelectionClick(event));
+        option.addEventListener('click', (event) => handleConfigLocationSelectionClick(event));
+
+        dropDown.append(option);
+      });
+  })
+}
+
+function populateTasks(dropDown) {
+  fetch(`/policorp/tasks/`)
+  .then(response => response.json())
+  .then(data => {
+      data.forEach( function(task) {
+        const option = document.createElement('a');
+        option.classList.add('dropdown-item');
+        option.id = 'taskOption';
+        option.dataset.taskid = task.id;
+        option.innerHTML = `${task.name} (${toFormattedDuration(task.duration)})`;
+        option.addEventListener('click', (event) => handleConfigTaskSelectionClick(event));
 
         dropDown.append(option);
       });
@@ -290,7 +336,7 @@ function toFormattedTime(datetimeObj) {
   timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   return (timeFrom);
 }
-/*
+
 function toFormattedDuration(duration) {
   if (duration < 60) {
     return `${duration} min`;
@@ -302,6 +348,17 @@ function toFormattedDuration(duration) {
   }
 }
 
+function evaluateCreateSingleAvailabilityState() {
+  const location = document.querySelector('#configLocationDropdownButton');
+  const task = document.querySelector('#configTaskDropdownButton');
+  const button = document.querySelector('#createSingleAvailabilityButton');
+
+  if ((!isNaN(location.dataset.locationid)) && (!isNaN(task.dataset.taskid))) {
+    button.disabled = false;
+    button.style.cursor = 'pointer';
+  }
+}
+/*
 function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;
   document.querySelector('#messageModalBody').innerHTML = message;

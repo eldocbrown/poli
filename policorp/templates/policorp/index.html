@@ -26,7 +26,7 @@
         <button id="dropdownLocationButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select Location
         </button>
-        <div id="taskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <div id="locationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         </div>
       </div>
       <div id="locationList">
@@ -58,7 +58,50 @@ Unauthorized
 
 <div id="locationConfigurationContainer">
   {% if user.is_supervisor %}
-  Config container
+  <h5>Configure location availabilities</h5>
+  <div id="configLocationSelector">
+    <div class="dropdown">
+      <button id="configLocationDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Location
+      </button>
+      <div id="configLocationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      </div>
+    </div>
+  </div>
+  <div id="configTaskSelector">
+    <div class="dropdown">
+      <button id="configTaskDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Task
+      </button>
+      <div id="configTaskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      </div>
+    </div>
+  </div>
+  <div id="configDatepickerContainer">
+    <input id="configDatepicker" width="276" />
+    <script>
+      let configDate = new Date();
+      var $configDatepicker = $('#configDatepicker').datepicker({
+        uiLibrary: 'bootstrap4',
+        value: `${configDate.getMonth() + 1}/${configDate.getDate()}/${configDate.getFullYear()}`,
+        width: 180
+      });
+    </script>
+  </div>
+  <div id="configTimepickerContainer">
+    <input id="configTimepicker" width="276" />
+    <script>
+      var $configTimepicker = $('#configTimepicker').timepicker({
+        uiLibrary: 'bootstrap4',
+        mode: '24hr',
+        value: '08:00',
+        width: 180
+      });
+    </script>
+  </div>
+  <button id="createSingleAvailabilityButton" type="button" class="btn btn-primary" aria-label="Create" disabled>
+    Create
+  </button>
   {% else %}
   Unauthorized
   {% endif %}
