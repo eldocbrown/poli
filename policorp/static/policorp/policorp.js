@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#location-schedule-link').addEventListener('click', () => handleLocationScheduleLinkClick());
   document.querySelector('#location-config-link').addEventListener('click', () => handleLocationConfigurationLinkClick());
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
+  document.querySelector('#createSingleAvailabilityButton').addEventListener('click', () => handleCreateAvailabilityClick());
 
 });
 
@@ -23,7 +24,7 @@ function handleLocationScheduleLinkClick() {
 function handleLocationConfigurationLinkClick() {
 
   clearNode(document.querySelector('#configLocationDropdownMenu'));
-  populateLocations(document.querySelector('#configLocationDropdownMenu'));
+  populateLocations(document.querySelector('#configLocationDropdownMenu'), handleConfigLocationSelectionClick);
   clearNode(document.querySelector('#configTaskDropdownMenu'));
   populateTasks(document.querySelector('#configTaskDropdownMenu'));
 
@@ -92,35 +93,48 @@ function handleConfigTaskSelectionClick(event) {
 
 }
 
-/*
-function handleBookClick(event) {
+function handleCreateAvailabilityClick() {
 
   // if user is not logged in, then redirect to login page
   if (username === "") {
     window.location.href = loginurl;
   } else {
-    fetch(`/policorp/book/${event.currentTarget.dataset.availabilityid}`, {
+
+    const locationid = document.querySelector('#configLocationDropdownButton').dataset.locationid;
+    const taskid = document.querySelector('#configTaskDropdownButton').dataset.taskid;
+    let when = new Date(`${$configDatepicker.value()}`);
+    when.setHours($configTimepicker.value().substring(0, 2));
+    when.setMinutes($configTimepicker.value().substring(3, 5));
+
+    fetch(`/policorp/createavailabilitysingle/`, {
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
-    mode: 'same-origin'
+    mode: 'same-origin',
+    body: JSON.stringify({
+      locationid: locationid,
+      taskid: taskid,
+      when: when.toISOString().replace("Z", "+00:00"),
+      })
     })
     .then(response => response.json())
     .then(data => {
         if (!data.error) {
-          const task = data.availability.what.name;
+          /*const task = data.availability.what.name;
           const fromDatetime = new Date(Date.parse(data.availability.when));
-          const fromDatetimeStr = toFormattedDateTime(fromDatetime, data.availability.what.duration);
+          const fromDatetimeStr = toFormattedDateTime(fromDatetime, data.availability.what.duration);*/
 
-          showMessage('Booking confirmed', `You have successfully booked the task ${task} on ${fromDatetimeStr}`);
+          showMessage('Success', `You have successfully created an abailability`);
         } else {
+          showMessage('Error', `There was an error creating the abailability configuration`);
           console.error(data);
         }
 
-        loadMySchedule()
+        handleLocationScheduleLinkClick();
         });
     }
 }
 
+/*
 function handleCancelClick(event) {
   fetch(`/policorp/cancelbooking/${event.currentTarget.dataset.bookingid}`, {
   method: 'POST',
@@ -161,7 +175,7 @@ function handleDownloadCalClick(event) {
 
 function loadFilters() {
 
-  populateLocations(document.querySelector('#locationDropdownMenu'));
+  populateLocations(document.querySelector('#locationDropdownMenu'), handleLocationSelectionClick);
 
   document.querySelector('#locationSelector').style.display = 'block';
   document.querySelector('#locationSchedule').style.display = 'none';
@@ -183,7 +197,7 @@ function loadMySchedule() {
   sectionContent.style.display = 'block';
 }
 */
-function populateLocations(dropDown) {
+function populateLocations(dropDown, clickHandler) {
   fetch(`/policorp/mysupervisedlocations/`)
   .then(response => response.json())
   .then(data => {
@@ -193,7 +207,7 @@ function populateLocations(dropDown) {
         option.id = 'locationOption';
         option.dataset.locationid = location.id;
         option.innerHTML = location.name;
-        option.addEventListener('click', (event) => handleConfigLocationSelectionClick(event));
+        option.addEventListener('click', (event) => clickHandler(event));
 
         dropDown.append(option);
       });
@@ -358,13 +372,13 @@ function evaluateCreateSingleAvailabilityState() {
     button.style.cursor = 'pointer';
   }
 }
-/*
+
 function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;
   document.querySelector('#messageModalBody').innerHTML = message;
   $("#messageModal").modal('show');
 }
-
+/*
 function downloadIcsFile(dateStart, dateEnd, summary, description, location) {
 
   this._isofix2 = function(d) {

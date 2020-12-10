@@ -38,7 +38,7 @@ function handleBookClick(event) {
   if (username === "") {
     window.location.href = loginurl;
   } else {
-    fetch(`/policorp/book/${event.currentTarget.dataset.availabilityid}`, {
+    fetch(`/policorp/book/${event.currentTarget.dataset.availabilityid}/`, {
     method: 'POST',
     headers: {'X-CSRFToken': csrftoken},
     mode: 'same-origin'
@@ -61,7 +61,7 @@ function handleBookClick(event) {
 }
 
 function handleCancelClick(event) {
-  fetch(`/policorp/cancelbooking/${event.currentTarget.dataset.bookingid}`, {
+  fetch(`/policorp/cancelbooking/${event.currentTarget.dataset.bookingid}/`, {
   method: 'POST',
   headers: {'X-CSRFToken': csrftoken},
   mode: 'same-origin'
