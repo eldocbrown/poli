@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#location-config-link').addEventListener('click', () => handleLocationConfigurationLinkClick());
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
   document.querySelector('#createSingleAvailabilityButton').addEventListener('click', () => handleCreateAvailabilityClick());
+  document.querySelector('#configRepeatUntilCheck').addEventListener('click', (event) => handleRepeatUntilClick(event));
+
 
 });
 
@@ -93,6 +95,16 @@ function handleConfigTaskSelectionClick(event) {
 
 }
 
+function handleRepeatUntilClick(event) {
+  const checkbox = event.currentTarget;
+  const container = document.querySelector('#configUntilTimepickerContainer');
+  if (checkbox.checked == true){
+    container.style.display = "block";
+  } else {
+    container.style.display = "none";
+  }
+}
+
 function handleCreateAvailabilityClick() {
 
   // if user is not logged in, then redirect to login page
@@ -106,68 +118,38 @@ function handleCreateAvailabilityClick() {
     when.setHours($configTimepicker.value().substring(0, 2));
     when.setMinutes($configTimepicker.value().substring(3, 5));
 
-    fetch(`/policorp/createavailabilitysingle/`, {
-    method: 'POST',
-    headers: {'X-CSRFToken': csrftoken},
-    mode: 'same-origin',
-    body: JSON.stringify({
-      locationid: locationid,
-      taskid: taskid,
-      when: when.toISOString().replace("Z", "+00:00"),
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.error) {
-          /*const task = data.availability.what.name;
-          const fromDatetime = new Date(Date.parse(data.availability.when));
-          const fromDatetimeStr = toFormattedDateTime(fromDatetime, data.availability.what.duration);*/
+    const repeatUntilCheck = document.querySelector('#configRepeatUntilCheck');
+    let untilTime = null;
+    if (repeatUntilCheck.checked == true){
+      untilTime = $configUntilTimepicker.value();
+      const configs = createAvailabilitiesJsonData(locationid, taskid, when, untilTime);
 
-          showMessage('Success', `You have successfully created an abailability`);
-        } else {
-          showMessage('Error', `There was an error creating the abailability configuration`);
-          console.error(data);
+      const result = postAvailabilities(configs);
+    } else {
+      fetch(`/policorp/createavailabilitysingle/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        mode: 'same-origin',
+        body: return JSON.stringify({
+                        locationid: locationid,
+                        taskid: taskid,
+                        when: when.toISOString().replace("Z", "+00:00")
+                        })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error) {
+              showMessage('Success', `You have successfully created an abailability configuration`);
+            } else {
+              showMessage('Error', `There was an error creating the abailability configuration`);
+              console.error(data);
+            }
+
+            handleLocationScheduleLinkClick();
+            });
         }
-
-        handleLocationScheduleLinkClick();
-        });
     }
 }
-
-/*
-function handleCancelClick(event) {
-  fetch(`/policorp/cancelbooking/${event.currentTarget.dataset.bookingid}`, {
-  method: 'POST',
-  headers: {'X-CSRFToken': csrftoken},
-  mode: 'same-origin'
-  })
-  .then(response => response.json())
-  .then(data => {
-      if (!data.error) {
-        const task = data.availability.what.name;
-        const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
-        showMessage('Booking cancelled', `You have successfully cancelled the task ${task} on ${datetime}`);
-      } else {
-        console.error(data);
-      }
-
-      loadMySchedule()
-  });
-}
-
-function handleDownloadCalClick(event) {
-  const button = event.currentTarget;
-  const dateStart = new Date(Date.parse(button.dataset.when));
-  const dateEnd = new Date(dateStart.getTime() + button.dataset.duration*60000);
-  downloadIcsFile(dateStart, dateEnd, button.dataset.what, button.dataset.what, button.dataset.where);
-}
-*/
-//function handleLocationLinkClick(event) {
-  //const link = event.currentTarget;
-  //const query = event.currentTarget.dataset.where.replace(/  */g, '+');
-  //const url = `https://www.google.com/maps/search/?api=1&query=${query}`;
-  //window.open(url);
-//}
 
 // ***************************
 // *** AUXILIARY Functions ***
@@ -182,21 +164,6 @@ function loadFilters() {
 
 }
 
-/*
-function loadMySchedule() {
-
-  const sectionContent = document.querySelector('#mySchedule');
-  clearNode(sectionContent);
-  heading = document.createElement('h5');
-  heading.innerHTML = 'My Schedule';
-  sectionContent.append(heading);
-
-  populateSchedule();
-
-  document.querySelector('#availabilitySelector').style.display = 'none';
-  sectionContent.style.display = 'block';
-}
-*/
 function populateLocations(dropDown, clickHandler) {
   fetch(`/policorp/mysupervisedlocations/`)
   .then(response => response.json())
@@ -234,57 +201,7 @@ function populateTasks(dropDown) {
 function constructUrlLocationSchedule(locationid, date) {
   return `/policorp/locationschedule/${locationid}/${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`
 }
-/*
-function createAvailability(data, booked) {
-  // create availability container
-  a = document.createElement('div');
-  a.id = 'availability';
-  a.dataset.availabilityid = data.id;
-  a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center';
 
-  // create availability info container
-  const aInfo = document.createElement('div');
-  aInfo.id = 'availabilityInfo';
-  a.append(aInfo);
-
-  // WHEN
-  const whenContainer = document.createElement('div');
-  whenContainer.innerHTML = toFormattedDateTime(new Date(Date.parse(data.when)), data.what.duration);
-  aInfo.append(whenContainer);
-
-  // WHERE
-  const whereContainer = document.createElement('div');
-  whereContainer.innerHTML = data.where.name;
-  const link = createLocationLink(data.where.name);
-  whereContainer.append(link);
-  aInfo.append(whereContainer);
-
-  // create action button whenContainer
-  const aAction = document.createElement('div');
-  aAction.id = 'availabilityAction';
-  a.append(aAction);
-
-  // action dropdownMenuButton
-  const aActionButton = document.createElement('button');
-  aActionButton.id = 'availabilityActionButton';
-  aActionButton.dataset.availabilityid = data.id;
-  aActionButton.className = 'btn btn-primary';
-  aActionButton.innerHTML = 'Book';
-  aActionButton.addEventListener('click', (event) => handleBookClick(event));
-
-  aAction.append(aActionButton);
-
-  return a;
-}
-
-function populateSchedule() {
-  fetch(`/policorp/myschedule/`)
-  .then(response => response.json())
-  .then(data => {
-      data.forEach( (booking) => document.querySelector('#mySchedule').append(createBooking(booking)));
-  })
-}
-*/
 function createBooking(data) {
   // create booking container
   a = document.createElement('div');
@@ -311,35 +228,10 @@ function createBooking(data) {
   const whoContainer = document.createElement('div');
   whoContainer.innerHTML = data.username;
   aInfo.append(whoContainer);
-/*
-  // create action button whenContainer
-  const aAction = document.createElement('div');
-  aAction.id = 'bookingAction';
-  a.append(aAction);
 
-  // action dropdownMenuButton
-  const aActionButton = document.createElement('button');
-  aActionButton.id = 'bookingActionButton';
-  aActionButton.dataset.bookingid = data.id;
-  aActionButton.className = 'btn btn-danger';
-  aActionButton.innerHTML = 'Cancel';
-  aActionButton.addEventListener('click', (event) => handleCancelClick(event));
-
-  aAction.append(aActionButton);
-*/
   return a;
 }
-/*
-function createLocationLink(location) {
-  const link = document.createElement('img');
-  link.id = 'downloadCalIcon';
-  link.src = 'static/policon/image/geo-alt-fill.svg';
-  link.title = 'Open in Google Maps';
-  link.dataset.where = location;
-  link.addEventListener('click', (event) => handleLocationLinkClick(event));
-  return link;
-}
-*/
+
 function clearNode(node) {
   var children = Array.from(node.children);
   if (children !== undefined) { children.forEach((child) => { child.remove(); }) };
@@ -378,51 +270,12 @@ function showMessage(title, message) {
   document.querySelector('#messageModalBody').innerHTML = message;
   $("#messageModal").modal('show');
 }
-/*
-function downloadIcsFile(dateStart, dateEnd, summary, description, location) {
 
-  this._isofix2 = function(d) {
-      const dateStr = d.toISOString();
+function createAvailabilitiesJsonData(locationid, taskid, when, untilTime) {
+  if (untilTime === null) {
 
-      let fixedDateStr = dateStr.replace(/\-/g, '');
-      fixedDateStr = fixedDateStr.replace(/\:/g, '');
-      fixedDateStr = fixedDateStr.replace(/\.[0-9][0-9][0-9]/g, '');
-		  return fixedDateStr;
-	}
-
-  const now = new Date();
-
-  var ics_lines = [
-    "BEGIN:VCALENDAR",
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "PRODID:-//Poli Cal//EN",
-    "VERSION:2.0",
-    "BEGIN:VEVENT",
-    "UID:event-" + now.getTime() + "@poli.com",
-    "DTSTAMP:"+ this._isofix2(now),
-    "DTSTART:" + this._isofix2(dateStart),
-    "DTEND:" + this._isofix2(dateEnd),
-    "SUMMARY:" + summary,
-    "LOCATION:" + location,
-    "DESCRIPTION:" + description,
-    "END:VEVENT",
-    "END:VCALENDAR"
-  ];
-
-  var dlurl = 'data:text/calendar;base64,'+btoa(ics_lines.join('\r\n'));
-
-  var save = document.createElement('a');
-  save.href = dlurl;
-  save.target = '_blank';
-  save.download = 'calendar.ics';
-  var evt = new MouseEvent('click', {
-	   'view': window,
-     'bubbles': true,
-     'cancelable': false
-  });
-  save.dispatchEvent(evt);
-
-  (window.URL || window.webkitURL).revokeObjectURL(save.href);
+  }
 }
-*/
+
+function postAvailabilities(data) {
+}

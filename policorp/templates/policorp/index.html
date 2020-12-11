@@ -99,9 +99,27 @@ Unauthorized
       });
     </script>
   </div>
+  <div class="form-check" id="configRepeatCheckContainer">
+    <input class="form-check-input" type="checkbox" value="" id="configRepeatUntilCheck">
+    <label class="form-check-label" for="defaultCheck1">
+      Repeat until
+    </label>
+  </div>
+  <div id="configUntilTimepickerContainer">
+    <input id="configUntilTimepicker" width="276" />
+    <script>
+      var $configUntilTimepicker = $('#configUntilTimepicker').timepicker({
+        uiLibrary: 'bootstrap4',
+        mode: '24hr',
+        value: '18:00',
+        width: 180
+      });
+    </script>
+  </div>
   <button id="createSingleAvailabilityButton" type="button" class="btn btn-primary" aria-label="Create" disabled>
     Create
   </button>
+</div>
   {% else %}
   Unauthorized
   {% endif %}

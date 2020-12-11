@@ -172,3 +172,39 @@ def createavailabilitysingle(request):
     a = Availability.objects.create_availability(when, location, task)
 
     return JsonResponse(a.json(), safe=False, status=201)
+
+def createavailabilities(request):
+    # Only POST requests allowed
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    # Only authenticated, supervisor users allowed
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    user = User.objects.get(username=request.user.username)
+
+    if not user.is_supervisor:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    data = json.loads(request.body)
+
+    response = []
+
+    for a in data:
+
+        location = Location.objects.get(pk=a.get("locationid"))
+        if user not in location.supervisors.all():
+            response.append({
+                "locationid": a.get("locationid"),
+                "taskid": a.get("taskid"),
+                "when": a.get("when"),
+                "error": "Unauthorized"
+            })
+        else:
+            when = datetime.fromisoformat(a.get("when"))
+            task = Task.objects.get(pk=a.get("taskid"))
+            a = Availability.objects.create_availability(when, location, task)
+            response.append(a.json())
+
+    return JsonResponse(response, safe=False, status=201)

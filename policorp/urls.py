@@ -15,5 +15,6 @@ urlpatterns = [
     path("cancelbooking/<int:bookingid>/", views.cancelbooking, name="cancelbooking"),
     path("mysupervisedlocations/", views.mysupervisedlocations, name="mysupervisedlocations"),
     path("locationschedule/<int:locationid>/<str:date>/", views.locationschedule, name="locationschedule"),
-    path("createavailabilitysingle/", views.createavailabilitysingle, name="createavailabilitysingle")
+    path("createavailabilitysingle/", views.createavailabilitysingle, name="createavailabilitysingle"),
+    path("createavailabilities/", views.createavailabilities, name="createavailabilities")
 ]

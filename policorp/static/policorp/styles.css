@@ -20,6 +20,17 @@
   cursor: not-allowed;
 }
 
-#locationSchedule, #configLocationSelector, #configTaskSelector, #configDatepickerContainer, #configTimepickerContainer, #createSingleAvailabilityButton {
+#locationSchedule,
+#configLocationSelector,
+#configTaskSelector,
+#configDatepickerContainer,
+#configTimepickerContainer,
+#createSingleAvailabilityButton,
+#configRepeatCheckContainer,
+#configUntilTimepickerContainer {
   margin-top: 10px;
+}
+
+#configUntilTimepickerContainer {
+  display: none;
 }
