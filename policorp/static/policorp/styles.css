@@ -26,8 +26,11 @@
 #configDatepickerContainer,
 #configTimepickerContainer,
 #createSingleAvailabilityButton,
-#configRepeatCheckContainer,
-#configUntilTimepickerContainer {
+#configExtendCheckContainer,
+#configUntilTimepickerContainer,
+#configRepeatDaysCheckContainer,
+#daysOfWeekContainer,
+#configUntilDatepickerContainer {
   margin-top: 10px;
 }
 

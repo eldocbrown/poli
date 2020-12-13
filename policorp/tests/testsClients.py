@@ -65,18 +65,18 @@ class TestClient(TestCase):
         response = c.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
         self.assertEqual(response.status_code, 200)
 
-    def test_createavailabilitysingle_view_return_201(self):
+    def test_createavailabilities_view_return_201(self):
         """*** Creating an availability with a post request should return 201 ****"""
         user1 = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         Location.objects.get(pk=1).assign_supervisor(user1)
         c = Client()
         c.login(username='foo', password='example')
-        body = {
+        body = [{
             "locationid": 1,
             "taskid": 1,
             "when": datetime.now(tz=timezone.utc)
-        }
-        response = c.post(  reverse('policorp:createavailabilitysingle'),
+        }]
+        response = c.post(  reverse('policorp:createavailabilities'),
                             data=json.dumps(body, cls=aux.DateTimeEncoder),
                             content_type='application/json')
         self.assertEqual(response.status_code, 201)

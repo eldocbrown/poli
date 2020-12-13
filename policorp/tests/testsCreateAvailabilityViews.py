@@ -20,66 +20,6 @@ class TestCreateAvailabilityViews(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
 
-    @tag('createavailabilitysingle')
-    def test_view_createavailabilitysingle_only_post_allowed(self):
-        """ GIVEN ; WHEN GET /policorp/createavailabilitysingle; THEN code 400 should be returned """
-        request = self.factory.get(reverse('policorp:createavailabilitysingle'))
-        response = createavailabilitysingle(request)
-        self.assertEqual(response.status_code, 400)
-
-    @tag('createavailabilitysingle')
-    def test_view_createavailabilitysingle_only_logged_in_requests_allowed(self):
-        """ GIVEN ; WHEN POST /policorp/createavailabilitysingle logged out; THEN code 401 (unauthorized) should be returned """
-        request = self.factory.post(reverse('policorp:createavailabilitysingle'))
-        request.user = AnonymousUser()
-        response = createavailabilitysingle(request)
-        self.assertEqual(response.status_code, 401)
-
-    @tag('createavailabilitysingle')
-    def test_view_createavailabilitysingle_only_logged_in_supervisor_requests_allowed(self):
-        """ GIVEN ; WHEN POST /policorp/createavailabilitysingle logged in with non supervisor user; THEN code 401 (unauthorized) should be returned """
-        request = self.factory.post(reverse('policorp:createavailabilitysingle'))
-        request.user = aux.createUser('foo', 'foo@example.com', 'example')
-        response = createavailabilitysingle(request)
-        self.assertEqual(response.status_code, 401)
-
-    @tag('createavailabilitysingle')
-    def test_view_createavailabilitysingle_returns_201_and_created_availability(self):
-        """ GIVEN ; WHEN POST /policorp/createavailabilitysingle with json content (location 1; task 1; (today + 1) at 14:00 utc time); THEN code 201 should be returned """
-        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
-        location = Location.objects.get(pk=1).assign_supervisor(user)
-        now = datetime.now(timezone.utc)
-        body = {
-            "locationid": 1,
-            "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 14, 0, 0, 0, tzinfo=timezone.utc)
-        }
-        request = self.factory.post(    reverse('policorp:createavailabilitysingle'),
-                                        data=json.dumps(body, cls=aux.DateTimeEncoder),
-                                        content_type='application/json')
-        request.user = user
-        response = createavailabilitysingle(request)
-        self.assertEqual(response.status_code, 201)
-        expected_json = Availability.objects.all().order_by("-id")[0].json()
-        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
-
-    @tag('createavailabilitysingle')
-    def test_view_createavailabilitysingle_returns_401_when_not_supervising_location(self):
-        """ GIVEN ; WHEN POST /policorp/createavailabilitysingle with json content (location 1; task 1; (today + 1) at 14:00 utc time), not supervising location 1; THEN code 401 should be returned """
-        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
-        now = datetime.now(timezone.utc)
-        body = {
-            "locationid": 1,
-            "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 14, 0, 0, 0, tzinfo=timezone.utc)
-        }
-        request = self.factory.post(    reverse('policorp:createavailabilitysingle'),
-                                        data=json.dumps(body, cls=aux.DateTimeEncoder),
-                                        content_type='application/json')
-        request.user = user
-        response = createavailabilitysingle(request)
-        self.assertEqual(response.status_code, 401)
-
     @tag('createavailabilities')
     def test_view_createavailabilities_only_post_allowed(self):
         """ GIVEN ; WHEN GET /policorp/createavailabilities; THEN code 400 should be returned """
@@ -121,7 +61,7 @@ class TestCreateAvailabilityViews(TestCase):
             "when": datetime(now.year, now.month, now.day + 1, 16, 0, 0, 0, tzinfo=timezone.utc)
         }
         ]
-        request = self.factory.post(    reverse('policorp:createavailabilitysingle'),
+        request = self.factory.post(    reverse('policorp:createavailabilities'),
                                         data=json.dumps(body, cls=aux.DateTimeEncoder),
                                         content_type='application/json')
         request.user = user
@@ -151,7 +91,7 @@ class TestCreateAvailabilityViews(TestCase):
             "when": datetime(now.year, now.month, now.day + 1, 16, 0, 0, 0, tzinfo=timezone.utc)
         }
         ]
-        request = self.factory.post(    reverse('policorp:createavailabilitysingle'),
+        request = self.factory.post(    reverse('policorp:createavailabilities'),
                                         data=json.dumps(body, cls=aux.DateTimeEncoder),
                                         content_type='application/json')
         request.user = user

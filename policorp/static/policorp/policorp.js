@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#location-config-link').addEventListener('click', () => handleLocationConfigurationLinkClick());
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
   document.querySelector('#createSingleAvailabilityButton').addEventListener('click', () => handleCreateAvailabilityClick());
-  document.querySelector('#configRepeatUntilCheck').addEventListener('click', (event) => handleRepeatUntilClick(event));
-
+  document.querySelector('#configExtendCheck').addEventListener('click', (event) => handleExtendClick(event));
+  document.querySelector('#configRepeatDaysCheck').addEventListener('click', (event) => handleRepeatDaysClick(event));
 
 });
 
@@ -96,13 +96,32 @@ function handleConfigTaskSelectionClick(event) {
 
 }
 
-function handleRepeatUntilClick(event) {
+function handleExtendClick(event) {
   const checkbox = event.currentTarget;
   const container = document.querySelector('#configUntilTimepickerContainer');
   if (checkbox.checked == true){
-    container.style.display = "block";
+    container.classList.remove('d-none');
+    container.classList.add('d-flex');
   } else {
-    container.style.display = "none";
+    container.classList.remove('d-flex');
+    container.classList.add('d-none');
+  }
+}
+
+function handleRepeatDaysClick(event) {
+  const checkbox = event.currentTarget;
+  const containerDays = document.querySelector('#daysOfWeekContainer');
+  const containerUntilDate = document.querySelector('#configUntilDatepickerContainer');
+  if (checkbox.checked == true){
+    containerDays.classList.remove('d-none');
+    containerDays.classList.add('d-inline-flex');
+    containerUntilDate.classList.remove('d-none');
+    containerUntilDate.classList.add('d-flex');
+  } else {
+    containerDays.classList.remove('d-inline-flex');
+    containerDays.classList.add('d-none');
+    containerUntilDate.classList.remove('d-flex');
+    containerUntilDate.classList.add('d-none');
   }
 }
 
@@ -120,63 +139,61 @@ function handleCreateAvailabilityClick() {
     when.setHours($configTimepicker.value().substring(0, 2));
     when.setMinutes($configTimepicker.value().substring(3, 5));
 
-    const repeatUntilCheck = document.querySelector('#configRepeatUntilCheck');
+    const extendCheck = document.querySelector('#configExtendCheck');
     let untilTime = null;
-    if (repeatUntilCheck.checked == true){
-      untilTime = $configUntilTimepicker.value();
-      let configs;
-      try {
-        configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime);
-      }
-      catch (error) {
-        showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
-        return;
-      }
-      fetch(`/policorp/createavailabilities/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken },
-        mode: 'same-origin',
-        body: JSON.stringify(configs)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Create availabilities response');
-        console.log(data);
-        return getAvailabilitiesResponseErrors(data);
-      })
-      .then(errors => {
-        if (errors === 0) {
-          showMessage('Success', `You have successfully created an abailability configuration`);
-        } else {
-          showMessage('Error', `There were ${errors} errors creating the abailability configuration`);
-        }
-      })
-
-    } else {
-      fetch(`/policorp/createavailabilitysingle/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken },
-        mode: 'same-origin',
-        body: JSON.stringify({
-                        locationid: locationid,
-                        taskid: taskid,
-                        when: when.toISOString().replace("Z", "+00:00")
-                        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Create availability response');
-        console.log(data);
-        if (!data.error) {
-          showMessage('Success', `You have successfully created an abailability configuration`);
-        } else {
-          showMessage('Error', `There was an error creating the abailability configuration`);
-          console.error(data);
-        }
-
-        handleLocationScheduleLinkClick();
-      });
+    if (extendCheck.checked == true) { untilTime = $configUntilTimepicker.value(); }
+    let configs;
+    try {
+      configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime);
     }
+    catch (error) {
+      showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
+      return;
+    }
+
+    const repeatDaysCheck = document.querySelector('#configRepeatDaysCheck');
+    let days = [false, false, false, false, false, false, false];
+    let untilDate = null;
+    if (repeatDaysCheck.checked == true) {
+      untilDate = new Date(`${$configUntilDatepicker.value()}`);
+      const container = document.querySelector('#daysOfWeekContainer');
+      let i = 0;
+      while (i < days.length) {
+        button = container.children[i];
+        if (button.nodeType === 1) {
+          if (button.getAttribute("aria-pressed") === "true") days[i] = true;
+          i++;
+        }
+      }
+    }
+    try {
+      configs = appendNewAvailabilityDatesToJsonData(configs, days, when, untilDate);
+    }
+    catch (error) {
+      showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
+      return;
+    }
+
+    fetch(`/policorp/createavailabilities/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      mode: 'same-origin',
+      body: JSON.stringify(configs)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Create availabilities response');
+      console.log(data);
+      return getAvailabilitiesResponseErrors(data);
+    })
+    .then(errors => {
+      if (errors === 0) {
+        showMessage('Success', `You have successfully created an abailability configuration`);
+      } else {
+        showMessage('Error', `There were ${errors} errors creating the abailability configuration`);
+      }
+    });
+    handleLocationScheduleLinkClick();
   }
 }
 
@@ -306,30 +323,59 @@ function showMessage(title, message) {
 }
 
 function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime) {
-  let until = new Date(when);
-  until.setHours(untilTime.substring(0, 2));
-  until.setMinutes(untilTime.substring(3, 5));
-
-  if (until < when) throw "Invalid time settings";
 
   let json = [{
               "locationid": locationid,
               "taskid": taskid,
-              "when": when.toISOString().replace("Z", "+00:00")
+              "when": encodeDateTime(when)
           }];
 
-  newWhenBegin = addMinutes(when, taskduration);
-  newWhenEnd = addMinutes(newWhenBegin, taskduration);
+  if (untilTime !== null) {
+    let until = new Date(when);
+    until.setHours(untilTime.substring(0, 2));
+    until.setMinutes(untilTime.substring(3, 5));
 
-  while (newWhenEnd <= until) {
-    json.push({
-              "locationid": locationid,
-              "taskid": taskid,
-              "when": newWhenBegin.toISOString().replace("Z", "+00:00")
-              });
+    if (until < when) throw "Invalid time settings";
 
-    newWhenBegin = addMinutes(newWhenBegin, taskduration);
+    newWhenBegin = addMinutes(when, taskduration);
     newWhenEnd = addMinutes(newWhenBegin, taskduration);
+
+    while (newWhenEnd <= until) {
+      json.push({
+                "locationid": locationid,
+                "taskid": taskid,
+                "when": encodeDateTime(newWhenBegin)
+                });
+
+      newWhenBegin = addMinutes(newWhenBegin, taskduration);
+      newWhenEnd = addMinutes(newWhenBegin, taskduration);
+    }
+  }
+
+  return json;
+}
+
+function appendNewAvailabilityDatesToJsonData(initialAvailabilityJson, days, fromDate, untilDate) {
+
+  let json = JSON.parse(JSON.stringify(initialAvailabilityJson));
+  let currentDate = new Date();
+  currentDate.setDate(fromDate.getDate() + 1);
+  currentDate.setHours(0, 0, 0, 0);
+  while (currentDate <= untilDate) {
+    if (days[currentDate.getDay()] === true) {
+      initialAvailabilityJson.forEach(a => {
+        let newWhen = decodeDateTime(a["when"]);
+        newWhen.setDate(currentDate.getDate());
+        newWhen.setMonth(currentDate.getMonth());
+        newWhen.setFullYear(currentDate.getFullYear());
+        json.push({
+                  "locationid": a["locationid"],
+                  "taskid": a["taskid"],
+                  "when": encodeDateTime(newWhen)
+                  });
+      });
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return json;
@@ -341,4 +387,12 @@ function getAvailabilitiesResponseErrors(response) {
   response.forEach(r => { if (r.error) { errorCount++; } });
 
   return errorCount;
+}
+
+function encodeDateTime(datetime) {
+  return datetime.toISOString().replace("Z", "+00:00");
+}
+
+function decodeDateTime(datetimestring) {
+  return new Date(datetimestring.replace("+00:00", "Z"));
 }

@@ -77,7 +77,10 @@ Unauthorized
       </div>
     </div>
   </div>
-  <div id="configDatepickerContainer">
+  <div id="configDatepickerContainer" class="d-flex flex-row align-items-center">
+    <label class="form-check-label" for="configDatepicker">
+      On:&nbsp;
+    </label>
     <input id="configDatepicker" width="276" />
     <script>
       let configDate = new Date();
@@ -88,7 +91,10 @@ Unauthorized
       });
     </script>
   </div>
-  <div id="configTimepickerContainer">
+  <div id="configTimepickerContainer" class="d-flex flex-row align-items-center">
+    <label class="form-check-label" for="configTimepicker">
+      At:&nbsp;
+    </label>
     <input id="configTimepicker" width="276" />
     <script>
       var $configTimepicker = $('#configTimepicker').timepicker({
@@ -99,19 +105,52 @@ Unauthorized
       });
     </script>
   </div>
-  <div class="form-check" id="configRepeatCheckContainer">
-    <input class="form-check-input" type="checkbox" value="" id="configRepeatUntilCheck">
-    <label class="form-check-label" for="defaultCheck1">
-      Repeat until
+  <div class="form-check" id="configExtendCheckContainer">
+    <input class="form-check-input" type="checkbox" value="" id="configExtendCheck">
+    <label class="form-check-label" for="configExtendCheck">
+      Extend
     </label>
   </div>
-  <div id="configUntilTimepickerContainer">
+  <div id="configUntilTimepickerContainer" class="d-none flex-row align-items-center">
+    <label class="form-check-label" for="configUntilTimepicker">
+      Until:&nbsp;
+    </label>
     <input id="configUntilTimepicker" width="276" />
     <script>
       var $configUntilTimepicker = $('#configUntilTimepicker').timepicker({
         uiLibrary: 'bootstrap4',
         mode: '24hr',
         value: '18:00',
+        width: 180
+      });
+    </script>
+  </div>
+  <div class="form-check" id="configRepeatDaysCheckContainer">
+    <input class="form-check-input" type="checkbox" value="" id="configRepeatDaysCheck">
+    <label class="form-check-label" for="configRepeatDaysCheck">
+      Repeat on days
+    </label>
+  </div>
+  <div class="btn-group d-none flex-wrap" role="group" id="daysOfWeekContainer">
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Sunday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Monday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Tuesday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Wednesday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Thursday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Friday</button>
+    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">Saturday</button>
+  </div>
+  <div id="configUntilDatepickerContainer" class="d-none flex-row align-items-center">
+    <label class="form-check-label" for="configUntilDatepicker">
+      Finish:&nbsp;
+    </label>
+    <input id="configUntilDatepicker" width="276" />
+    <script>
+      let configUntilDate = new Date();
+      configUntilDate.setDate(configUntilDate.getDate()+1);
+      var $configUntilDatepicker = $('#configUntilDatepicker').datepicker({
+        uiLibrary: 'bootstrap4',
+        value: `${configUntilDate.getMonth() + 1}/${configUntilDate.getDate()}/${configUntilDate.getFullYear()}`,
         width: 180
       });
     </script>
