@@ -90,6 +90,7 @@ function handleConfigTaskSelectionClick(event) {
   const dropdownConfigTaskButton = document.querySelector('#configTaskDropdownButton');
   dropdownConfigTaskButton.innerHTML = event.currentTarget.innerHTML;
   dropdownConfigTaskButton.dataset.taskid = event.currentTarget.dataset.taskid;
+  dropdownConfigTaskButton.dataset.duration = event.currentTarget.dataset.duration;
 
   evaluateCreateSingleAvailabilityState();
 
@@ -114,6 +115,7 @@ function handleCreateAvailabilityClick() {
 
     const locationid = document.querySelector('#configLocationDropdownButton').dataset.locationid;
     const taskid = document.querySelector('#configTaskDropdownButton').dataset.taskid;
+    const taskduration = document.querySelector('#configTaskDropdownButton').dataset.duration;
     let when = new Date(`${$configDatepicker.value()}`);
     when.setHours($configTimepicker.value().substring(0, 2));
     when.setMinutes($configTimepicker.value().substring(3, 5));
@@ -122,33 +124,60 @@ function handleCreateAvailabilityClick() {
     let untilTime = null;
     if (repeatUntilCheck.checked == true){
       untilTime = $configUntilTimepicker.value();
-      const configs = createAvailabilitiesJsonData(locationid, taskid, when, untilTime);
+      let configs;
+      try {
+        configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime);
+      }
+      catch (error) {
+        showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
+        return;
+      }
+      fetch(`/policorp/createavailabilities/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        mode: 'same-origin',
+        body: JSON.stringify(configs)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Create availabilities response');
+        console.log(data);
+        return getAvailabilitiesResponseErrors(data);
+      })
+      .then(errors => {
+        if (errors === 0) {
+          showMessage('Success', `You have successfully created an abailability configuration`);
+        } else {
+          showMessage('Error', `There were ${errors} errors creating the abailability configuration`);
+        }
+      })
 
-      const result = postAvailabilities(configs);
     } else {
       fetch(`/policorp/createavailabilitysingle/`, {
         method: 'POST',
         headers: { 'X-CSRFToken': csrftoken },
         mode: 'same-origin',
-        body: return JSON.stringify({
+        body: JSON.stringify({
                         locationid: locationid,
                         taskid: taskid,
                         when: when.toISOString().replace("Z", "+00:00")
                         })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.error) {
-              showMessage('Success', `You have successfully created an abailability configuration`);
-            } else {
-              showMessage('Error', `There was an error creating the abailability configuration`);
-              console.error(data);
-            }
-
-            handleLocationScheduleLinkClick();
-            });
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Create availability response');
+        console.log(data);
+        if (!data.error) {
+          showMessage('Success', `You have successfully created an abailability configuration`);
+        } else {
+          showMessage('Error', `There was an error creating the abailability configuration`);
+          console.error(data);
         }
+
+        handleLocationScheduleLinkClick();
+      });
     }
+  }
 }
 
 // ***************************
@@ -190,6 +219,7 @@ function populateTasks(dropDown) {
         option.classList.add('dropdown-item');
         option.id = 'taskOption';
         option.dataset.taskid = task.id;
+        option.dataset.duration = task.duration;
         option.innerHTML = `${task.name} (${toFormattedDuration(task.duration)})`;
         option.addEventListener('click', (event) => handleConfigTaskSelectionClick(event));
 
@@ -254,6 +284,10 @@ function toFormattedDuration(duration) {
   }
 }
 
+function addMinutes(dt, minutes) {
+    return new Date(dt.getTime() + minutes*60000);
+}
+
 function evaluateCreateSingleAvailabilityState() {
   const location = document.querySelector('#configLocationDropdownButton');
   const task = document.querySelector('#configTaskDropdownButton');
@@ -271,11 +305,40 @@ function showMessage(title, message) {
   $("#messageModal").modal('show');
 }
 
-function createAvailabilitiesJsonData(locationid, taskid, when, untilTime) {
-  if (untilTime === null) {
+function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime) {
+  let until = new Date(when);
+  until.setHours(untilTime.substring(0, 2));
+  until.setMinutes(untilTime.substring(3, 5));
 
+  if (until < when) throw "Invalid time settings";
+
+  let json = [{
+              "locationid": locationid,
+              "taskid": taskid,
+              "when": when.toISOString().replace("Z", "+00:00")
+          }];
+
+  newWhenBegin = addMinutes(when, taskduration);
+  newWhenEnd = addMinutes(newWhenBegin, taskduration);
+
+  while (newWhenEnd <= until) {
+    json.push({
+              "locationid": locationid,
+              "taskid": taskid,
+              "when": newWhenBegin.toISOString().replace("Z", "+00:00")
+              });
+
+    newWhenBegin = addMinutes(newWhenBegin, taskduration);
+    newWhenEnd = addMinutes(newWhenBegin, taskduration);
   }
+
+  return json;
 }
 
-function postAvailabilities(data) {
+function getAvailabilitiesResponseErrors(response) {
+  let errorCount = 0;
+
+  response.forEach(r => { if (r.error) { errorCount++; } });
+
+  return errorCount;
 }

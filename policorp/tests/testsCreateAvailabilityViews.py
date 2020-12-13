@@ -134,7 +134,7 @@ class TestCreateAvailabilityViews(TestCase):
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('createavailabilities')
-    def test_view_createavailabilities_returns_401_when_not_supervising_location(self):
+    def test_view_createavailabilities_returns_201_when_not_supervising_1_location(self):
         """ GIVEN ; WHEN POST /policorp/createavailabilities with json content (location 1; task 1; (today + 1) at 14:00 utc time) + (location 2; task 1; (today + 1) at 16:00 utc time), not supervising location 2; THEN code 401 should be returned """
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         location = Location.objects.get(pk=1).assign_supervisor(user)
