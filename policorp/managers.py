@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
+from datetime import datetime
+from django.utils import timezone
 
 class AvailabilityManager(models.Manager):
 
@@ -12,6 +14,14 @@ class AvailabilityManager(models.Manager):
 
     def get_all_by_task(self, task_name):
         return self.get_all().filter(what__name=task_name).filter(booked=False).order_by("when")
+
+    def get_next_by_task_and_date(self, task_name, date):
+        now = datetime.now(timezone.utc)
+        if now.date() == date.date():
+            currentTime = now.time()
+            return self.get_all_by_task(task_name).filter(when__date=date).filter(when__time__gte=currentTime)
+        else:
+            return self.get_all_by_task(task_name).filter(when__date=date)
 
 class LocationManager(models.Manager):
 

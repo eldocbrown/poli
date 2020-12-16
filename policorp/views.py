@@ -54,7 +54,7 @@ def availabilities(request, taskid):
         return JsonResponse({"error": "GET request required."}, status=400)
 
     t = Task.objects.get(pk=taskid)
-    availabilities = Availability.objects.get_all_by_task(t.name)
+    availabilities = Availability.objects.get_next_by_task_and_date(t.name, datetime.now(timezone.utc))
 
     return JsonResponse([a.json() for a in availabilities], status=200, safe=False)
 
