@@ -58,6 +58,16 @@ def availabilities(request, taskid):
 
     return JsonResponse([a.json() for a in availabilities], status=200, safe=False)
 
+def dailyavailabilities(request, taskid, date):
+
+    # Only GET requests allowed
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+
+    t = Task.objects.get(pk=taskid)
+    availabilities = Availability.objects.get_next_by_task_and_date(t.name, datetime.strptime(date, "%Y%m%d"))
+
+    return JsonResponse([a.json() for a in availabilities], status=200, safe=False)
 
 def book(request, availabilityid):
 

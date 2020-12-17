@@ -89,12 +89,65 @@ class TestViews(TestCase):
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('availabilities')
-    def test_view_tasks_post_not_allowed(self):
+    def test_view_availabilities_post_not_allowed(self):
         """ GIVEN ; WHEN POST /policorp/availabilities/1; THEN code 400 is returned """
         # Create an instance of a POST request.
         request = self.factory.post(reverse('policorp:availabilities', kwargs={'taskid': 1}))
         response = availabilities(request, 1)
         self.assertEqual(response.status_code, 400)
+
+    @tag('dailyavailabilities')
+    def test_view_dailyavailabilities_return_200(self):
+        """ GIVEN ; WHEN GET /policorp/dailyavailabilities/1/20200101 ; THEN code 200 is returned """
+        # Create an instance of a GET request.
+        request = self.factory.get(reverse('policorp:dailyavailabilities', kwargs={'taskid': 1, 'date': '20200101'}))
+        response = dailyavailabilities(request, 1, '20200101')
+        self.assertEqual(response.status_code, 200)
+
+    @tag('dailyavailabilities')
+    def test_view_dailyavailabilities_post_not_allowed(self):
+        """ GIVEN ; WHEN POST /policorp/dailyavailabilities/1/20200101; THEN code 400 is returned """
+        # Create an instance of a POST request.
+        request = self.factory.post(reverse('policorp:dailyavailabilities', kwargs={'taskid': 1, 'date': '20200101'}))
+        response = dailyavailabilities(request, 1, '20200101')
+        self.assertEqual(response.status_code, 400)
+
+    @tag('dailyavailabilities')
+    def test_view_dailyavailabilities_return_1_availability_today(self):
+        """ GIVEN 2 availabilities for task 3, location 1 for today, now + 30min and now - 60min; WHEN GET /policorp/availabilities/1/[today] ; THEN availabiliy 1 json availabilities is returned, now + 30 """
+        now = datetime.now(timezone.utc)
+        l1 = Location.objects.get(pk=1)
+        task_name = "Device Installation for Trucks"
+        t1 = Task.objects.create_task(task_name, 120)
+        a1 = Availability.objects.create_availability(now + timedelta(minutes = 30), l1, t1)
+        a2 = Availability.objects.create_availability(now + timedelta(minutes = -60), l1, t1)
+
+        expected_json = [a1.json()]
+
+        # Create an instance of a GET request.
+        datestr = now.date().isoformat().replace('-','')
+        request = self.factory.get(reverse('policorp:dailyavailabilities', kwargs={'taskid': t1.id, 'date': datestr}))
+        response = dailyavailabilities(request, t1.id, datestr)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('dailyavailabilities')
+    def test_view_dailyavailabilities_return_2_availabilities(self):
+        """ GIVEN 2 availabilities for task 3; WHEN GET /policorp/dailyavailabilities/3/[tomorrow] ; THEN 2 json availabilities are returned """
+        now = datetime.now(timezone.utc)
+        tomorrow = now + timedelta(days=1)
+        l1 = Location.objects.get(pk=1)
+        task_name = "Device Installation for Trucks"
+        t1 = Task.objects.create_task(task_name, 120)
+        a1 = Availability.objects.create_availability(tomorrow + timedelta(minutes = 60), l1, t1)
+        a2 = Availability.objects.create_availability(tomorrow + timedelta(minutes = 30), l1, t1)
+
+        expected_json = [a2.json(), a1.json()]
+
+        # Create an instance of a GET request.
+        datestr = tomorrow.date().isoformat().replace('-','')
+        request = self.factory.get(reverse('policorp:dailyavailabilities', kwargs={'taskid': t1.id, 'date': datestr}))
+        response = dailyavailabilities(request, t1.id, datestr)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('book')
     def test_view_book(self):

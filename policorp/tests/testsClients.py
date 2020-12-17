@@ -21,6 +21,13 @@ class TestClient(TestCase):
         response = c.get(reverse('policorp:availabilities', kwargs={'taskid': 1}))
         self.assertEqual(response.status_code, 200)
 
+    def test_dailyavailabilities_view_return_200(self):
+        """*** Daily Availabilities view get request needs to be with response 200 ***"""
+        c = Client()
+        datestr = datetime.now(timezone.utc).date().isoformat().replace('-','')
+        response = c.get(reverse('policorp:dailyavailabilities', kwargs={'taskid': 1, 'date': datestr}))
+        self.assertEqual(response.status_code, 200)
+
     def test_book_view_return_201(self):
         """*** Booking an availability with a post request should return 201 ****"""
         c = Client()
@@ -57,7 +64,7 @@ class TestClient(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_locationschedule_view_return_200(self):
-        """*** Location schedule get request needs to be woth response 200 ***"""
+        """*** Location schedule get request needs to be with response 200 ***"""
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         Location.objects.get(pk=1).assign_supervisor(user)
         c = Client()
