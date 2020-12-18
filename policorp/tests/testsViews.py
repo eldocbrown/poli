@@ -89,6 +89,23 @@ class TestViews(TestCase):
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('availabilities')
+    def test_view_availabilities_return_1_availability_tomorrow(self):
+        """ GIVEN 2 availabilities for task 3, location 1 for today, now - 30min and tomorrow - 60min; WHEN GET /policorp/availabilities/1 ; THEN availabiliy 1 json availabilities is returned, tomorrow - 60 """
+        now = datetime.now(timezone.utc)
+        l1 = Location.objects.get(pk=1)
+        task_name = "Device Installation for Trucks"
+        t1 = Task.objects.create_task(task_name, 120)
+        a1 = Availability.objects.create_availability(now + timedelta(minutes = -30), l1, t1)
+        a2 = Availability.objects.create_availability(now + timedelta(days=1,minutes = -60), l1, t1)
+
+        expected_json = [a2.json()]
+
+        # Create an instance of a GET request.
+        request = self.factory.get(reverse('policorp:availabilities', kwargs={'taskid': t1.id}))
+        response = availabilities(request, t1.id)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('availabilities')
     def test_view_availabilities_post_not_allowed(self):
         """ GIVEN ; WHEN POST /policorp/availabilities/1; THEN code 400 is returned """
         # Create an instance of a POST request.

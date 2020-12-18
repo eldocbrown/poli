@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 
 class AvailabilityManager(models.Manager):
@@ -13,15 +13,30 @@ class AvailabilityManager(models.Manager):
         return super().get_queryset().filter(booked=False).order_by("when")
 
     def get_all_by_task(self, task_name):
-        return self.get_all().filter(what__name=task_name).filter(booked=False).order_by("when")
+        return self.get_all().filter(what__name=task_name).filter(booked=False)
 
     def get_next_by_task_and_date(self, task_name, date):
         now = datetime.now(timezone.utc)
-        if now.date() == date.date():
-            currentTime = now.time()
-            return self.get_all_by_task(task_name).filter(when__date=date).filter(when__time__gte=currentTime)
+        last = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+        if date is not None:
+            if now.date() == date.date():
+                return self.get_all_by_task(task_name).filter(when__range=(now, last))
+            else:
+                return self.get_all_by_task(task_name).filter(when__date=date.date())
         else:
-            return self.get_all_by_task(task_name).filter(when__date=date)
+            # Get today's availabilities
+            todaysNextAvailabilities = self.get_next_by_task_and_date(task_name, now)
+            # If there are any availabilities today, return them
+            if len(todaysNextAvailabilities) != 0:
+                return todaysNextAvailabilities
+            else:
+                # Get first availability as from tomorrow
+                nextAvailability = self.get_all_by_task(task_name).filter(when__date__gt=now.date()).first()
+                if nextAvailability is not None:
+                    # Return availabilities on first date available
+                    return self.get_all_by_task(task_name).filter(when__date=nextAvailability.when.date())
+                else:
+                    return self.none()
 
 class LocationManager(models.Manager):
 
