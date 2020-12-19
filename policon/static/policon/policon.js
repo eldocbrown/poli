@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  if (username !==   "") document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
+  if (username !== "") document.querySelector('#my-schedule-link').addEventListener('click', () => loadMySchedule());
+
+  document.querySelector('#lookupAvailabilitiesButton').addEventListener('click', (event) => handleSearchClick(event));
 
   loadAvailabilities();
 
@@ -12,24 +14,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function handleTaskSelectionClick(event) {
 
-  const taskid = event.currentTarget.dataset.taskid;
+  const dropdownLocationButton = document.querySelector('#dropdownTaskButton');
+  dropdownTaskButton.innerHTML = event.currentTarget.innerHTML;
+  dropdownTaskButton.dataset.taskid = event.currentTarget.dataset.taskid;
 
-  document.querySelector('#dropdownTaskButton').innerHTML = event.currentTarget.innerHTML;
+  const lookupAvailabilitiesButton = document.querySelector('#lookupAvailabilitiesButton');
+  lookupAvailabilitiesButton.style.cursor = 'pointer';
+  lookupAvailabilitiesButton.disabled = false;
 
-  fetch(`/policorp/availabilities/${taskid}`)
-  .then(response => response.json())
-  .then(data => {
-      const list = document.querySelector('#availabilityList');
-      clearNode(list);
-      const listHeading = document.createElement('h5');
-      listHeading.innerHTML = 'Available Openings'
-      list.append(listHeading);
+}
 
-      data.forEach( (availabilityData)  => {
-        element = createAvailability(availabilityData, false);
-        document.querySelector('#availabilityList').append(element);
-      });
-  })
+function handleSearchClick(event) {
+
+  function constructUrlAvailabilities(taskid, date) {
+    if (date === null) {
+      return `/policorp/availabilities/${taskid}`;
+    } else {
+      return `/policorp/dailyavailabilities/${taskid}/${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
+    }
+  }
+
+  function search(date) {
+
+    const url = constructUrlAvailabilities(dropdownTaskButton.dataset.taskid, date);
+
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const list = document.querySelector('#availabilityList');
+        clearNode(list);
+        const listHeading = document.createElement('h5');
+        if (data.length === 0) {listHeading.innerHTML = 'No Available Openings';}
+        else { listHeading.innerHTML = 'Available Openings';}
+        list.append(listHeading);
+        data.forEach( (availabilityData)  => {
+          element = createAvailability(availabilityData, false);
+          document.querySelector('#availabilityList').append(element);
+        });
+    });
+
+  }
+
+  /*** handleSearchClick ***/
+
+  dropdownTaskButton = document.querySelector('#dropdownTaskButton');
+
+  let date = null;
+  datevalue = $datepicker.value();
+  if (datevalue !== "") {
+    date = new Date(datevalue);
+    now = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+    if (date <= yesterday) {
+      showMessage('Error', `Allowed dates are from today's date forward`);
+      return;
+    } else {
+      search(date);
+      return;
+    }
+  }
+
+  search(date);
+
+
 }
 
 function handleBookClick(event) {
@@ -101,7 +149,7 @@ function loadAvailabilities() {
 
   populateTasks();
 
-  document.querySelector('#availabilitySelector').style.display = 'block';
+  document.querySelector('#availabilities').style.display = 'block';
   document.querySelector('#mySchedule').style.display = 'none';
 }
 
@@ -115,7 +163,7 @@ function loadMySchedule() {
 
   populateSchedule();
 
-  document.querySelector('#availabilitySelector').style.display = 'none';
+  document.querySelector('#availabilities').style.display = 'none';
   sectionContent.style.display = 'block';
 }
 
