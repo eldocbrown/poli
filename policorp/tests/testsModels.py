@@ -384,19 +384,57 @@ class TestAvailability(TestCase):
         """ GIVEN 3 availabilities at Cordoba, [now - 30min],[tomorrow + 60min],[day after tomorrow + 60min]; WHEN requesting next availabilities for "Device Installation" without a date; THEN 1 availability should be returned tomorrow + 60min] """
 
         now = datetime.now(timezone.utc)
-        loc_name = "Cordoba"
-        l1 = Location.objects.create_location(loc_name)
-        task_name = "Device Installation"
-        t1 = Task.objects.create_task(task_name, 60)
+        l1 = Location.objects.create_location("Cordoba")
+        t1 = Task.objects.create_task("Device Installation", 60)
         a1 = Availability.objects.create_availability(now + timedelta(minutes = -30), l1, t1)
         a2 = Availability.objects.create_availability(now + timedelta(days=1, minutes = 60), l1, t1)
         a2 = Availability.objects.create_availability(now + timedelta(days=2, minutes = 60), l1, t1)
-        result = Availability.objects.get_next_by_task_and_date(task_name, None)
+        result = Availability.objects.get_next_by_task_and_date(t1.name, None)
         self.assertEqual(len(result), 1)
         availability = result[0]
         self.assertEqual(availability.when, now + timedelta(days=1, minutes = 60))
-        self.assertEqual(availability.where.name, loc_name)
-        self.assertEqual(availability.what.name, task_name)
+        self.assertEqual(availability.where.name, l1.name)
+        self.assertEqual(availability.what.name, t1.name)
+
+    def test_get_availability_all_by_location_and_date_tomorrow(self):
+        """ GIVEN 1 availability at Cordoba, tomorrow, for "Device Installation", WHEN requesting all availabilities for "Device Installation" for tomorrow at Córdoba, THEN 1 availability should be returned at Cordoba, tomorrow for "Device Installation" """
+
+        now = datetime.now(timezone.utc)
+        tomorrow = now + timedelta(days = 1)
+        l1 = Location.objects.create_location("Cordoba")
+        t1 = Task.objects.create_task("Device Installation", 30)
+        a1 = Availability.objects.create_availability(tomorrow, l1, t1)
+        availabilities = Availability.objects.get_all_by_location_and_date(l1, tomorrow)
+        self.assertEqual(len(availabilities), 1)
+        availability = availabilities[0]
+        self.assertEqual(availability.when, tomorrow)
+        self.assertEqual(availability.where.name, l1.name)
+        self.assertEqual(availability.what.name, t1.name)
+
+    def test_get_availability_all_by_location_and_date_anotherdate(self):
+        """ GIVEN 1 availability at Cordoba, tomorrow, for "Device Installation", WHEN requesting all availabilities for "Device Installation" for today at Córdoba, THEN 0 availabilities should be returned """
+
+        now = datetime.now(timezone.utc)
+        tomorrow = now + timedelta(days = 1)
+        loc_name = "Cordoba"
+        l1 = Location.objects.create_location(loc_name)
+        task_name = "Device Installation"
+        t1 = Task.objects.create_task(task_name, 30)
+        a1 = Availability.objects.create_availability(tomorrow, l1, t1)
+        availabilities = Availability.objects.get_all_by_location_and_date(l1, now)
+        self.assertEqual(len(availabilities), 0)
+
+    def test_get_availability_all_by_location_and_date_tomorrow_elsewhere(self):
+        """ GIVEN 1 availability at Cordoba, tomorrow, for "Device Installation", WHEN requesting all availabilities for "Device Installation" for today at Córdoba, THEN 0 availabilities should be returned """
+
+        now = datetime.now(timezone.utc)
+        tomorrow = now + timedelta(days = 1)
+        l1 = Location.objects.create_location("Cordoba")
+        l2 = Location.objects.create_location("Rosario")
+        t1 = Task.objects.create_task("Device Installation", 30)
+        a1 = Availability.objects.create_availability(tomorrow, l2, t1)
+        availabilities = Availability.objects.get_all_by_location_and_date(l1, tomorrow)
+        self.assertEqual(len(availabilities), 0)
 
 class TestLocation(TestCase):
 

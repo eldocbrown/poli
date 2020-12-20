@@ -13,7 +13,7 @@ class AvailabilityManager(models.Manager):
         return super().get_queryset().filter(booked=False).order_by("when")
 
     def get_all_by_task(self, task_name):
-        return self.get_all().filter(what__name=task_name).filter(booked=False)
+        return self.get_all().filter(what__name=task_name)
 
     def get_next_by_task_and_date(self, task_name, date):
         now = datetime.now(timezone.utc)
@@ -37,6 +37,9 @@ class AvailabilityManager(models.Manager):
                     return self.get_all_by_task(task_name).filter(when__date=nextAvailability.when.date())
                 else:
                     return self.none()
+
+    def get_all_by_location_and_date(self, location, date):
+        return self.get_all().filter(where=location).filter(when__date=date.date())
 
 class LocationManager(models.Manager):
 

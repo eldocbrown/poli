@@ -490,5 +490,24 @@ class TestViews(TestCase):
         expected_data = [Booking.objects.get(id=booking4.id).json(), Booking.objects.get(id=booking5.id).json(), Booking.objects.get(id=booking6.id).json()]
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
+    @tag('locationschedule')
+    def test_view_locationschedule_return_full_schedule(self):
+        """ GIVEN 3 availabilities for 2021-01-04 at location 2, 1 booked; WHEN requesting schedule for 2021-01-04 at location 2; 1 booking and 2 availabilities should be returned """
+        request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 2, 'date': '20210104'}))
+        user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
+        request.user = user
+        Location.objects.get(pk=2).assign_supervisor(user)
+        booker4 = aux.createUser('bar', 'bar@example.com', 'example')
+        booking4 = Booking.objects.book(Availability.objects.get(pk=4), booker4)
+
+        expected_data = [
+                            {"booking": Booking.objects.get(id=booking4.id).json()},
+                            {"availability": Availability.objects.get(pk=5).json()},
+                            {"availability": Availability.objects.get(pk=6).json()}
+                        ]
+
+        response = locationschedule(request, 2, '20210104')
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
 if __name__ == "__main__":
     unittest.main()
