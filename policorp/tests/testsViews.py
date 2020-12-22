@@ -7,6 +7,7 @@ from policorp.models import Availability, Location, Task, Booking
 from policorp.views import *
 from policorp.tests import aux
 from datetime import datetime, timedelta
+import logging
 
 class TestViews(TestCase):
 
@@ -14,6 +15,8 @@ class TestViews(TestCase):
 
     task1 = {'id': 1, 'name': 'Device Installation', 'duration': 120}
     task2 = {'id': 2, 'name': 'Repair', 'duration': 60}
+
+    maxDiff = None
 
     def setUp(self):
         # Every test needs access to the request factory.
@@ -453,10 +456,17 @@ class TestViews(TestCase):
         request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 1, 'date': '20210102'}))
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         request.user = user
-        Location.objects.get(pk=1).assign_supervisor(user)
+        location = Location.objects.get(pk=1)
+        location.assign_supervisor(user)
         booking = Booking.objects.book(Availability.objects.get(pk=1), aux.createUser('bar', 'bar@example.com', 'example'))
         response = locationschedule(request, 1, '20210102')
-        expected_data = [Booking.objects.get(id=booking.id).json()]
+        expected_data = {
+                            'date': '2021-01-02',
+                            'location': location.json(),
+                            'schedule': [
+                                            {"booking": Booking.objects.get(id=booking.id).json()},
+                                        ]
+                        }
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
     @tag('locationschedule')
@@ -465,12 +475,19 @@ class TestViews(TestCase):
         request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 3, 'date': '20210102'}))
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         request.user = user
-        Location.objects.get(pk=3).assign_supervisor(user)
+        location = Location.objects.get(pk=3)
+        location.assign_supervisor(user)
         booker = aux.createUser('bar', 'bar@example.com', 'example')
         booking3 = Booking.objects.book(Availability.objects.get(pk=3), booker)
         booking2 = Booking.objects.book(Availability.objects.get(pk=2), booker)
         response = locationschedule(request, 3, '20210102')
-        expected_data = [Booking.objects.get(id=booking3.id).json()]
+        expected_data = {
+                            'date': '2021-01-02',
+                            'location': location.json(),
+                            'schedule': [
+                                            {"booking": Booking.objects.get(id=booking3.id).json()},
+                                        ]
+                        }
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
     @tag('locationschedule')
@@ -479,7 +496,8 @@ class TestViews(TestCase):
         request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 2, 'date': '20210104'}))
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         request.user = user
-        Location.objects.get(pk=2).assign_supervisor(user)
+        location = Location.objects.get(pk=2)
+        location.assign_supervisor(user)
         booker4 = aux.createUser('bar', 'bar@example.com', 'example')
         booker5 = aux.createUser('zoe', 'zoe@example.com', 'example')
         booker6 = aux.createUser('kari', 'kari@example.com', 'example')
@@ -488,6 +506,15 @@ class TestViews(TestCase):
         booking4 = Booking.objects.book(Availability.objects.get(pk=4), booker4)
         response = locationschedule(request, 2, '20210104')
         expected_data = [Booking.objects.get(id=booking4.id).json(), Booking.objects.get(id=booking5.id).json(), Booking.objects.get(id=booking6.id).json()]
+        expected_data = {
+                            'date': '2021-01-04',
+                            'location': location.json(),
+                            'schedule': [
+                                            {"booking": Booking.objects.get(id=booking4.id).json()},
+                                            {"booking": Booking.objects.get(id=booking5.id).json()},
+                                            {"booking": Booking.objects.get(id=booking6.id).json()},
+                                        ]
+                        }
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
     @tag('locationschedule')
@@ -496,17 +523,23 @@ class TestViews(TestCase):
         request = self.factory.get(reverse('policorp:locationschedule', kwargs={'locationid': 2, 'date': '20210104'}))
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         request.user = user
-        Location.objects.get(pk=2).assign_supervisor(user)
+        location = Location.objects.get(pk=2)
+        location.assign_supervisor(user)
         booker4 = aux.createUser('bar', 'bar@example.com', 'example')
         booking4 = Booking.objects.book(Availability.objects.get(pk=4), booker4)
 
-        expected_data = [
-                            {"booking": Booking.objects.get(id=booking4.id).json()},
-                            {"availability": Availability.objects.get(pk=5).json()},
-                            {"availability": Availability.objects.get(pk=6).json()}
-                        ]
+        expected_data = {
+                            'date': '2021-01-04',
+                            'location': location.json(),
+                            'schedule': [
+                                            {"booking": Booking.objects.get(id=booking4.id).json()},
+                                            {"availability": Availability.objects.get(pk=5).json()},
+                                            {"availability": Availability.objects.get(pk=6).json()}
+                                        ]
+                        }
 
         response = locationschedule(request, 2, '20210104')
+        logging.debug(str(response.content, encoding='utf8'))
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
 if __name__ == "__main__":

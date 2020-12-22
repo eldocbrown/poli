@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from .models import Task, Availability, Booking, User, Location
+from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime, timezone
 import json
-
 import sys
-from django.core.serializers.json import DjangoJSONEncoder
+from .models import Task, Availability, Booking, User, Location
+from policorp.lib.schedule import Schedule
 
 # Create your views here.
 def index(request):
@@ -153,8 +153,11 @@ def locationschedule(request, locationid, date):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     dateObj = datetime.strptime(date, "%Y%m%d")
+    bookings = Booking.objects.get_by_location_and_date(location, dateObj)
+    availabilities = Availability.objects.get_all_by_location_and_date(location, dateObj)
+    sch = Schedule(dateObj.date(), location, availabilities, bookings)
 
-    return JsonResponse([b.json() for b in Booking.objects.get_by_location_and_date(location, dateObj)], safe=False)
+    return JsonResponse(sch.json(), safe=False)
 
 def createavailabilitysingle(request):
     # Only POST requests allowed
