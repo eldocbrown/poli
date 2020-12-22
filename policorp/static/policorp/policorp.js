@@ -51,7 +51,14 @@ function handleLocationSelectionClick(event) {
 function handleSearchClick(event) {
   dropdownLocationButton = document.querySelector('#dropdownLocationButton');
 
-  const date = new Date($datepicker.value());
+  let date = "";
+  if ($datepicker.value() !== "") {
+    date = new Date($datepicker.value());
+  }
+  else {
+    showMessage('Error', `Invalid Date`);
+    return;
+  }
 
   const url = constructUrlLocationSchedule(dropdownLocationButton.dataset.locationid, date);
 
@@ -63,11 +70,13 @@ function handleSearchClick(event) {
       const list = document.querySelector('#locationSchedule');
       clearNode(list);
       const listHeading = document.createElement('h5');
-      if (data.length === 0) {listHeading.innerHTML = 'No Bookings';}
-      else { listHeading.innerHTML = 'Bookings';}
+      if (data.schedule.length === 0) {listHeading.innerHTML = 'Empty Schedule';}
+      else { listHeading.innerHTML = 'Schedule';}
       list.append(listHeading);
-      data.forEach( (bookingData)  => {
-        element = createBooking(bookingData);
+      data.schedule.forEach( (scheduleItem)  => {
+        let element;
+        if (scheduleItem.booking) { element = createBooking(scheduleItem.booking); }
+        else if (scheduleItem.availability) { element = createAvailability(scheduleItem.availability); }
         list.append(element);
       });
       list.style.display = 'block';
@@ -254,7 +263,7 @@ function createBooking(data) {
   a = document.createElement('div');
   a.id = 'booking';
   a.dataset.bookingid = data.id;
-  a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center';
+  a.className = 'container p-3 my-3 border border-dark d-flex flex-row justify-content-between align-items-center bg-info';
 
   // create availability info container
   const aInfo = document.createElement('div');
@@ -275,6 +284,31 @@ function createBooking(data) {
   const whoContainer = document.createElement('div');
   whoContainer.innerHTML = data.username;
   aInfo.append(whoContainer);
+
+  return a;
+}
+
+function createAvailability(data) {
+  // create availability container
+  a = document.createElement('div');
+  a.id = 'availability';
+  a.dataset.availabilityid = data.id;
+  a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center';
+
+  // create availability info container
+  const aInfo = document.createElement('div');
+  aInfo.id = 'availabilityInfo';
+  a.append(aInfo);
+
+  // WHEN
+  const whenContainer = document.createElement('div');
+  whenContainer.innerHTML = toFormattedTime(new Date(Date.parse(data.when)));
+  aInfo.append(whenContainer);
+
+  // WHAT
+  const whatContainer = document.createElement('div');
+  whatContainer.innerHTML = data.what.name;
+  aInfo.append(whatContainer);
 
   return a;
 }
