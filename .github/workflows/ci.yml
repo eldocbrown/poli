@@ -16,4 +16,5 @@ jobs:
     - name: Run Django tests
       run: |
         pip3 install --user django
-        python3 manage.py test
+        python3 -m pip install coverage
+        coverage run --source='.' manage.py test
