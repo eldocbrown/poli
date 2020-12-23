@@ -91,7 +91,42 @@ function handleSearchClick(event) {
 }
 
 function handleScheduleFilterClick(event) {
-  console.log(`clicked: ${event.detail.type}`);
+
+  const filter = event.detail.type;
+  const all = document.querySelectorAll('#booking, #availability');
+  const bookings = document.querySelectorAll('#booking');
+  const availabilities = document.querySelectorAll('#availability');
+
+  switch(filter) {
+  case 'scheduleFilterAll':
+    all.forEach((item, i) => {
+      item.classList.remove('d-none');
+      item.classList.add('d-flex');
+    });
+    break;
+  case 'scheduleFilterBooked':
+    bookings.forEach((item, i) => {
+      item.classList.remove('d-none');
+      item.classList.add('d-flex');
+    });
+    availabilities.forEach((item, i) => {
+      item.classList.remove('d-flex');
+      item.classList.add('d-none');
+    });
+    break;
+  case 'scheduleFilterAvailable':
+    bookings.forEach((item, i) => {
+      item.classList.remove('d-flex');
+      item.classList.add('d-none');
+    });
+    availabilities.forEach((item, i) => {
+      item.classList.remove('d-none');
+      item.classList.add('d-flex');
+    });
+    break;
+  default:
+    console.log('Unrecognized schedule filter');
+  }
 }
 
 // *** CONFIGURATION EVENTS ***
