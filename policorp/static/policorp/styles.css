@@ -30,7 +30,8 @@
 #configUntilTimepickerContainer,
 #configRepeatDaysCheckContainer,
 #daysOfWeekContainer,
-#configUntilDatepickerContainer {
+#configUntilDatepickerContainer,
+#scheduleHeading {
   margin-top: 10px;
 }
 

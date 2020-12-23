@@ -71,7 +71,14 @@ function handleSearchClick(event) {
       clearNode(list);
       const listHeading = document.createElement('h5');
       if (data.schedule.length === 0) {listHeading.innerHTML = 'Empty Schedule';}
-      else { listHeading.innerHTML = 'Schedule';}
+      else {
+        const template = document.querySelector('#scheduleFilterTemplate');
+        const node = document.importNode(template.content, true);
+        list.append(node);
+        document.querySelector('#scheduleFilterContainer').addEventListener('schedule_filter', (event) => handleScheduleFilterClick(event));
+        listHeading.id = 'scheduleHeading';
+        listHeading.innerHTML = 'Schedule';
+      }
       list.append(listHeading);
       data.schedule.forEach( (scheduleItem)  => {
         let element;
@@ -81,6 +88,10 @@ function handleSearchClick(event) {
       });
       list.style.display = 'block';
   })
+}
+
+function handleScheduleFilterClick(event) {
+  console.log(`clicked: ${event.detail.type}`);
 }
 
 // *** CONFIGURATION EVENTS ***
@@ -272,6 +283,7 @@ function createBooking(data) {
 
   // WHEN
   const whenContainer = document.createElement('div');
+  whenContainer.className = 'font-weight-bold'
   whenContainer.innerHTML = toFormattedTime(new Date(Date.parse(data.availability.when)));
   aInfo.append(whenContainer);
 

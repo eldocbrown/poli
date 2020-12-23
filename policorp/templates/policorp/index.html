@@ -185,6 +185,33 @@ Unauthorized
   </div>
 </div>
 
-
+<!-- Schedule Data Filter Template-->
+<template id="scheduleFilterTemplate">
+  <script>
+    document.querySelector('#scheduleFilterContainer').addEventListener('click', (event) => {
+      if (event.target.id.startsWith('scheduleFilter')) {
+        document.querySelector('#scheduleFilterContainer').dispatchEvent(
+          new CustomEvent('schedule_filter', {  bubbles: true,
+                                                detail: {
+                                                          type: event.target.id
+                                                        }
+                                              }
+          )
+        ); //Trigger/Dispatch the event
+      }
+    });
+  </script>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons" id="scheduleFilterContainer">
+    <label class="btn btn-outline-secondary active">
+      <input type="radio" name="options" id="scheduleFilterAll" autocomplete="off" checked> All
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="options" id="scheduleFilterBooked" autocomplete="off"> Booked
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="options" id="scheduleFilterAvailable" autocomplete="off"> Available
+    </label>
+  </div>
+</template>
 
 {% endblock %}
