@@ -18,11 +18,11 @@ jobs:
         pip3 install --user django
         python3 -m pip install coverage
         coverage run --source='.' manage.py test
-        coverage html -d docs/coverage --fail-under=90
+        coverage html -d coverageReport --fail-under=90
     - name: Deploy report page
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/coverage
+        publish_dir: ./coverageReport
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
