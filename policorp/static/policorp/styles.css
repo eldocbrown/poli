@@ -34,7 +34,15 @@
   display: none;
 }
 
-#locationSelector, #datepickerContainer , #lookupBookingsButton {
+#locationSelector, #datepickerContainer , #lookupBookingsButton, #locationDailyOccupancyChart {
   margin-right: 10px;
   margin-bottom: 10px;
+}
+
+#dailyOccupancyBarChart {
+  height: 100px;
+}
+
+#locationDailyOccupancyChart {
+  height: 120px;
 }

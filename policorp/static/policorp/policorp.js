@@ -67,26 +67,52 @@ function handleSearchClick(event) {
   .then(data => {
 
       console.log(data);
+      const report = document.querySelector('#locationDailyOccupancy');
+      const reportContainer = document.querySelector('#locationDailyOccupancyChart');
+      clearNode(reportContainer);
       const list = document.querySelector('#locationSchedule');
       clearNode(list);
       const listHeading = document.createElement('h5');
-      if (data.schedule.length === 0) {listHeading.innerHTML = 'Empty Schedule';}
+      if (data.schedule.length === 0) {
+        report.classList.remove('d-flex');
+        report.classList.add('d-none');
+
+        listHeading.innerHTML = 'Empty Schedule';
+        list.append(listHeading);
+      }
       else {
-        const template = document.querySelector('#scheduleFilterTemplate');
-        const node = document.importNode(template.content, true);
-        list.append(node);
-        document.querySelector('#scheduleFilterContainer').addEventListener('schedule_filter', (event) => handleScheduleFilterClick(event));
+        report.classList.remove('d-none');
+        report.classList.add('d-flex');
+
         listHeading.id = 'scheduleHeading';
         listHeading.innerHTML = 'Schedule';
+        list.append(listHeading);
+        const node = document.importNode(document.querySelector('#scheduleFilterTemplate').content, true);
+        list.append(node);
+        document.querySelector('#scheduleFilterContainer').addEventListener('schedule_filter', (event) => handleScheduleFilterClick(event));
+
       }
-      list.append(listHeading);
+
+
+      let booked = 0;
+      let available = 0;
+
       data.schedule.forEach( (scheduleItem)  => {
         let element;
-        if (scheduleItem.booking) { element = createBooking(scheduleItem.booking); }
-        else if (scheduleItem.availability) { element = createAvailability(scheduleItem.availability); }
+        if (scheduleItem.booking) {
+          element = createBooking(scheduleItem.booking);
+          booked++;
+        }
+        else if (scheduleItem.availability) {
+          element = createAvailability(scheduleItem.availability);
+          available++;
+        }
         list.append(element);
       });
+
       list.style.display = 'block';
+
+      appendDailyOccupancyChart(reportContainer, $datepicker.value(), booked, available);
   })
 }
 
@@ -476,4 +502,41 @@ function encodeDateTime(datetime) {
 
 function decodeDateTime(datetimestring) {
   return new Date(datetimestring.replace("+00:00", "Z"));
+}
+
+function appendDailyOccupancyChart(container, seriesLabel, booked, available) {
+
+  let dailyOccupancyData = {
+    labels: [seriesLabel],
+    datasets: [{
+        label: 'Booked',
+        backgroundColor: 'blue',
+        borderColor: 'blue',
+        data: [booked]
+    },
+    {
+        label: 'Available',
+        backgroundColor: 'LightGrey',
+        borderColor: 'LightGrey',
+        data: [available]
+    }]
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'dailyOccupancyBarChartCanvas';
+  container.append(canvas);
+
+  const occupancyCtx = canvas.getContext('2d');
+  const occupancyBarChart = new Chart(occupancyCtx, {
+    type: 'horizontalBar',
+    data: dailyOccupancyData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        xAxes: [{ stacked: true }],
+        yAxes: [{ stacked: true }]
+      }
+    }
+  });
 }
