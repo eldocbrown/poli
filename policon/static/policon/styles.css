@@ -3,7 +3,7 @@
 }
 
 #availabilityList {
-  padding-top: 10px;
+  margin-top: 10px;
 }
 
 #downloadCalIcon, #locationLink {
@@ -12,10 +12,15 @@
   cursor: pointer;
 }
 
-#datepicker, #lookupAvailabilitiesButton {
-  margin-left: 10px;
+#dropdownContainer, #datepickerContainer, #lookupAvailabilitiesButton {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 #lookupAvailabilitiesButton {
   cursor: not-allowed;
+}
+
+#bookingAction, #availabilityAction {
+  margin: 10px;
 }

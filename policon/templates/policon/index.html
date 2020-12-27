@@ -19,22 +19,24 @@
 </script>
 
 <div id="availabilities">
-  <div id="availabilitySelector" class="d-flex">
-    <div class="dropdown">
+  <div id="availabilitySelector" class="d-flex flex-wrap">
+    <div class="dropdown" id="dropdownContainer">
       <button id="dropdownTaskButton" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select Task
       </button>
       <div id="taskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
       </div>
     </div>
-    <input id="datepicker" width="276" />
-    <script>
-      let date = new Date();
-      var $datepicker = $('#datepicker').datepicker({
-        uiLibrary: 'bootstrap4',
-        width: 180
-      });
-    </script>
+    <div id="datepickerContainer">
+      <input id="datepicker" width="276" />
+      <script>
+        let date = new Date();
+        var $datepicker = $('#datepicker').datepicker({
+          uiLibrary: 'bootstrap4',
+          width: 180
+        });
+      </script>
+    </div>
     <button id="lookupAvailabilitiesButton" type="button" class="btn btn-primary" aria-label="Search" disabled>
       <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
