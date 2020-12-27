@@ -12,15 +12,10 @@
   cursor: pointer;
 }
 
-#datepicker, #lookupBookingsButton {
-  margin-left: 10px;
-}
-
 #lookupBookingsButton, #createSingleAvailabilityButton {
   cursor: not-allowed;
 }
 
-#locationSchedule,
 #configLocationSelector,
 #configTaskSelector,
 #configDatepickerContainer,
@@ -37,4 +32,9 @@
 
 #configUntilTimepickerContainer {
   display: none;
+}
+
+#locationSelector, #datepickerContainer , #lookupBookingsButton {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
