@@ -78,59 +78,59 @@ A push on the master branch triggers a github action, which runs all tests, and 
 Latest code coverage report can be seen [here](https://eldocbrown.github.io/cs50w-finalproject-capstone/)
 
 ### Project files description
-###### capstone/settings.py
+#### capstone/settings.py
 Standard project settings.
-###### capstone/urls.py
+#### capstone/urls.py
 Routes file for Capstone project, which includes paths for Policon and Policorp apps.
-###### manage.py
+#### manage.py
 Manager script created by Django.
-###### policon/static/policon/image/*
+#### policon/static/policon/image/*
 Static image resources used in Policon app UI.
-###### policon/static/policon/policon.js
+#### policon/static/policon/policon.js
 Javascript functions file used in Policon app.
-###### policon/static/policon/styles.css
+#### policon/static/policon/styles.css
 CSS stylesheet file for Policon app UI.
-###### policon/templates/policon/index.html
+#### policon/templates/policon/index.html
 Django template for Policon Single Page Application.
-###### policon/templates/policon/layout.html
+#### policon/templates/policon/layout.html
 Basic Django template that contains a bootstrap navbar and a container so the web site is built as a Single Page Application.
-###### policon/templates/policon/login.html
+#### policon/templates/policon/login.html
 Login registration page for consumer users in Policon app.
-###### policon/templates/policon/register.html
+#### policon/templates/policon/register.html
 Consumer user registration page.
-###### policon/admin.py
+#### policon/admin.py
 Admin console app configuration file por Policon app. Not used.
-###### policon/apps.py
+#### policon/apps.py
 Policon application configuration file.
-###### policon/models.py
+#### policon/models.py
 Standard models file created by Django. Not used.
-###### policon/tests.py
+#### policon/tests.py
 Basic tests for Policon app
-###### policon/urls.py
+#### policon/urls.py
 Routes file por Policon app.
-###### policon/views.py
+#### policon/views.py
 Views functions for Policon app.
-###### policorp/static/policorp/policorp.js
+#### policorp/static/policorp/policorp.js
 Javascript functions file used in Policorp app.
-###### policorp/static/policorp/styles.css
+#### policorp/static/policorp/styles.css
 CSS stylesheet file for Policorp app UI.
-###### policorp/templates/policorp/index.html
+#### policorp/templates/policorp/index.html
 Django template for Policorp Single Page Application.
-###### policorp/templates/policorp/layout.html
+#### policorp/templates/policorp/layout.html
 Basic Django template that contains a bootstrap navbar and a container so the Policorp web site is built as a Single Page Application.
-###### policorp/templates/policorp/login.html
+#### policorp/templates/policorp/login.html
 Login registration page for corporate users in Policorp app.
-###### policorp/admin.py
+#### policorp/admin.py
 Admin console app configuration file por Policorp app.
-###### policorp/apps.py
+#### policorp/apps.py
 Policorp application configuration file.
-###### policorp/lib/schedule.py
+#### policorp/lib/schedule.py
 Schedule class that combines availabilities and bookings, so they can be provided to a user as a unified schedule.
-###### policorp/managers.py
+#### policorp/managers.py
 Manager classes
-###### policorp/migrations/*
+#### policorp/migrations/*
 Databse migration files created by Django when running `makemigrations` command
-###### policorp/models.py
+#### policorp/models.py
 Models classes file
 - User: *derived from AbstractUser, it adds the capability of defining a location supervisor as a user role.*
 - Availability: *it is an opening at a a location for executing a certain task, on a certain date and time.*
@@ -138,19 +138,19 @@ Models classes file
 - Task: *activities that can be offered to be executed.*
 - Booking: *a reservation of an availability by a consumer user.*
 
-###### policorp/tests/aux.py
+#### policorp/tests/aux.py
 Auxiliary function file for test cases.
-###### policorp/tests/testsClients.py
+#### policorp/tests/testsClients.py
 Test cases using from a Client instance perspective.
-###### policorp/tests/testsCreateAvailabilityViews.py
+#### policorp/tests/testsCreateAvailabilityViews.py
 Test cases related to availabilities creation.
-###### policorp/tests/testsModels.py
+#### policorp/tests/testsModels.py
 Test cases for models, managers and their methods.
-###### policorp/tests/testsViews.py
+#### policorp/tests/testsViews.py
 Test cases of views, checking response codes, security restrictions, and data returned.
-###### policorp/tests/testsschedule.py
+#### policorp/tests/testsschedule.py
 Test cases for Schedule class.
-###### policorp/urls.py
+#### policorp/urls.py
 Routes file por Policorp app.
-###### policorp/views.py
+#### policorp/views.py
 Views functions for Policorp app.
