@@ -20,7 +20,7 @@ class TestAvailability(TestCase):
         a1 = Availability.objects.create_availability(datetime.now(timezone.utc), l1, t1)
         self.assertEqual(len(Availability.objects.get_all()), 1)
 
-    def test_get_availability_all_ordered_by_date_ascendant(self):
+    def test_get_availability_all_ordered_by_date_ascendant_1(self):
         """ GIVEN 3 availabilities; WHEN requesting all availabilities; THEN 3 availabilities should be returned in ascendant order by schedule date """
 
         loc_name = "Buenos Aires"
@@ -36,7 +36,7 @@ class TestAvailability(TestCase):
         self.assertEqual(Availability.objects.get_all()[1], a2)
         self.assertEqual(Availability.objects.get_all()[2], a3)
 
-    def test_get_availability_all_ordered_by_date_ascendant(self):
+    def test_get_availability_all_ordered_by_date_ascendant_2(self):
         """ GIVEN 3 availabilities, 1 booked; WHEN requesting all availabilities; THEN 2 availabilities should be returned in ascendant order by schedule date """
 
         loc_name = "Buenos Aires"
@@ -84,7 +84,7 @@ class TestAvailability(TestCase):
         self.assertEqual(availability.where.name, loc_name)
         self.assertEqual(availability.what.name, task_name)
 
-    def test_get_availability_all_by_task_ordered_by_date_ascendant(self):
+    def test_get_availability_all_by_task_ordered_by_date_ascendant_1(self):
         """ GIVEN 3 availabilities, 1 for Device Installation, 2 for Repair; WHEN requesting all availabilities for "Repair"; THEN 2 availabilities should be returned in ascendant order by schedule date for task "Repair" """
 
         loc_name = "Buenos Aires"
@@ -120,7 +120,7 @@ class TestAvailability(TestCase):
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[0].what, repair)
         self.assertEqual(Availability.objects.get_all_by_task(repair.name)[1].what, repair)
 
-    def test_get_availability_all_by_task_ordered_by_date_ascendant(self):
+    def test_get_availability_all_by_task_ordered_by_date_ascendant_3(self):
         """ GIVEN 3 availabilities, 1 for Device Installation, 2 for Repair, 1 Repair is boooked; WHEN requesting all availabilities for "Repair"; THEN 1 availabilities should be returned in ascendant order by schedule date for task "Repair" """
 
         loc_name = "Buenos Aires"
@@ -635,7 +635,7 @@ class TestBooking(TestCase):
         self.assertEqual(len(bookingsforfoo), 1)
         self.assertFalse(bookingsforfoo[0].cancelled)
 
-    def test_booking_cancel(self):
+    def test_booking_cancel_1(self):
         """ GIVEN a booking, WHEN it is cancelled; THEN it is marked as cancelled """
         availability = Availability.objects.get(pk=1)
         user = aux.createUser("foo", "foo@example.com", "example")
@@ -652,7 +652,7 @@ class TestBooking(TestCase):
 
         self.assertFalse(booking.cancelled)
 
-    def test_booking_cancel(self):
+    def test_booking_cancel_2(self):
         """ GIVEN a booking, WHEN it is cancelled; THEN it's availability is freed """
         availability = Availability.objects.get(pk=1)
         user = aux.createUser("foo", "foo@example.com", "example")
