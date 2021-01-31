@@ -51,7 +51,7 @@ class TestClient(TestCase):
         b1 = Booking.objects.book(availability1, user1)
         c = Client()
         c.login(username='foo', password='example')
-        response = c.post(reverse('policorp:cancelbooking', kwargs={'bookingid': 1}))
+        response = c.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
         self.assertEqual(response.status_code, 201)
 
     def test_mysupervisedlocations_view_return_200(self):

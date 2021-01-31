@@ -1,5 +1,5 @@
 from django.test import TestCase
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -145,8 +145,9 @@ class TestAvailability(TestCase):
         a1 = Availability.objects.create_availability(now + timedelta(days = 3), l1, t1)
 
         expected = {'id': 1, 'when': (now + timedelta(days = 3)).isoformat(), 'where': l1.json(), 'what': t1.json()}
-
-        self.assertJSONEqual(json.dumps(a1.json()), expected)
+        self.assertEqual(a1.json()["when"], (now + timedelta(days = 3)).isoformat())
+        self.assertJSONEqual(json.dumps(a1.json()["where"]), json.dumps(l1.json()))
+        self.assertJSONEqual(json.dumps(a1.json()["what"]), json.dumps(t1.json()))
 
     def test_availability_booked_initially_false(self):
         """ New availability should be not booked by default """
@@ -281,23 +282,25 @@ class TestAvailability(TestCase):
         self.assertEqual(availability.what.name, task_name)
 
     def test_get_availability_next_by_task_and_date_none(self):
-        """ GIVEN 2 availabilities at Cordoba, [day after tomorrow + 30min] and [day after tomorrow - 60min]; WHEN requesting next availabilities for "Device Installation" without a date; THEN 2 availabilites should be returned """
+        """ GIVEN 2 availabilities at Cordoba, [day after tomorrow at 12:30] and [day after tomorrow at 11:00]; WHEN requesting next availabilities for "Device Installation" without a date; THEN 2 availabilites should be returned """
 
-        now = datetime.now(timezone.utc)
+        afterTomorrow = datetime.now(timezone.utc) + timedelta(days=2)
+        time1 = time(hour=11, minute=00, tzinfo=timezone.utc)
+        time2 = time(hour=12, minute=30, tzinfo=timezone.utc)
         loc_name = "Cordoba"
         l1 = Location.objects.create_location(loc_name)
         task_name = "Device Installation"
         t1 = Task.objects.create_task(task_name, 60)
-        a1 = Availability.objects.create_availability(now + timedelta(days=2, minutes = 30), l1, t1)
-        a2 = Availability.objects.create_availability(now + timedelta(days=2, minutes = -60), l1, t1)
+        a1 = Availability.objects.create_availability(datetime.combine(afterTomorrow, time1), l1, t1)
+        a2 = Availability.objects.create_availability(datetime.combine(afterTomorrow, time2), l1, t1)
         result = Availability.objects.get_next_by_task_and_date(task_name, None)
         self.assertEqual(len(result), 2)
         availability = result[0]
-        self.assertEqual(availability.when, now + timedelta(days=2, minutes = -60))
+        self.assertEqual(availability.when, datetime.combine(afterTomorrow, time1))
         self.assertEqual(availability.where.name, loc_name)
         self.assertEqual(availability.what.name, task_name)
         availability = result[1]
-        self.assertEqual(availability.when, now + timedelta(days=2, minutes = 30))
+        self.assertEqual(availability.when, datetime.combine(afterTomorrow, time2))
         self.assertEqual(availability.where.name, loc_name)
         self.assertEqual(availability.what.name, task_name)
 
@@ -536,13 +539,14 @@ class TestTask(TestCase):
         duration = 60
         t = Task.objects.create_task(task_name, duration)
         j = {'id': 1, 'name': task_name, 'duration': duration}
-        self.assertJSONEqual(json.dumps(t.json()), json.dumps(j))
+        self.assertEqual(t.json()["name"], j["name"])
+        self.assertEqual(t.json()["duration"], j["duration"])
 
     def test_task_duration(self):
         """ GIVEN ; WHEN creating a task; THEN a duration in minutes must be provided """
         task_name = "Device Installation"
         t = Task.objects.create_task(task_name, 30)
-        self.assertEqual(Task.objects.get(pk=1).duration, 30)
+        self.assertEqual(Task.objects.get(name=task_name).duration, 30)
 
     def test_task_duration_not_negative(self):
         """ GIVEN ; WHEN creating a task with negative duration; THEN an exception must be raised """
@@ -559,8 +563,8 @@ class TestBooking(TestCase):
         availability = Availability.objects.get(pk=1)
         user = aux.createUser("foo", "foo@example.com", "example")
         b = Booking.objects.book(availability, user)
-        self.assertEqual(Booking.objects.get(pk=1).user, user)
-        self.assertEqual(Booking.objects.get(pk=1).availability, availability)
+        self.assertEqual(len(Booking.objects.filter(availability=availability)), 1)
+        self.assertEqual(Booking.objects.filter(availability=availability)[0].user, user)
 
     def test_book_availability_is_booked(self):
         """ Booking an availability marks it as booked """
@@ -578,7 +582,8 @@ class TestBooking(TestCase):
 
         expected_json = {'id': 1, 'availability': availability.json(), 'username': user.username}
 
-        self.assertJSONEqual(json.dumps(booking.json()), json.dumps(expected_json))
+        self.assertEqual(booking.json()["availability"] , expected_json["availability"])
+        self.assertEqual(booking.json()["username"], expected_json["username"])
 
     def test_booking_get_my_bookings(self):
         """ GIVEN 2 bookings, 1 for user foo and 1 for user juan; WHEN requesting user bookings for foo; THEN 1 booking with user foo should be returned """

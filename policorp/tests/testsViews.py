@@ -180,11 +180,12 @@ class TestViews(TestCase):
     @tag('book')
     def test_view_book_returns_booking_json(self):
         """ GIVEN ; WHEN POST /policorp/book/1 ; THEN code 201 is returned """
-        request = self.factory.post(reverse('policorp:book', kwargs={'availabilityid': 1}))
+        availabilityId = 1
+        request = self.factory.post(reverse('policorp:book', kwargs={'availabilityid': availabilityId}))
         request.user = aux.createUser("foo", "foo@example.com", "example")
-        response = book(request, 1)
+        response = book(request, availabilityId)
 
-        expected_json = Booking.objects.get(pk=1).json()
+        expected_json = Booking.objects.get(availability__id=availabilityId).json()
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('book')
@@ -248,9 +249,9 @@ class TestViews(TestCase):
         user1 = aux.createUser("foo", "foo@example.com", "example")
         availability1 = Availability.objects.get(pk=1)
         b1 = Booking.objects.book(availability1, user1)
-        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': 1}))
+        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
         request.user = user1
-        response = cancelbooking(request, 1)
+        response = cancelbooking(request, b1.id)
         self.assertEqual(response.status_code, 201)
 
     @tag('cancelbooking')
@@ -276,9 +277,9 @@ class TestViews(TestCase):
         availability1 = Availability.objects.get(pk=1)
         b1 = Booking.objects.book(availability1, user1)
         user2 = aux.createUser("zoe", "zoe@example.com", "example")
-        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': 1}))
+        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
         request.user = user2
-        response = cancelbooking(request, 1)
+        response = cancelbooking(request, b1.id)
         self.assertEqual(response.status_code, 401)
 
     @tag('cancelbooking')
@@ -288,11 +289,11 @@ class TestViews(TestCase):
         availability1 = Availability.objects.get(pk=1)
         b1 = Booking.objects.book(availability1, user1)
 
-        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': 1}))
+        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
         request.user = user1
-        response = cancelbooking(request, 1)
+        response = cancelbooking(request, b1.id)
 
-        expected_json = Booking.objects.get(pk=1).json()
+        expected_json = Booking.objects.get(pk=b1.id).json()
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     @tag('mysupervisedlocations')

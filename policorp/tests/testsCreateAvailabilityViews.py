@@ -6,7 +6,7 @@ import json
 from policorp.models import Availability, Location, Task, Booking
 from policorp.views import *
 from policorp.tests import aux
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time, timedelta
 
 
 class TestCreateAvailabilityViews(TestCase):
@@ -48,17 +48,19 @@ class TestCreateAvailabilityViews(TestCase):
         """ GIVEN ; WHEN POST /policorp/createavailabilities with json content (location 1; task 1; (today + 1) at 14:00 utc time) + (location 1; task 1; (today + 1) at 16:00 utc time); THEN code 201 should be returned """
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         location = Location.objects.get(pk=1).assign_supervisor(user)
-        now = datetime.now(timezone.utc)
+        tomorrow = datetime.now(timezone.utc) + timedelta(days=2)
+        time1 = time(hour=14, tzinfo=timezone.utc)
+        time2 = time(hour=16, tzinfo=timezone.utc)
         body = [
         {
             "locationid": 1,
             "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 14, 0, 0, 0, tzinfo=timezone.utc)
+            "when": datetime.combine(tomorrow, time1)
         },
         {
             "locationid": 1,
             "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 16, 0, 0, 0, tzinfo=timezone.utc)
+            "when": datetime.combine(tomorrow, time2)
         }
         ]
         request = self.factory.post(    reverse('policorp:createavailabilities'),
@@ -78,17 +80,19 @@ class TestCreateAvailabilityViews(TestCase):
         """ GIVEN ; WHEN POST /policorp/createavailabilities with json content (location 1; task 1; (today + 1) at 14:00 utc time) + (location 2; task 1; (today + 1) at 16:00 utc time), not supervising location 2; THEN code 401 should be returned """
         user = User.objects.create_supervisor('foo', 'foo@example.com', 'example')
         location = Location.objects.get(pk=1).assign_supervisor(user)
-        now = datetime.now(timezone.utc)
+        tomorrow = datetime.now(timezone.utc) + timedelta(days=2)
+        time1 = time(hour=14, tzinfo=timezone.utc)
+        time2 = time(hour=16, tzinfo=timezone.utc)
         body = [
         {
             "locationid": 1,
             "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 14, 0, 0, 0, tzinfo=timezone.utc)
+            "when": datetime.combine(tomorrow, time1)
         },
         {
             "locationid": 2,
             "taskid": 1,
-            "when": datetime(now.year, now.month, now.day + 1, 16, 0, 0, 0, tzinfo=timezone.utc)
+            "when": datetime.combine(tomorrow, time2)
         }
         ]
         request = self.factory.post(    reverse('policorp:createavailabilities'),
@@ -102,7 +106,7 @@ class TestCreateAvailabilityViews(TestCase):
             {
                 "locationid": 2,
                 "taskid": 1,
-                "when": datetime(now.year, now.month, now.day + 1, 16, 0, 0, 0, tzinfo=timezone.utc),
+                "when": datetime.combine(tomorrow, time2),
                 "error": "Unauthorized"
             }
         ]
