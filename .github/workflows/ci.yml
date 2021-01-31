@@ -17,7 +17,6 @@ jobs:
       db:
         # Docker Hub image
         image: postgres
-        restart: always
         env:
           POSTGRES_USER: poliuser
           POSTGRES_PASSWORD: poliuser
