@@ -12,11 +12,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
+
+IS_HEROKU_ENV = True if os.environ.get('IS_HEROKU_ENV') == 'True' else False
+
+if IS_HEROKU_ENV:
+    import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -130,5 +133,5 @@ STATIC_URL = os.path.join("/", "capstone", "static/")
 
 STATIC_ROOT = f"{BASE_DIR}{STATIC_URL}"
 
-if not DEBUG:
+if IS_HEROKU_ENV:
     django_heroku.settings(locals())
