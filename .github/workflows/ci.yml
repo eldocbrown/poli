@@ -46,7 +46,7 @@ jobs:
         architecture: 'x64'
     - name: Run Django tests
       run: |
-        pip3 install --user django psycopg2 django_heroku
+        pip3 install --user django psycopg2
         python3 -m pip install coverage
         python3 manage.py collectstatic
         coverage run --source='.' manage.py test
