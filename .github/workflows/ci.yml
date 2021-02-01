@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: pauh61syjzkx6$1d%euial5h&y-1=rlr39_z5e&g^7%!en)c$x
+      DATABASE_PG_PASSWORD: poliuser
+      DATABASE_PG_HOST: localhost
+      DATABASE_PG_PORT: 5432
 
     # Service containers to run with `container-job`
     services:
