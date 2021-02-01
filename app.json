@@ -1,0 +1,10 @@
+{
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "python3 manage.py collectstatic --noinput",
+        "test": "python3 manage.py test"
+      }
+    }
+  }
+}
