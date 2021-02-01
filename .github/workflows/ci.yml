@@ -62,11 +62,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Deploy on Heroku
-      - uses: akhileshns/heroku-deploy@v3.9.9
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "poliapp"
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          remote_branch: main
+    - uses: actions/checkout@v2
+    - name: Deploy on Heroku
+      uses: akhileshns/heroku-deploy@v3.9.9
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "poliapp"
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
+        remote_branch: main
