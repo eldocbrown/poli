@@ -22,8 +22,8 @@
         </h1>
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
         <h2 class="stats">
-            20 statements &nbsp;
-            <button type="button" class="run shortkey_r button_toggle_run" title="Toggle lines run">20 run</button>
+            21 statements &nbsp;
+            <button type="button" class="run shortkey_r button_toggle_run" title="Toggle lines run">21 run</button>
             <button type="button" class="mis show_mis shortkey_m button_toggle_mis" title="Toggle lines missing">0 missing</button>
             <button type="button" class="exc show_exc shortkey_x button_toggle_exc" title="Toggle lines excluded">0 excluded</button>
         </h2>
@@ -75,12 +75,12 @@
     <p id="t21" class="pln"><span class="n"><a href="#t21">21</a></span><span class="t"><span class="com"># See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/</span>&nbsp;</span><span class="r"></span></p>
     <p id="t22" class="pln"><span class="n"><a href="#t22">22</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t23" class="pln"><span class="n"><a href="#t23">23</a></span><span class="t"><span class="com"># SECURITY WARNING: keep the secret key used in production secret!</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t24" class="run"><span class="n"><a href="#t24">24</a></span><span class="t"><span class="nam">SECRET_KEY</span> <span class="op">=</span> <span class="str">'pauh61syjzkx6$1d%euial5h&amp;y-1=rlr39_z5e&amp;g^7%!en)c$x'</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t24" class="run"><span class="n"><a href="#t24">24</a></span><span class="t"><span class="nam">SECRET_KEY</span> <span class="op">=</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'SECRET_KEY'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t25" class="pln"><span class="n"><a href="#t25">25</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t26" class="pln"><span class="n"><a href="#t26">26</a></span><span class="t"><span class="com"># SECURITY WARNING: don't run with debug turned on in production!</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t27" class="run"><span class="n"><a href="#t27">27</a></span><span class="t"><span class="nam">DEBUG</span> <span class="op">=</span> <span class="key">True</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t27" class="run"><span class="n"><a href="#t27">27</a></span><span class="t"><span class="nam">DEBUG</span> <span class="op">=</span> <span class="key">True</span> <span class="key">if</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'DEBUG'</span><span class="op">)</span> <span class="op">==</span> <span class="str">'True'</span> <span class="key">else</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
     <p id="t28" class="pln"><span class="n"><a href="#t28">28</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t29" class="run"><span class="n"><a href="#t29">29</a></span><span class="t"><span class="nam">ALLOWED_HOSTS</span> <span class="op">=</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t29" class="run"><span class="n"><a href="#t29">29</a></span><span class="t"><span class="nam">ALLOWED_HOSTS</span> <span class="op">=</span> <span class="op">[</span><span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'ALLOWED_HOST_1'</span><span class="op">)</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p id="t30" class="pln"><span class="n"><a href="#t30">30</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t31" class="pln"><span class="n"><a href="#t31">31</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t32" class="pln"><span class="n"><a href="#t32">32</a></span><span class="t"><span class="com"># Application definition</span>&nbsp;</span><span class="r"></span></p>
@@ -135,9 +135,9 @@
     <p id="t81" class="pln"><span class="n"><a href="#t81">81</a></span><span class="t">        <span class="str">'ENGINE'</span><span class="op">:</span> <span class="str">'django.db.backends.postgresql_psycopg2'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t82" class="pln"><span class="n"><a href="#t82">82</a></span><span class="t">        <span class="str">'NAME'</span><span class="op">:</span> <span class="str">'poli'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p id="t83" class="pln"><span class="n"><a href="#t83">83</a></span><span class="t">        <span class="str">'USER'</span><span class="op">:</span> <span class="str">'poliuser'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t84" class="pln"><span class="n"><a href="#t84">84</a></span><span class="t">        <span class="str">'PASSWORD'</span><span class="op">:</span> <span class="str">'poliuser'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t85" class="pln"><span class="n"><a href="#t85">85</a></span><span class="t">        <span class="str">'HOST'</span><span class="op">:</span> <span class="str">'localhost'</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t86" class="pln"><span class="n"><a href="#t86">86</a></span><span class="t">        <span class="str">'PORT'</span><span class="op">:</span> <span class="str">''</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t84" class="pln"><span class="n"><a href="#t84">84</a></span><span class="t">        <span class="str">'PASSWORD'</span><span class="op">:</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'DATABASE_PG_PASSWORD'</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t85" class="pln"><span class="n"><a href="#t85">85</a></span><span class="t">        <span class="str">'HOST'</span><span class="op">:</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'DATABASE_PG_HOST'</span><span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t86" class="pln"><span class="n"><a href="#t86">86</a></span><span class="t">        <span class="str">'PORT'</span><span class="op">:</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">'DATABASE_PG_PORT'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t87" class="pln"><span class="n"><a href="#t87">87</a></span><span class="t">    <span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p id="t88" class="pln"><span class="n"><a href="#t88">88</a></span><span class="t"><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p id="t89" class="pln"><span class="n"><a href="#t89">89</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -180,12 +180,14 @@
     <p id="t126" class="pln"><span class="n"><a href="#t126">126</a></span><span class="t"><span class="com"># https://docs.djangoproject.com/en/3.1/howto/static-files/</span>&nbsp;</span><span class="r"></span></p>
     <p id="t127" class="pln"><span class="n"><a href="#t127">127</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t128" class="run"><span class="n"><a href="#t128">128</a></span><span class="t"><span class="nam">STATIC_URL</span> <span class="op">=</span> <span class="nam">os</span><span class="op">.</span><span class="nam">path</span><span class="op">.</span><span class="nam">join</span><span class="op">(</span><span class="str">"/"</span><span class="op">,</span> <span class="str">"capstone"</span><span class="op">,</span> <span class="str">"static/"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t129" class="pln"><span class="n"><a href="#t129">129</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p id="t130" class="run"><span class="n"><a href="#t130">130</a></span><span class="t"><span class="nam">STATIC_ROOT</span> <span class="op">=</span> <span class="str">f"{BASE_DIR}{STATIC_URL}"</span>&nbsp;</span><span class="r"></span></p>
 </div>
 <div id="footer">
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.4</a>,
-            created at 2021-02-01 09:46 +0000
+            created at 2021-02-01 19:29 +0000
         </p>
     </div>
 </div>
