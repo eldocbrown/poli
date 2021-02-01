@@ -130,4 +130,5 @@ STATIC_URL = os.path.join("/", "capstone", "static/")
 
 STATIC_ROOT = f"{BASE_DIR}{STATIC_URL}"
 
-django_heroku.settings(locals())
+if !DEBUG:
+    django_heroku.settings(locals())
