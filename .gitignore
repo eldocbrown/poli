@@ -4,3 +4,5 @@ db.sqlite3
 .coverage
 *.log
 coverage/
+.env
+capstone/static/

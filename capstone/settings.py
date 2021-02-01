@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'pauh61syjzkx6$1d%euial5h&y-1=rlr39_z5e&g^7%!en)c$x'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.environ.get('DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST_1')]
 
 
 # Application definition
@@ -81,9 +81,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'poli',
         'USER': 'poliuser',
-        'PASSWORD': 'poliuser',
-        'HOST': 'localhost',
-        'PORT': '',
+        'PASSWORD': os.environ.get('DATABASE_PG_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_PG_HOST'),
+        'PORT': os.environ.get('DATABASE_PG_PORT')
     }
 }
 
@@ -126,3 +126,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = os.path.join("/", "capstone", "static/")
+
+STATIC_ROOT = f"{BASE_DIR}{STATIC_URL}"
