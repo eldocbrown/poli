@@ -10,6 +10,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: pauh61syjzkx6$1d%euial5h&y-1=rlr39_z5e&g^7%!en)c$x
 
     # Service containers to run with `container-job`
     services:
