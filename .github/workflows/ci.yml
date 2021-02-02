@@ -64,7 +64,6 @@ jobs:
     #needs: [test]
     steps:
     - uses: actions/checkout@v2
-    - run: git remote add heroku https://git.heroku.com/poliapp.git
     - name: Deploy to Heroku
       uses: akhileshns/heroku-deploy@v3.9.9
       with:
@@ -74,4 +73,3 @@ jobs:
         remote_branch: main
         branch: main
         justlogin: false
-    - run: git remote -v
