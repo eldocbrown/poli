@@ -64,6 +64,8 @@ jobs:
     needs: [test]
     steps:
     - uses: actions/checkout@v2
+    - run: git config user.email "battlographer@github.com"
+    - run: git config user.name "Github"
     - run: git add -A && git commit -m "Updated code"
     - name: Deploy to Heroku
       uses: akhileshns/heroku-deploy@v3.9.9
