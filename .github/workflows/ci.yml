@@ -72,5 +72,5 @@ jobs:
         heroku_email: ${{secrets.HEROKU_EMAIL}}
         remote_branch: main
         branch: main
-        justlogin: true
+        justlogin: false
     - run: git remote -v
