@@ -269,9 +269,9 @@ function handleCreateAvailabilityClick() {
     })
     .then(errors => {
       if (errors === 0) {
-        showMessage('Success', `You have successfully created an abailability configuration`);
+        showMessage('Success', `You have successfully created an availability configuration`);
       } else {
-        showMessage('Error', `There were ${errors} errors creating the abailability configuration`);
+        showMessage('Error', `There were ${errors} errors creating the availability configuration`);
       }
     });
     handleLocationScheduleLinkClick();
