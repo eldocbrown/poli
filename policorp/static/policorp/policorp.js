@@ -1,3 +1,5 @@
+import { createAvailabilitiesJsonData } from './availabilities.js'
+
 document.addEventListener('DOMContentLoaded', () => {
 
   loadFilters();
@@ -225,7 +227,7 @@ function handleCreateAvailabilityClick() {
     if (extendCheck.checked == true) { untilTime = $configUntilTimepicker.value(); }
     let configs;
     try {
-      configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime);
+      configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encodeDateTime);
     }
     catch (error) {
       showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
@@ -427,39 +429,6 @@ function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;
   document.querySelector('#messageModalBody').innerHTML = message;
   $("#messageModal").modal('show');
-}
-
-function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime) {
-
-  let json = [{
-              "locationid": locationid,
-              "taskid": taskid,
-              "when": encodeDateTime(when)
-          }];
-
-  if (untilTime !== null) {
-    let until = new Date(when);
-    until.setHours(untilTime.substring(0, 2));
-    until.setMinutes(untilTime.substring(3, 5));
-
-    if (until < when) throw "Invalid time settings";
-
-    newWhenBegin = addMinutes(when, taskduration);
-    newWhenEnd = addMinutes(newWhenBegin, taskduration);
-
-    while (newWhenEnd <= until) {
-      json.push({
-                "locationid": locationid,
-                "taskid": taskid,
-                "when": encodeDateTime(newWhenBegin)
-                });
-
-      newWhenBegin = addMinutes(newWhenBegin, taskduration);
-      newWhenEnd = addMinutes(newWhenBegin, taskduration);
-    }
-  }
-
-  return json;
 }
 
 function appendNewAvailabilityDatesToJsonData(initialAvailabilityJson, days, fromDate, untilDate) {

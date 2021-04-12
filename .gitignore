@@ -7,3 +7,4 @@ coverage/
 .env
 capstone/static/
 staticfiles/
+node_modules/
