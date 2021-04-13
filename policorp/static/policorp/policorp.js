@@ -1,4 +1,5 @@
 import { createAvailabilitiesJsonData } from './availabilities.js'
+import { addMinutes } from './dateTimeUtils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -408,10 +409,6 @@ function toFormattedDuration(duration) {
     if (minutes !== 0) { return `${hours} hs ${minutes} min`; }
     else { return `${hours} hs`; }
   }
-}
-
-function addMinutes(dt, minutes) {
-    return new Date(dt.getTime() + minutes*60000);
 }
 
 function evaluateCreateSingleAvailabilityState() {

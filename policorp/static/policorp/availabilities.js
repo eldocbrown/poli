@@ -1,3 +1,5 @@
+import { addMinutes } from './dateTimeUtils.js'
+
 export function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encoder) {
 
   let json = [{
@@ -13,8 +15,8 @@ export function createAvailabilitiesJsonData(locationid, taskid, taskduration, w
 
     if (until < when) throw "Invalid time settings";
 
-    newWhenBegin = addMinutes(when, taskduration);
-    newWhenEnd = addMinutes(newWhenBegin, taskduration);
+    let newWhenBegin = addMinutes(when, taskduration);
+    let newWhenEnd = addMinutes(newWhenBegin, taskduration);
 
     while (newWhenEnd <= until) {
       json.push({
