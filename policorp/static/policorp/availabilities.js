@@ -32,3 +32,29 @@ export function createAvailabilitiesJsonData(locationid, taskid, taskduration, w
 
   return json;
 }
+
+export function appendNewAvailabilityDatesToJsonData(initialAvailabilityJson, days, fromDate, untilDate, dateTimeEncoder, dateTimeDecoder) {
+
+  let json = JSON.parse(JSON.stringify(initialAvailabilityJson));
+  let currentDate = new Date(fromDate);
+  currentDate.setHours(0,0,0,0)
+  currentDate.setDate(currentDate.getDate() + 1);
+  while (currentDate <= untilDate) {
+    if (days[currentDate.getDay()] === true) {
+      initialAvailabilityJson.forEach(a => {
+        let newWhen = dateTimeDecoder(a["when"]);
+        newWhen.setDate(currentDate.getDate());
+        newWhen.setMonth(currentDate.getMonth());
+        newWhen.setFullYear(currentDate.getFullYear());
+        json.push({
+                  "locationid": a["locationid"],
+                  "taskid": a["taskid"],
+                  "when": dateTimeEncoder(newWhen)
+                  });
+      });
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return json;
+}

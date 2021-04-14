@@ -1,4 +1,4 @@
-import { createAvailabilitiesJsonData } from './availabilities.js'
+import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } from './availabilities.js'
 import { addMinutes } from './dateTimeUtils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,7 +69,6 @@ function handleSearchClick(event) {
   .then(response => response.json())
   .then(data => {
 
-      console.log(data);
       const report = document.querySelector('#locationDailyOccupancy');
       const reportContainer = document.querySelector('#locationDailyOccupancyChart');
       clearNode(reportContainer);
@@ -243,7 +242,7 @@ function handleCreateAvailabilityClick() {
       const container = document.querySelector('#daysOfWeekContainer');
       let i = 0;
       while (i < days.length) {
-        button = container.children[i];
+        const button = container.children[i];
         if (button.nodeType === 1) {
           if (button.getAttribute("aria-pressed") === "true") days[i] = true;
           i++;
@@ -251,7 +250,7 @@ function handleCreateAvailabilityClick() {
       }
     }
     try {
-      configs = appendNewAvailabilityDatesToJsonData(configs, days, when, untilDate);
+      configs = appendNewAvailabilityDatesToJsonData(configs, days, when, untilDate, encodeDateTime, decodeDateTime);
     }
     catch (error) {
       showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
@@ -266,8 +265,6 @@ function handleCreateAvailabilityClick() {
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Create availabilities response');
-      console.log(data);
       return getAvailabilitiesResponseErrors(data);
     })
     .then(errors => {
@@ -366,7 +363,7 @@ function createBooking(data) {
 
 function createAvailability(data) {
   // create availability container
-  a = document.createElement('div');
+  const a = document.createElement('div');
   a.id = 'availability';
   a.dataset.availabilityid = data.id;
   a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center';
@@ -396,7 +393,7 @@ function clearNode(node) {
 }
 
 function toFormattedTime(datetimeObj) {
-  timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  const timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   return (timeFrom);
 }
 
@@ -426,32 +423,6 @@ function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;
   document.querySelector('#messageModalBody').innerHTML = message;
   $("#messageModal").modal('show');
-}
-
-function appendNewAvailabilityDatesToJsonData(initialAvailabilityJson, days, fromDate, untilDate) {
-
-  let json = JSON.parse(JSON.stringify(initialAvailabilityJson));
-  let currentDate = new Date();
-  currentDate.setDate(fromDate.getDate() + 1);
-  currentDate.setHours(0, 0, 0, 0);
-  while (currentDate <= untilDate) {
-    if (days[currentDate.getDay()] === true) {
-      initialAvailabilityJson.forEach(a => {
-        let newWhen = decodeDateTime(a["when"]);
-        newWhen.setDate(currentDate.getDate());
-        newWhen.setMonth(currentDate.getMonth());
-        newWhen.setFullYear(currentDate.getFullYear());
-        json.push({
-                  "locationid": a["locationid"],
-                  "taskid": a["taskid"],
-                  "when": encodeDateTime(newWhen)
-                  });
-      });
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return json;
 }
 
 function getAvailabilitiesResponseErrors(response) {
