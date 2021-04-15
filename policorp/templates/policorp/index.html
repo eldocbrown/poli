@@ -8,15 +8,26 @@
 <script src="{% static 'policorp/policorp.js' %}" type="module"></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
 <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="https://unpkg.com/gijgo@1.9.13/js/messages/messages.es-es.js" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 {% endblock %}
 
 {% block body %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
 <script>
-  var loginurl = "{% url 'policorp:login' %}"
-  var csrftoken = '{{ csrf_token }}';
-  var username = '{{ user.username }}';
+  const loginurl = "{% url 'policorp:login' %}"
+  const csrftoken = '{{ csrf_token }}'
+  const username = '{{ user.username }}'
+
+  let localeGijGoComponent = 'en-us'
+  let formatGijGoDateComponent = 'mm/dd/yyyy'
+  const optionsGijGoDateComponent = { year: 'numeric', month: '2-digit', day: '2-digit' }
+  if ('{{LANGUAGE_CODE}}' === 'es') {
+    localeGijGoComponent = 'es-es'
+    formatGijGoDateComponent = 'dd/mm/yyyy'
+  }
 </script>
 
 <div id="locationScheduleContainer">
@@ -41,8 +52,11 @@
         let date = new Date();
         var $datepicker = $('#datepicker').datepicker({
           uiLibrary: 'bootstrap4',
-          value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
-          width: 180
+          //value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
+          value: date.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+          width: 180,
+          locale: localeGijGoComponent,
+          format: formatGijGoDateComponent
         });
       </script>
     </div>
@@ -95,8 +109,11 @@
       let configDate = new Date();
       var $configDatepicker = $('#configDatepicker').datepicker({
         uiLibrary: 'bootstrap4',
-        value: `${configDate.getMonth() + 1}/${configDate.getDate()}/${configDate.getFullYear()}`,
-        width: 180
+        value: configDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+        //value: `${configDate.getMonth() + 1}/${configDate.getDate()}/${configDate.getFullYear()}`,
+        width: 180,
+        locale: localeGijGoComponent,
+        format: formatGijGoDateComponent
       });
     </script>
   </div>
@@ -159,8 +176,11 @@
       configUntilDate.setDate(configUntilDate.getDate()+1);
       var $configUntilDatepicker = $('#configUntilDatepicker').datepicker({
         uiLibrary: 'bootstrap4',
-        value: `${configUntilDate.getMonth() + 1}/${configUntilDate.getDate()}/${configUntilDate.getFullYear()}`,
-        width: 180
+        value: configUntilDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+        //value: `${configUntilDate.getMonth() + 1}/${configUntilDate.getDate()}/${configUntilDate.getFullYear()}`,
+        width: 180,
+        locale: localeGijGoComponent,
+        format: formatGijGoDateComponent
       });
     </script>
   </div>

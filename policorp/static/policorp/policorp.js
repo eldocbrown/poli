@@ -1,5 +1,6 @@
 import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } from './availabilities.js'
 import { addMinutes } from './dateTimeUtils.js'
+import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -52,11 +53,11 @@ function handleLocationSelectionClick(event) {
 }
 
 function handleSearchClick(event) {
-  dropdownLocationButton = document.querySelector('#dropdownLocationButton');
+  const dropdownLocationButton = document.querySelector('#dropdownLocationButton');
 
   let date = "";
   if ($datepicker.value() !== "") {
-    date = new Date($datepicker.value());
+    date = getDateFromDatePickerValue($datepicker.value(), localeGijGoComponent)
   }
   else {
     showMessage('Error', gettext('Invalid Date'));
@@ -114,6 +115,7 @@ function handleSearchClick(event) {
 
       list.style.display = 'block';
 
+      // TODO: translate labels
       appendDailyOccupancyChart(reportContainer, $datepicker.value(), booked, available);
   })
 }
@@ -218,7 +220,7 @@ function handleCreateAvailabilityClick() {
     const locationid = document.querySelector('#configLocationDropdownButton').dataset.locationid;
     const taskid = document.querySelector('#configTaskDropdownButton').dataset.taskid;
     const taskduration = document.querySelector('#configTaskDropdownButton').dataset.duration;
-    let when = new Date(`${$configDatepicker.value()}`);
+    let when = new Date(`${getDateFromDatePickerValue($configDatepicker.value(), localeGijGoComponent)}`);
     when.setHours($configTimepicker.value().substring(0, 2));
     when.setMinutes($configTimepicker.value().substring(3, 5));
 
@@ -238,7 +240,7 @@ function handleCreateAvailabilityClick() {
     let days = [false, false, false, false, false, false, false];
     let untilDate = null;
     if (repeatDaysCheck.checked == true) {
-      untilDate = new Date(`${$configUntilDatepicker.value()}`);
+      untilDate = new Date(`${getDateFromDatePickerValue($configUntilDatepicker.value(), localeGijGoComponent)}`);
       const container = document.querySelector('#daysOfWeekContainer');
       let i = 0;
       while (i < days.length) {
@@ -446,13 +448,13 @@ function appendDailyOccupancyChart(container, seriesLabel, booked, available) {
   let dailyOccupancyData = {
     labels: [seriesLabel],
     datasets: [{
-        label: 'Booked',
+        label: gettext('Booked'),
         backgroundColor: 'blue',
         borderColor: 'blue',
         data: [booked]
     },
     {
-        label: 'Available',
+        label: gettext('Available'),
         backgroundColor: 'LightGrey',
         borderColor: 'LightGrey',
         data: [available]

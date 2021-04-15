@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 12:22-0300\n"
+"POT-Creation-Date: 2021-04-15 18:59-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: static/policorp/policorp.js:62
+#: static/policorp/policorp.js:63
 msgid "Invalid Date"
 msgstr "Fecha inválida"
 
-#: static/policorp/policorp.js:233 static/policorp/policorp.js:256
+#: static/policorp/policorp.js:235 static/policorp/policorp.js:258
 msgid "There was an error generating the availability configuration data"
 msgstr "Hubo un error al generar los datos de configuración de disponibilidad"
 
-#: static/policorp/policorp.js:272
+#: static/policorp/policorp.js:274
 msgid "Success"
 msgstr "Éxito"
 
-#: static/policorp/policorp.js:272
+#: static/policorp/policorp.js:274
 msgid "You have successfully created an availability configuration"
 msgstr "Ha creado exitosamente la configuración de disponibilidad"
 
-#: static/policorp/policorp.js:274
+#: static/policorp/policorp.js:276
 msgid "There were"
 msgstr "Hubo"
 
-#: static/policorp/policorp.js:274
+#: static/policorp/policorp.js:276
 #, fuzzy
 #| msgid "There was an error generating the availability configuration data"
 msgid "errors creating the availability configuration"
 msgstr "Hubo un error al generar los datos de configuración de disponibilidad"
+
+#: static/policorp/policorp.js:451
+msgid "Booked"
+msgstr "Reservado"
+
+#: static/policorp/policorp.js:457
+msgid "Available"
+msgstr "Disponible"
