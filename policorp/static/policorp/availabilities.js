@@ -13,10 +13,6 @@ export function createAvailabilitiesJsonData(locationid, taskid, taskduration, w
     until.setHours(untilTime.substring(0, 2));
     until.setMinutes(untilTime.substring(3, 5));
 
-    console.log('When:')
-    console.log(when)
-    console.log('Until:')
-    console.log(until)
     if (until < when) throw "Invalid time settings";
 
     let newWhenBegin = addMinutes(when, taskduration);
