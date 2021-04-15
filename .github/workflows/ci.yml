@@ -73,7 +73,7 @@ jobs:
     - name: Install Packages
       run: npm install
     - name: Run the tests
-      run: npm test --verbose --maxWorkers=2
+      run: npm test
 
   deploy:
     runs-on: ubuntu-latest

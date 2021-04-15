@@ -58,6 +58,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskduration = '120'
     const when = new Date()
     const untilTime = new Date(when.getTime() + 1.5*taskduration*60000).toLocaleTimeString().substring(0,5)
+    console.log(untilTime)
 
     const expectedJSON = [
       {
@@ -76,6 +77,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskduration = '120'
     const when = new Date()
     const untilTime = new Date(when.getTime() + 2*taskduration*60000).toLocaleTimeString().substring(0,5)
+    console.log(untilTime)
 
     const expectedJSON = [
       {
