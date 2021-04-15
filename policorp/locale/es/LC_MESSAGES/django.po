@@ -1,0 +1,151 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-15 12:06-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/policorp/index.html:30 templates/policorp/index.html:74
+msgid "Select location"
+msgstr "Seleccionar lugar"
+
+#: templates/policorp/index.html:57
+msgid "Occupancy"
+msgstr "Ocupación"
+
+#: templates/policorp/index.html:64 templates/policorp/index.html:172
+msgid "Unauthorized"
+msgstr "No autorizado"
+
+#: templates/policorp/index.html:70
+msgid "Configure availabilities"
+msgstr "Configurar disponibilidad"
+
+#: templates/policorp/index.html:83
+msgid "Select activity"
+msgstr "Seleccionar actividad"
+
+#: templates/policorp/index.html:91
+msgid "On"
+msgstr "El"
+
+#: templates/policorp/index.html:105
+msgid "At"
+msgstr "A las"
+
+#: templates/policorp/index.html:120
+msgid "Extend"
+msgstr "Extender"
+
+#: templates/policorp/index.html:125
+msgid "Until"
+msgstr "Hasta las"
+
+#: templates/policorp/index.html:140
+msgid "Repeat on days"
+msgstr "Repetir en los días"
+
+#: templates/policorp/index.html:144
+msgid "Sunday"
+msgstr ""
+
+#: templates/policorp/index.html:145
+msgid "Monday"
+msgstr ""
+
+#: templates/policorp/index.html:146
+msgid "Tuesday"
+msgstr ""
+
+#: templates/policorp/index.html:147
+msgid "Wednesday"
+msgstr ""
+
+#: templates/policorp/index.html:148
+msgid "Thursday"
+msgstr ""
+
+#: templates/policorp/index.html:149
+msgid "Friday"
+msgstr ""
+
+#: templates/policorp/index.html:150
+msgid "Saturday"
+msgstr ""
+
+#: templates/policorp/index.html:154
+msgid "Finish on"
+msgstr "Terminar el"
+
+#: templates/policorp/index.html:168
+msgid "Create"
+msgstr "Crear"
+
+#: templates/policorp/index.html:191
+msgid "Ok"
+msgstr "Aceptar"
+
+#: templates/policorp/index.html:215
+msgid "All"
+msgstr "Todos"
+
+#: templates/policorp/index.html:218
+msgid "Booked"
+msgstr "Reservado"
+
+#: templates/policorp/index.html:221
+msgid "Available"
+msgstr "Disponible"
+
+#: templates/policorp/layout.html:9 templates/policorp/layout.html:26
+msgid "Corporate"
+msgstr "Corporativo"
+
+#: templates/policorp/layout.html:39
+msgid "Location"
+msgstr "Lugar"
+
+#: templates/policorp/layout.html:42
+msgid "Schedule"
+msgstr "Agenda"
+
+#: templates/policorp/layout.html:43
+msgid "Configuration"
+msgstr "Configuración"
+
+#: templates/policorp/layout.html:47
+msgid "Log Out"
+msgstr "Cerrar Sesión"
+
+#: templates/policorp/layout.html:51
+msgid "Log In"
+msgstr "Iniciar Sesión"
+
+#: templates/policorp/login.html:7
+msgid "Welcome Back"
+msgstr "Bienvenido Nuevamente"
+
+#: templates/policorp/login.html:16
+msgid "User"
+msgstr "Usuario"
+
+#: templates/policorp/login.html:19
+msgid "Password"
+msgstr "Contraseña"
+
+#: templates/policorp/login.html:21
+msgid "Log in"
+msgstr "Iniciar sesión"

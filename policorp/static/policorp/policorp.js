@@ -59,7 +59,7 @@ function handleSearchClick(event) {
     date = new Date($datepicker.value());
   }
   else {
-    showMessage('Error', `Invalid Date`);
+    showMessage('Error', gettext('Invalid Date'));
     return;
   }
 
@@ -230,7 +230,7 @@ function handleCreateAvailabilityClick() {
       configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encodeDateTime);
     }
     catch (error) {
-      showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
+      showMessage('Error', gettext('There was an error generating the availability configuration data') + `: ${error}`);
       return;
     }
 
@@ -253,7 +253,7 @@ function handleCreateAvailabilityClick() {
       configs = appendNewAvailabilityDatesToJsonData(configs, days, when, untilDate, encodeDateTime, decodeDateTime);
     }
     catch (error) {
-      showMessage('Error', `There was an error generating the availability configuration data: ${error}`);
+      showMessage('Error', gettext('There was an error generating the availability configuration data') + `: ${error}`);
       return;
     }
 
@@ -269,9 +269,9 @@ function handleCreateAvailabilityClick() {
     })
     .then(errors => {
       if (errors === 0) {
-        showMessage('Success', `You have successfully created an availability configuration`);
+        showMessage(gettext('Success'), gettext('You have successfully created an availability configuration'));
       } else {
-        showMessage('Error', `There were ${errors} errors creating the availability configuration`);
+        showMessage('Error', gettext('There were') + ` ${errors} ` + gettext('errors creating the availability configuration'));
       }
     });
     handleLocationScheduleLinkClick();

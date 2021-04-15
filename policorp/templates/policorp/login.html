@@ -1,8 +1,10 @@
 {% extends "policorp/layout.html" %}
 
+{% load i18n %}
+
 {% block body %}
 
-    <h2>Login</h2>
+    <h2>{% translate 'Welcome Back' %}</h2>
 
     {% if message %}
         <div>{{ message }}</div>
@@ -11,12 +13,12 @@
     <form action="{% url 'policorp:login' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+            <input autofocus class="form-control" type="text" name="username" placeholder="{% translate 'User' %}">
         </div>
         <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+            <input class="form-control" type="password" name="password" placeholder="{% translate 'Password' %}">
         </div>
-        <input class="btn btn-primary" type="submit" value="Login">
+        <input class="btn btn-primary" type="submit" value="{% translate 'Log in' %}">
     </form>
 
 {% endblock %}
