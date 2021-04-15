@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  test:
+  test_python:
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: pauh61syjzkx6$1d%euial5h&y-1=rlr39_z5e&g^7%!en)c$x
@@ -58,6 +58,22 @@ jobs:
         publish_dir: ./coverageReport
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
+
+  test_javascript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install Packages
+      run: npm install
+    - name: Run the tests with coverage report
+      run: npm test
 
   deploy:
     runs-on: ubuntu-latest
