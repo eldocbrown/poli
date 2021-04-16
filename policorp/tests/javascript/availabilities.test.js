@@ -21,7 +21,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskid = '1'
     const taskduration = '120'
     const when = new Date()
-    const untilTime = null
+    const untilDateTime = null
 
     const expectedJSON = [
       {
@@ -31,7 +31,7 @@ describe("createAvailabilitiesJsonData", function() {
       }
     ]
 
-    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encode)).toEqual(expectedJSON)
+    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encode)).toEqual(expectedJSON)
   })
 
   it("returns one availability, with until parameter not late enough to add a second one", () => {
@@ -39,7 +39,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskid = '1'
     const taskduration = '120'
     const when = new Date()
-    const untilTime = new Date(when.getTime() + taskduration*60000).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' }).substring(0,5)
+    const untilDateTime = new Date(when.getTime() + taskduration*60000)
 
     const expectedJSON = [
       {
@@ -49,7 +49,7 @@ describe("createAvailabilitiesJsonData", function() {
       }
     ]
 
-    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encode)).toEqual(expectedJSON)
+    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encode)).toEqual(expectedJSON)
   })
 
   it("returns one availability, with until parameter not late enough to add a second one - #2", () => {
@@ -57,7 +57,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskid = '1'
     const taskduration = '120'
     const when = new Date()
-    const untilTime = new Date(when.getTime() + 1.5*taskduration*60000).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' }).substring(0,5)
+    const untilDateTime = new Date(when.getTime() + 1.5*taskduration*60000)
 
     const expectedJSON = [
       {
@@ -67,7 +67,7 @@ describe("createAvailabilitiesJsonData", function() {
       }
     ]
 
-    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encode)).toEqual(expectedJSON)
+    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encode)).toEqual(expectedJSON)
   })
 
   it("returns two availabilities, with until parameter setting to fit two task durations", () => {
@@ -75,7 +75,7 @@ describe("createAvailabilitiesJsonData", function() {
     const taskid = '1'
     const taskduration = '120'
     const when = new Date()
-    const untilTime = new Date(when.getTime() + 2*taskduration*60000).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' }).substring(0,5)
+    const untilDateTime = new Date(when.getTime() + 2*taskduration*60000)
 
     const expectedJSON = [
       {
@@ -90,7 +90,7 @@ describe("createAvailabilitiesJsonData", function() {
       }
     ]
 
-    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encode)).toEqual(expectedJSON)
+    expect(createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encode)).toEqual(expectedJSON)
   })
 
   it("throws exception, with until parameter setting minor to when parameter", () => {
@@ -98,9 +98,9 @@ describe("createAvailabilitiesJsonData", function() {
     const taskid = '1'
     const taskduration = '120'
     const when = new Date()
-    const untilTime = new Date(when.getTime() - taskduration*60000).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' }).substring(0,5)
+    const untilDateTime = new Date(when.getTime() - taskduration*60000)
 
-    expect(() => createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encode)).toThrow('Invalid time settings')
+    expect(() => createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encode)).toThrow('Invalid time settings')
 
   })
 })
@@ -111,6 +111,7 @@ describe("appendNewAvailabilityDatesToJsonData", function() {
   it("returns the same json when all days are false", () => {
 
     const when = new Date()
+    when.setHours(2, 0, 0, 0)
 
     const initialJSON = [
       {
@@ -130,6 +131,7 @@ describe("appendNewAvailabilityDatesToJsonData", function() {
   it("returns availabilities with today and tomorrow", () => {
 
     const when = new Date()
+    when.setHours(2, 0, 0, 0)
 
     const initialJSON = [
       {
@@ -164,6 +166,7 @@ describe("appendNewAvailabilityDatesToJsonData", function() {
   it("returns availabilities with today and the day after tomorrow", () => {
 
     const when = new Date()
+    when.setHours(2, 0, 0, 0)
     const taskduration = 120
 
     const initialJSON = [

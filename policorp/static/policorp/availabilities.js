@@ -1,6 +1,6 @@
 import { addMinutes } from './dateTimeUtils.js'
 
-export function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encoder) {
+export function createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encoder) {
 
   let json = [{
               "locationid": locationid,
@@ -8,17 +8,14 @@ export function createAvailabilitiesJsonData(locationid, taskid, taskduration, w
               "when": encoder(when)
           }];
 
-  if (untilTime !== null) {
-    let until = new Date(when);
-    until.setHours(untilTime.substring(0, 2));
-    until.setMinutes(untilTime.substring(3, 5));
+  if (untilDateTime !== null) {
 
-    if (until < when) throw "Invalid time settings";
+    if (untilDateTime < when) throw "Invalid time settings";
 
     let newWhenBegin = addMinutes(when, taskduration);
     let newWhenEnd = addMinutes(newWhenBegin, taskduration);
 
-    while (newWhenEnd <= until) {
+    while (newWhenEnd <= untilDateTime) {
       json.push({
                 "locationid": locationid,
                 "taskid": taskid,
@@ -37,12 +34,12 @@ export function appendNewAvailabilityDatesToJsonData(initialAvailabilityJson, da
 
   let json = JSON.parse(JSON.stringify(initialAvailabilityJson));
   let currentDate = new Date(fromDate);
-  currentDate.setHours(0,0,0,0)
   currentDate.setDate(currentDate.getDate() + 1);
+  currentDate.setHours(0,0,0,0)
   while (currentDate <= untilDate) {
     if (days[currentDate.getDay()] === true) {
       initialAvailabilityJson.forEach(a => {
-        let newWhen = dateTimeDecoder(a["when"]);
+        const newWhen = dateTimeDecoder(a["when"]);
         newWhen.setDate(currentDate.getDate());
         newWhen.setMonth(currentDate.getMonth());
         newWhen.setFullYear(currentDate.getFullYear());

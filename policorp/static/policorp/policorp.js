@@ -225,11 +225,15 @@ function handleCreateAvailabilityClick() {
     when.setMinutes($configTimepicker.value().substring(3, 5));
 
     const extendCheck = document.querySelector('#configExtendCheck');
-    let untilTime = null;
-    if (extendCheck.checked == true) { untilTime = $configUntilTimepicker.value(); }
+    let untilDateTime = null;
+    if (extendCheck.checked == true) {
+      const untilTime = $configUntilTimepicker.value()
+      untilDateTime = new Date(when)
+      untilDateTime.setHours(untilTime.substring(0,2), untilTime.substring(3,5))
+    }
     let configs;
     try {
-      configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilTime, encodeDateTime);
+      configs = createAvailabilitiesJsonData(locationid, taskid, taskduration, when, untilDateTime, encodeDateTime);
     }
     catch (error) {
       showMessage('Error', gettext('There was an error generating the availability configuration data') + `: ${error}`);
