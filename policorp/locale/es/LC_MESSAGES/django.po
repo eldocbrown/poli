@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 12:06-0300\n"
+"POT-Creation-Date: 2021-04-16 15:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,95 +18,98 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: templates/policorp/index.html:30 templates/policorp/index.html:74
+#: templates/policorp/index.html:41 templates/policorp/index.html:88
 msgid "Select location"
 msgstr "Seleccionar lugar"
 
-#: templates/policorp/index.html:57
+#: templates/policorp/index.html:71
 msgid "Occupancy"
 msgstr "Ocupación"
 
-#: templates/policorp/index.html:64 templates/policorp/index.html:172
+#: templates/policorp/index.html:78 templates/policorp/index.html:192
+#: views.py:81 views.py:96 views.py:109 views.py:115 views.py:128 views.py:133
+#: views.py:144 views.py:149 views.py:154 views.py:170 views.py:175
+#: views.py:182 views.py:197 views.py:202
 msgid "Unauthorized"
 msgstr "No autorizado"
 
-#: templates/policorp/index.html:70
+#: templates/policorp/index.html:84
 msgid "Configure availabilities"
 msgstr "Configurar disponibilidad"
 
-#: templates/policorp/index.html:83
+#: templates/policorp/index.html:97
 msgid "Select activity"
 msgstr "Seleccionar actividad"
 
-#: templates/policorp/index.html:91
+#: templates/policorp/index.html:105
 msgid "On"
 msgstr "El"
 
-#: templates/policorp/index.html:105
+#: templates/policorp/index.html:122
 msgid "At"
 msgstr "A las"
 
-#: templates/policorp/index.html:120
+#: templates/policorp/index.html:137
 msgid "Extend"
 msgstr "Extender"
 
-#: templates/policorp/index.html:125
+#: templates/policorp/index.html:142
 msgid "Until"
 msgstr "Hasta las"
 
-#: templates/policorp/index.html:140
+#: templates/policorp/index.html:157
 msgid "Repeat on days"
 msgstr "Repetir en los días"
 
-#: templates/policorp/index.html:144
+#: templates/policorp/index.html:161
 msgid "Sunday"
 msgstr ""
 
-#: templates/policorp/index.html:145
+#: templates/policorp/index.html:162
 msgid "Monday"
 msgstr ""
 
-#: templates/policorp/index.html:146
+#: templates/policorp/index.html:163
 msgid "Tuesday"
 msgstr ""
 
-#: templates/policorp/index.html:147
+#: templates/policorp/index.html:164
 msgid "Wednesday"
 msgstr ""
 
-#: templates/policorp/index.html:148
+#: templates/policorp/index.html:165
 msgid "Thursday"
 msgstr ""
 
-#: templates/policorp/index.html:149
+#: templates/policorp/index.html:166
 msgid "Friday"
 msgstr ""
 
-#: templates/policorp/index.html:150
+#: templates/policorp/index.html:167
 msgid "Saturday"
 msgstr ""
 
-#: templates/policorp/index.html:154
+#: templates/policorp/index.html:171
 msgid "Finish on"
 msgstr "Terminar el"
 
-#: templates/policorp/index.html:168
+#: templates/policorp/index.html:188
 msgid "Create"
 msgstr "Crear"
 
-#: templates/policorp/index.html:191
+#: templates/policorp/index.html:211
 msgid "Ok"
 msgstr "Aceptar"
 
-#: templates/policorp/index.html:215
+#: templates/policorp/index.html:235
 msgid "All"
 msgstr "Todos"
 
-#: templates/policorp/index.html:218
+#: templates/policorp/index.html:238
 msgid "Booked"
 msgstr "Reservado"
 
-#: templates/policorp/index.html:221
+#: templates/policorp/index.html:241
 msgid "Available"
 msgstr "Disponible"
 
@@ -149,3 +152,7 @@ msgstr "Contraseña"
 #: templates/policorp/login.html:21
 msgid "Log in"
 msgstr "Iniciar sesión"
+
+#: views.py:34
+msgid "Invalid username and/or password"
+msgstr "Usuario y/o contraseña inválidos"

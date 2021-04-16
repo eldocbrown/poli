@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.translation import gettext as _
 from datetime import datetime, timezone
 import json
 import sys
@@ -30,7 +31,7 @@ def login_view(request):
             return HttpResponseRedirect(reverse("policorp:index"))
         else:
             return render(request, "policorp/login.html", {
-                "message": "Invalid username and/or password."
+                "message": _("Invalid username and/or password")
             })
     else:
         return render(request, "policorp/login.html")
@@ -77,7 +78,7 @@ def book(request, availabilityid):
 
     # Only authenticated users
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     availability = Availability.objects.get(pk=availabilityid)
     booking = Booking.objects.book(availability, request.user)
@@ -92,7 +93,7 @@ def myschedule(request):
 
     # Only authenticated users
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     bookings = Booking.objects.get_by_user(request.user)
 
@@ -105,13 +106,13 @@ def cancelbooking(request, bookingid):
 
     # Only authenticated users
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     b = Booking.objects.get(pk=bookingid)
 
     # Only user who booked allowed to cancel
     if request.user != b.user:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     b = b.cancel()
 
@@ -124,12 +125,12 @@ def mysupervisedlocations(request):
 
     # Only authenticated users
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     user = User.objects.get(username=request.user.username)
 
     if not user.is_supervisor:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     return JsonResponse([l.json() for l in user.get_supervised_locations()], safe=False)
 
@@ -140,17 +141,17 @@ def locationschedule(request, locationid, date):
 
     # Only authenticated, supervisor users allowed
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     user = User.objects.get(username=request.user.username)
 
     if not user.is_supervisor:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     location = Location.objects.get(pk=locationid)
 
     if user not in location.supervisors.all():
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     dateObj = datetime.strptime(date, "%Y%m%d")
     bookings = Booking.objects.get_by_location_and_date(location, dateObj)
@@ -166,19 +167,19 @@ def createavailabilitysingle(request):
 
     # Only authenticated, supervisor users allowed
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     user = User.objects.get(username=request.user.username)
 
     if not user.is_supervisor:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     data = json.loads(request.body)
 
     # User needs to be supervising requested location
     location = Location.objects.get(pk=data.get("locationid"))
     if user not in location.supervisors.all():
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     when = datetime.fromisoformat(data.get("when"))
     task = Task.objects.get(pk=data.get("taskid"))
@@ -193,12 +194,12 @@ def createavailabilities(request):
 
     # Only authenticated, supervisor users allowed
     if not request.user.is_authenticated:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     user = User.objects.get(username=request.user.username)
 
     if not user.is_supervisor:
-        return JsonResponse({"error": "Unauthorized"}, status=401)
+        return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     data = json.loads(request.body)
 
