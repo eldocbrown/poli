@@ -338,7 +338,7 @@ function constructUrlLocationSchedule(locationid, date) {
 
 function createBooking(data) {
   // create booking container
-  a = document.createElement('div');
+  const a = document.createElement('div');
   a.id = 'booking';
   a.dataset.bookingid = data.id;
   a.className = 'container p-3 my-3 border border-dark d-flex flex-row justify-content-between align-items-center bg-info';
@@ -393,7 +393,7 @@ function createAvailability(data) {
 }
 
 function clearNode(node) {
-  var children = Array.from(node.children);
+  const children = Array.from(node.children);
   if (children !== undefined) { children.forEach((child) => { child.remove(); }) };
   node.innerHTML = '';
 }
