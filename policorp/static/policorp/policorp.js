@@ -80,7 +80,7 @@ function handleSearchClick(event) {
         report.classList.remove('d-flex');
         report.classList.add('d-none');
 
-        listHeading.innerHTML = 'Empty Schedule';
+        listHeading.innerHTML = gettext('Empty Schedule');
         list.append(listHeading);
       }
       else {
@@ -88,7 +88,7 @@ function handleSearchClick(event) {
         report.classList.add('d-flex');
 
         listHeading.id = 'scheduleHeading';
-        listHeading.innerHTML = 'Schedule';
+        listHeading.innerHTML = gettext('Schedule');
         list.append(listHeading);
         const node = document.importNode(document.querySelector('#scheduleFilterTemplate').content, true);
         list.append(node);
