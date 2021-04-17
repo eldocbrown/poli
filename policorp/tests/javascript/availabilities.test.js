@@ -183,7 +183,7 @@ describe("appendNewAvailabilityDatesToJsonData", function() {
     ]
 
     const days = [true, true, true, true, true, true, true]
-    days[when.getDay() + 1] = false
+    when.getDay() === 6 ? days[0] = false : days[when.getDay() + 1] = false
     const untilDate = newDatePlusDays(when,2)
     untilDate.setHours(0,0,0,0)
 
