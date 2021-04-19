@@ -3,3 +3,4 @@ psycopg2
 gunicorn
 django-heroku
 python-gettext
+djangorestframework

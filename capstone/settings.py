@@ -42,6 +42,11 @@ if IS_HEROKU_ENV:
             'PORT': os.environ.get('DATABASE_PG_PORT')
         }
     }
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    }
 else:
     SECRET_KEY = 'pauh61syjzkx6$1d%euial5h&y-1=rlr39_z5e&g^7%!en)c$x'
     DEBUG = True
@@ -69,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

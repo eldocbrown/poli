@@ -1,6 +1,8 @@
 from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
 
 from . import views
+from policorp.classViews.availabilityView import AvailabilityView
 
 app_name = "policorp"
 
@@ -18,3 +20,12 @@ urlpatterns = [
     path("locationschedule/<int:locationid>/<str:date>/", views.locationschedule, name="locationschedule"),
     path("createavailabilities/", views.createavailabilities, name="createavailabilities")
 ]
+
+classUrlPatterns = [
+    path('availability/<int:availabilityid>/', AvailabilityView.as_view(), name='availability')
+]
+
+classUrlPatterns = format_suffix_patterns(classUrlPatterns)
+
+for classUrlPattern in classUrlPatterns:
+    urlpatterns.append(classUrlPattern)
