@@ -119,7 +119,7 @@ function handleCancelClick(event) {
       if (!data.error) {
         const task = data.availability.what.name;
         const datetime = toFormattedDateTime(new Date(Date.parse(data.availability.when)), data.availability.what.duration);
-        showMessage('Booking cancelled', `You have successfully cancelled the task ${task} on ${datetime}`);
+        showMessage(gettext('Booking cancelled'), gettext('You have successfully cancelled the task') + ` ${task} ` + gettex('on') + `  ${datetime} `);
       } else {
         console.error(data);
       }

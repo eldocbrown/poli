@@ -1,4 +1,5 @@
 import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } from './availabilities.js'
+import { createActionButton } from './createActionButton.js'
 import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
 
@@ -284,6 +285,28 @@ function handleCreateAvailabilityClick() {
   }
 }
 
+function handleCancelAvailabilityClick(event) {
+  const availabilityId = event.currentTarget.dataset.dataId
+  fetch(`/policorp/availability/${availabilityId}/`, {
+  method: 'DELETE',
+  headers: {'X-CSRFToken': csrftoken},
+  mode: 'same-origin'
+  })
+  .then(response => {
+    if (response.status === 204) {
+      const availabilityElem = document.querySelector(`#availability[data-availabilityid="${availabilityId}"]`)
+      showMessage(gettext('Availability cancelled'), gettext('You have successfully cancelled the availability'))
+      availabilityElem.remove()
+    }
+    else {
+      throw response.error
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  })
+}
+
 // ***************************
 // *** AUXILIARY Functions ***
 // ***************************
@@ -388,6 +411,12 @@ function createAvailability(data) {
   const whatContainer = document.createElement('div');
   whatContainer.innerHTML = data.what.name;
   aInfo.append(whatContainer);
+
+  // create CANCEL action button
+  const aAction = document.createElement('div');
+  aAction.id = 'availabilityCancelAction';
+  aAction.append(createActionButton(document, 'availabilityCancelButton', data.id, 'btn btn-danger btn-sm', gettext('Cancel'), handleCancelAvailabilityClick));
+  a.append(aAction);
 
   return a;
 }
