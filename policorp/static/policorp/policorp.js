@@ -286,25 +286,27 @@ function handleCreateAvailabilityClick() {
 }
 
 function handleCancelAvailabilityClick(event) {
-  const availabilityId = event.currentTarget.dataset.dataId
+  const availabilityId = event.currentTarget.dataset.dataId;
+  const successMsgTitle = gettext('Availability cancelled');
+  const successMsgBody = gettext('You have successfully cancelled the availability')
   fetch(`/policorp/availability/${availabilityId}/`, {
-  method: 'DELETE',
-  headers: {'X-CSRFToken': csrftoken},
-  mode: 'same-origin'
+    method: 'DELETE',
+    headers: {'X-CSRFToken': csrftoken},
+    mode: 'same-origin'
   })
   .then(response => {
     if (response.status === 204) {
-      const availabilityElem = document.querySelector(`#availability[data-availabilityid="${availabilityId}"]`)
-      showMessage(gettext('Availability cancelled'), gettext('You have successfully cancelled the availability'))
-      availabilityElem.remove()
+      showMessage( successMsgTitle, successMsgBody);
+      const availabilityElem = document.querySelector(`#availability[data-availabilityid="${availabilityId}"]`);
+      availabilityElem.remove();
     }
     else {
-      throw response.error
+      throw response.error;
     }
   })
   .catch((error) => {
     console.error('Error:', error);
-  })
+  });
 }
 
 // ***************************
