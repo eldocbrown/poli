@@ -116,7 +116,6 @@ function handleSearchClick(event) {
 
       list.style.display = 'block';
 
-      // TODO: translate labels
       appendDailyOccupancyChart(reportContainer, $datepicker.value(), booked, available);
   })
 }
