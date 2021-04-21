@@ -65,59 +65,7 @@ function handleSearchClick(event) {
     return;
   }
 
-  const url = constructUrlLocationSchedule(dropdownLocationButton.dataset.locationid, date);
-
-  fetch(url)
-  .then(response => response.json())
-  .then(data => {
-
-      const report = document.querySelector('#locationDailyOccupancy');
-      const reportContainer = document.querySelector('#locationDailyOccupancyChart');
-      clearNode(reportContainer);
-      const list = document.querySelector('#locationSchedule');
-      clearNode(list);
-      const listHeading = document.createElement('h5');
-      if (data.schedule.length === 0) {
-        report.classList.remove('d-flex');
-        report.classList.add('d-none');
-
-        listHeading.innerHTML = gettext('Empty Schedule');
-        list.append(listHeading);
-      }
-      else {
-        report.classList.remove('d-none');
-        report.classList.add('d-flex');
-
-        listHeading.id = 'scheduleHeading';
-        listHeading.innerHTML = gettext('Schedule');
-        list.append(listHeading);
-        const node = document.importNode(document.querySelector('#scheduleFilterTemplate').content, true);
-        list.append(node);
-        document.querySelector('#scheduleFilterContainer').addEventListener('schedule_filter', (event) => handleScheduleFilterClick(event));
-
-      }
-
-
-      let booked = 0;
-      let available = 0;
-
-      data.schedule.forEach( (scheduleItem)  => {
-        let element;
-        if (scheduleItem.booking) {
-          element = createBooking(scheduleItem.booking);
-          booked++;
-        }
-        else if (scheduleItem.availability) {
-          element = createAvailability(scheduleItem.availability);
-          available++;
-        }
-        list.append(element);
-      });
-
-      list.style.display = 'block';
-
-      appendDailyOccupancyChart(reportContainer, $datepicker.value(), booked, available);
-  })
+  searchSchedule(date);
 }
 
 function handleScheduleFilterClick(event) {
@@ -297,7 +245,7 @@ function handleCancelAvailabilityClick(event) {
     if (response.status === 204) {
       showMessage( successMsgTitle, successMsgBody);
       const availabilityElem = document.querySelector(`#availability[data-availabilityid="${availabilityId}"]`);
-      availabilityElem.remove();
+      searchSchedule(getDateFromDatePickerValue($datepicker.value(), localeGijGoComponent));
     }
     else {
       throw response.error;
@@ -311,6 +259,63 @@ function handleCancelAvailabilityClick(event) {
 // ***************************
 // *** AUXILIARY Functions ***
 // ***************************
+
+function searchSchedule(date) {
+
+  const url = constructUrlLocationSchedule(dropdownLocationButton.dataset.locationid, date);
+
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+
+      const report = document.querySelector('#locationDailyOccupancy');
+      const reportContainer = document.querySelector('#locationDailyOccupancyChart');
+      clearNode(reportContainer);
+      const list = document.querySelector('#locationSchedule');
+      clearNode(list);
+      const listHeading = document.createElement('h5');
+      if (data.schedule.length === 0) {
+        report.classList.remove('d-flex');
+        report.classList.add('d-none');
+
+        listHeading.innerHTML = gettext('Empty Schedule');
+        list.append(listHeading);
+      }
+      else {
+        report.classList.remove('d-none');
+        report.classList.add('d-flex');
+
+        listHeading.id = 'scheduleHeading';
+        listHeading.innerHTML = gettext('Schedule');
+        list.append(listHeading);
+        const node = document.importNode(document.querySelector('#scheduleFilterTemplate').content, true);
+        list.append(node);
+        document.querySelector('#scheduleFilterContainer').addEventListener('schedule_filter', (event) => handleScheduleFilterClick(event));
+
+      }
+
+
+      let booked = 0;
+      let available = 0;
+
+      data.schedule.forEach( (scheduleItem)  => {
+        let element;
+        if (scheduleItem.booking) {
+          element = createBooking(scheduleItem.booking);
+          booked++;
+        }
+        else if (scheduleItem.availability) {
+          element = createAvailability(scheduleItem.availability);
+          available++;
+        }
+        list.append(element);
+      });
+
+      list.style.display = 'block';
+
+      appendDailyOccupancyChart(reportContainer, $datepicker.value(), booked, available);
+  })
+}
 
 function loadFilters() {
 
