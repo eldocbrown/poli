@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-22 09:44-0300\n"
+"POT-Creation-Date: 2021-04-22 10:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,51 +18,54 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: static/policorp/policorp.js:64
+#: static/policorp/messages.js:1
+msgid "Empty Schedule"
+msgstr "Agenda Vacía"
+
+#: static/policorp/messages.js:2
+msgid "Availability removed"
+msgstr "Disponibilidad eliminada"
+
+#: static/policorp/messages.js:3
+msgid "You have successfully removed the availability"
+msgstr "Ha eliminado exitosamente la disponibilidad"
+
+#: static/policorp/policorp.js:65
 msgid "Invalid Date"
 msgstr "Fecha inválida"
 
-#: static/policorp/policorp.js:187 static/policorp/policorp.js:210
+#: static/policorp/policorp.js:188 static/policorp/policorp.js:211
 msgid "There was an error generating the availability configuration data"
 msgstr "Hubo un error al generar los datos de configuración de disponibilidad"
 
-#: static/policorp/policorp.js:226
+#: static/policorp/policorp.js:227
 msgid "Success"
 msgstr "Éxito"
 
-#: static/policorp/policorp.js:226
+#: static/policorp/policorp.js:227
 msgid "You have successfully created an availability configuration"
 msgstr "Ha creado exitosamente la configuración de disponibilidad"
 
-#: static/policorp/policorp.js:228
+#: static/policorp/policorp.js:229
 msgid "There were"
 msgstr "Hubo"
 
-#: static/policorp/policorp.js:228
+#: static/policorp/policorp.js:229
 msgid "errors creating the availability configuration"
 msgstr "errores al generar los datos de configuración de disponibilidad"
 
-#: static/policorp/policorp.js:237
+#: static/policorp/policorp.js:238
 msgid "Booking cancelled"
 msgstr "Turno cancelado"
 
-#: static/policorp/policorp.js:238
+#: static/policorp/policorp.js:239
 msgid "You have successfully cancelled the booking"
 msgstr "Ha cancelado exitosamente el turno"
 
-#: static/policorp/policorp.js:518
+#: static/policorp/policorp.js:517
 msgid "Booked"
 msgstr "Reservado"
 
-#: static/policorp/policorp.js:524
+#: static/policorp/policorp.js:523
 msgid "Available"
 msgstr "Disponible"
-
-#~ msgid "Empty Schedule"
-#~ msgstr "Agenda Vacía"
-
-#~ msgid "Schedule"
-#~ msgstr "Agenda"
-
-#~ msgid "Availability cancelled"
-#~ msgstr "Disponibilidad cancelada"

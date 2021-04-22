@@ -2,6 +2,7 @@ import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } fr
 import { createActionButton } from './createActionButton.js'
 import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
+import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody } from './messages.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -257,8 +258,6 @@ function handleCancelBookingClick(event) {
 
 function handleCancelAvailabilityClick(event) {
   const availabilityId = event.currentTarget.dataset.dataId;
-  const successMsgTitle = gettext('Availability cancelled');
-  const successMsgBody = gettext('You have successfully cancelled the availability')
   fetch(`/policorp/availability/${availabilityId}/`, {
     method: 'DELETE',
     headers: {'X-CSRFToken': csrftoken},
@@ -266,7 +265,7 @@ function handleCancelAvailabilityClick(event) {
   })
   .then(response => {
     if (response.status === 204) {
-      showMessage( successMsgTitle, successMsgBody);
+      showMessage( availabilityCancelledMsgTitle, availabilityCancelledMsgBody);
       searchSchedule(getDateFromDatePickerValue($datepicker.value(), localeGijGoComponent));
     }
     else {
@@ -300,7 +299,7 @@ function searchSchedule(date) {
         report.classList.remove('d-flex');
         report.classList.add('d-none');
 
-        listHeading.innerHTML = gettext('Empty Schedule');
+        listHeading.innerHTML = emptyScheduleHeading;
         list.append(listHeading);
       }
       else {
