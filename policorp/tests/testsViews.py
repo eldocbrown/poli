@@ -284,7 +284,7 @@ class TestViews(TestCase):
 
     @tag('cancelbooking')
     def test_view_cancelbooking_returns_cancelled_booking(self):
-        """ GIVEN a booking for user foo; WHEN POST /cancelbooking with user foo; THEN json with 2 bookings should be returned"""
+        """ GIVEN a booking for user foo; WHEN POST /cancelbooking with user foo; THEN json with 1 cancelled booking should be returned"""
         user1 = aux.createUser("foo", "foo@example.com", "example")
         availability1 = Availability.objects.get(pk=1)
         b1 = Booking.objects.book(availability1, user1)
@@ -295,6 +295,35 @@ class TestViews(TestCase):
 
         expected_json = Booking.objects.get(pk=b1.id).json()
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('cancelbooking')
+    def test_view_cancelbooking_location_supervisor_can_cancel_a_booking(self):
+        """ GIVEN a booking for user foo in a location supervised by bar; WHEN POST /cancelbooking with user bar; THEN json with 1 cancelled booking should be returned"""
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        supervisor = User.objects.create_supervisor("bar", "bar@example.com", "example")
+        availability1 = Availability.objects.get(pk=1)
+        availability1.where.assign_supervisor(supervisor)
+        b1 = Booking.objects.book(availability1, user1)
+
+        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
+        request.user = supervisor
+        response = cancelbooking(request, b1.id)
+
+        expected_json = Booking.objects.get(pk=b1.id).json()
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+    @tag('cancelbooking')
+    def test_view_cancelbooking_supervisor_not_supervising_location_cannot_cancel_a_booking(self):
+        """ GIVEN a booking for user foo in a location supervised by bar; WHEN POST /cancelbooking with user bar; THEN json with 1 cancelled booking should be returned"""
+        user1 = aux.createUser("foo", "foo@example.com", "example")
+        supervisor = User.objects.create_supervisor("bar", "bar@example.com", "example")
+        availability1 = Availability.objects.get(pk=1)
+        b1 = Booking.objects.book(availability1, user1)
+
+        request = self.factory.post(reverse('policorp:cancelbooking', kwargs={'bookingid': b1.id}))
+        request.user = supervisor
+        response = cancelbooking(request, b1.id)
+        self.assertEqual(response.status_code, 401)
 
     @tag('mysupervisedlocations')
     def test_view_mysupervisedlocations_returns_200(self):

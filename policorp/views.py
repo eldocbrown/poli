@@ -109,9 +109,11 @@ def cancelbooking(request, bookingid):
         return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     b = Booking.objects.get(pk=bookingid)
+    location = b.availability.where
+    user = User.objects.get(username=request.user.username)
 
-    # Only user who booked allowed to cancel
-    if request.user != b.user:
+    # Only users who booked or that supervise the location are allowed to cancel
+    if request.user != b.user and location not in user.get_supervised_locations():
         return JsonResponse({"error": _("Unauthorized")}, status=401)
 
     b = b.cancel()
