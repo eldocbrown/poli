@@ -232,6 +232,29 @@ function handleCreateAvailabilityClick() {
   }
 }
 
+function handleCancelBookingClick(event) {
+  const bookingId = event.currentTarget.dataset.dataId;
+  const successMsgTitle = gettext('Booking cancelled');
+  const successMsgBody = gettext('You have successfully cancelled the booking')
+  fetch(`/policorp/cancelbooking/${bookingId}/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    mode: 'same-origin'
+  })
+  .then(response => {
+    if (response.status === 201) {
+      showMessage( successMsgTitle, successMsgBody);
+      searchSchedule(getDateFromDatePickerValue($datepicker.value(), localeGijGoComponent));
+    }
+    else {
+      throw response.error;
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
+
 function handleCancelAvailabilityClick(event) {
   const availabilityId = event.currentTarget.dataset.dataId;
   const successMsgTitle = gettext('Availability cancelled');
@@ -244,7 +267,6 @@ function handleCancelAvailabilityClick(event) {
   .then(response => {
     if (response.status === 204) {
       showMessage( successMsgTitle, successMsgBody);
-      const availabilityElem = document.querySelector(`#availability[data-availabilityid="${availabilityId}"]`);
       searchSchedule(getDateFromDatePickerValue($datepicker.value(), localeGijGoComponent));
     }
     else {
@@ -393,6 +415,12 @@ function createBooking(data) {
   whoContainer.innerHTML = data.username;
   aInfo.append(whoContainer);
 
+  // create CANCEL action button
+  const aAction = document.createElement('div');
+  aAction.id = 'bookingCancelAction';
+  aAction.append(createActionButton(document, 'bookingCancelButton', data.id, 'btn btn-danger btn-sm', gettext('Cancel'), handleCancelBookingClick));
+  a.append(aAction);
+
   return a;
 }
 
@@ -421,7 +449,7 @@ function createAvailability(data) {
   // create CANCEL action button
   const aAction = document.createElement('div');
   aAction.id = 'availabilityCancelAction';
-  aAction.append(createActionButton(document, 'availabilityCancelButton', data.id, 'btn btn-danger btn-sm', gettext('Cancel'), handleCancelAvailabilityClick));
+  aAction.append(createActionButton(document, 'availabilityCancelButton', data.id, 'btn btn-warning btn-sm', gettext('Remove'), handleCancelAvailabilityClick));
   a.append(aAction);
 
   return a;
