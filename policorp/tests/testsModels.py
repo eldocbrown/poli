@@ -580,7 +580,7 @@ class TestBooking(TestCase):
         user = aux.createUser("foo", "foo@example.com", "example")
         booking = Booking.objects.book(availability, user)
 
-        expected_json = {'id': 1, 'availability': availability.json(), 'username': user.username}
+        expected_json = {'id': 1, 'availability': availability.json(), 'username': user.username }
 
         self.assertEqual(booking.json()["availability"] , expected_json["availability"])
         self.assertEqual(booking.json()["username"], expected_json["username"])

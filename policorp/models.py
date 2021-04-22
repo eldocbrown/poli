@@ -1,8 +1,8 @@
 from django.db import models
-from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager, MyUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
+from .managers import AvailabilityManager, LocationManager, TaskManager, BookingManager, MyUserManager
 
 # Create your models here.
 
