@@ -3,6 +3,7 @@ import { createActionButton } from './createActionButton.js'
 import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
 import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody } from './messages.js'
+import { fetchUser } from './user.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -398,20 +399,43 @@ function createBooking(data) {
   aInfo.id = 'bookingInfo';
   a.append(aInfo);
 
+  const whenWhatContainer = document.createElement('div');
+  whenWhatContainer.className = 'd-flex flex-row';
+
   // WHEN
   const whenContainer = document.createElement('div');
   whenContainer.className = 'font-weight-bold'
   whenContainer.innerHTML = toFormattedTime(new Date(Date.parse(data.availability.when)));
-  aInfo.append(whenContainer);
+  whenWhatContainer.append(whenContainer);
+
+  const spacingContainer = document.createElement('div');
+  spacingContainer.innerHTML = '-';
+  spacingContainer.style.margin = '0px 5px 0px 5px';
+  whenWhatContainer.append(spacingContainer);
 
   // WHAT
   const whatContainer = document.createElement('div');
+  whatContainer.className = 'font-weight-bold'
   whatContainer.innerHTML = data.availability.what.name;
-  aInfo.append(whatContainer);
+  whenWhatContainer.append(whatContainer);
+
+  aInfo.append(whenWhatContainer)
 
   // WHO
   const whoContainer = document.createElement('div');
-  whoContainer.innerHTML = data.username;
+  whoContainer.id = 'whoContainer';
+  fetchUser(data.username)
+    .then(user => {
+      const nameElem = document.createElement('div')
+      nameElem.innerHTML = user.last_name + (user.last_name && user.first_name && ', ') + user.first_name
+      whoContainer.append(nameElem);
+      const emailElem = document.createElement('div')
+      emailElem.innerHTML = user.email;
+      whoContainer.append(emailElem);
+      const usernameElem = document.createElement('div')
+      usernameElem.innerHTML = user.username
+      whoContainer.append(usernameElem);
+    })
   aInfo.append(whoContainer);
 
   // create CANCEL action button
@@ -435,15 +459,25 @@ function createAvailability(data) {
   aInfo.id = 'availabilityInfo';
   a.append(aInfo);
 
+  const whenWhatContainer = document.createElement('div');
+  whenWhatContainer.className = 'd-flex flex-row';
+
   // WHEN
   const whenContainer = document.createElement('div');
   whenContainer.innerHTML = toFormattedTime(new Date(Date.parse(data.when)));
-  aInfo.append(whenContainer);
+  whenWhatContainer.append(whenContainer);
+
+  const spacingContainer = document.createElement('div');
+  spacingContainer.innerHTML = '-';
+  spacingContainer.style.margin = '0px 5px 0px 5px';
+  whenWhatContainer.append(spacingContainer);
 
   // WHAT
   const whatContainer = document.createElement('div');
   whatContainer.innerHTML = data.what.name;
-  aInfo.append(whatContainer);
+  whenWhatContainer.append(whatContainer);
+
+  aInfo.append(whenWhatContainer)
 
   // create CANCEL action button
   const aAction = document.createElement('div');
