@@ -495,7 +495,7 @@ function clearNode(node) {
 }
 
 function toFormattedTime(datetimeObj) {
-  const timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  const timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   return (timeFrom);
 }
 
