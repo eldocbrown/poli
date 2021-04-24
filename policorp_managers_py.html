@@ -115,8 +115,8 @@
     <p id="t61" class="pln"><span class="n"><a href="#t61">61</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p id="t62" class="run"><span class="n"><a href="#t62">62</a></span><span class="t"><span class="key">class</span> <span class="nam">BookingManager</span><span class="op">(</span><span class="nam">models</span><span class="op">.</span><span class="nam">Manager</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t63" class="pln"><span class="n"><a href="#t63">63</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t64" class="run"><span class="n"><a href="#t64">64</a></span><span class="t">    <span class="key">def</span> <span class="nam">book</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">availability</span><span class="op">,</span> <span class="nam">user</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t65" class="run"><span class="n"><a href="#t65">65</a></span><span class="t">        <span class="nam">b</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">create</span><span class="op">(</span><span class="nam">availability</span><span class="op">=</span><span class="nam">availability</span><span class="op">,</span> <span class="nam">user</span><span class="op">=</span><span class="nam">user</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t64" class="run"><span class="n"><a href="#t64">64</a></span><span class="t">    <span class="key">def</span> <span class="nam">book</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">availability</span><span class="op">,</span> <span class="nam">user</span><span class="op">,</span> <span class="nam">note</span><span class="op">=</span><span class="str">""</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t65" class="run"><span class="n"><a href="#t65">65</a></span><span class="t">        <span class="nam">b</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">create</span><span class="op">(</span><span class="nam">availability</span><span class="op">=</span><span class="nam">availability</span><span class="op">,</span> <span class="nam">user</span><span class="op">=</span><span class="nam">user</span><span class="op">,</span> <span class="nam">note</span><span class="op">=</span><span class="nam">note</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t66" class="run"><span class="n"><a href="#t66">66</a></span><span class="t">        <span class="nam">availability</span><span class="op">.</span><span class="nam">book</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t67" class="run"><span class="n"><a href="#t67">67</a></span><span class="t">        <span class="key">return</span> <span class="nam">b</span>&nbsp;</span><span class="r"></span></p>
     <p id="t68" class="pln"><span class="n"><a href="#t68">68</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -152,7 +152,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.5</a>,
-            created at 2021-04-24 09:50 +0000
+            created at 2021-04-24 17:53 +0000
         </p>
     </div>
 </div>
