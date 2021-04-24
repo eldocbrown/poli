@@ -46,3 +46,11 @@
 #locationDailyOccupancyChart {
   height: 120px;
 }
+
+.note {
+  font-style: italic;
+}
+
+.actionButton {
+  margin: 10px;
+}

@@ -2,7 +2,7 @@ import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } fr
 import { createActionButton } from './createActionButton.js'
 import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
-import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody } from './messages.js'
+import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel } from './messages.js'
 import { fetchUser } from './user.js'
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -438,9 +438,17 @@ function createBooking(data) {
     })
   aInfo.append(whoContainer);
 
+  // NOTE
+  const noteContainer = document.createElement('div');
+  noteContainer.id = 'noteContainer';
+  noteContainer.className = 'note';
+  if (data.note) { noteContainer.innerHTML = `${noteLabel}: ${data.note}`; }
+  aInfo.append(noteContainer);
+
   // create CANCEL action button
   const aAction = document.createElement('div');
   aAction.id = 'bookingCancelAction';
+  aAction.className = 'actionButton';
   aAction.append(createActionButton(document, 'bookingCancelButton', data.id, 'btn btn-danger btn-sm', gettext('Cancel'), handleCancelBookingClick));
   a.append(aAction);
 

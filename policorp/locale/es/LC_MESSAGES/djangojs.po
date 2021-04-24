@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-22 10:06-0300\n"
+"POT-Creation-Date: 2021-04-24 15:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,42 +30,46 @@ msgstr "Disponibilidad eliminada"
 msgid "You have successfully removed the availability"
 msgstr "Ha eliminado exitosamente la disponibilidad"
 
-#: static/policorp/policorp.js:65
+#: static/policorp/messages.js:4
+msgid "Note"
+msgstr "Nota"
+
+#: static/policorp/policorp.js:66
 msgid "Invalid Date"
 msgstr "Fecha inválida"
 
-#: static/policorp/policorp.js:188 static/policorp/policorp.js:211
+#: static/policorp/policorp.js:189 static/policorp/policorp.js:212
 msgid "There was an error generating the availability configuration data"
 msgstr "Hubo un error al generar los datos de configuración de disponibilidad"
 
-#: static/policorp/policorp.js:227
+#: static/policorp/policorp.js:228
 msgid "Success"
 msgstr "Éxito"
 
-#: static/policorp/policorp.js:227
+#: static/policorp/policorp.js:228
 msgid "You have successfully created an availability configuration"
 msgstr "Ha creado exitosamente la configuración de disponibilidad"
 
-#: static/policorp/policorp.js:229
+#: static/policorp/policorp.js:230
 msgid "There were"
 msgstr "Hubo"
 
-#: static/policorp/policorp.js:229
+#: static/policorp/policorp.js:230
 msgid "errors creating the availability configuration"
 msgstr "errores al generar los datos de configuración de disponibilidad"
 
-#: static/policorp/policorp.js:238
+#: static/policorp/policorp.js:239
 msgid "Booking cancelled"
 msgstr "Turno cancelado"
 
-#: static/policorp/policorp.js:239
+#: static/policorp/policorp.js:240
 msgid "You have successfully cancelled the booking"
 msgstr "Ha cancelado exitosamente el turno"
 
-#: static/policorp/policorp.js:517
+#: static/policorp/policorp.js:559
 msgid "Booked"
 msgstr "Reservado"
 
-#: static/policorp/policorp.js:523
+#: static/policorp/policorp.js:565
 msgid "Available"
 msgstr "Disponible"
