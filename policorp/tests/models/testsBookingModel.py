@@ -137,3 +137,26 @@ class TestBooking(TestCase):
         result = Booking.objects.get_by_location_and_date(availability1.where, datetime(2021,1,10, 0, 0, 0, 0, timezone.utc) )
 
         self.assertEqual(len(result), 0)
+
+    def test_book_availability_with_notes(self):
+        """ Booking an availability with notes, saves those notes """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        note = "Patient: Wilfredo"
+        b = Booking.objects.book(availability, user, note)
+        self.assertEqual(len(Booking.objects.filter(availability=availability)), 1)
+        self.assertEqual(Booking.objects.filter(availability=availability)[0].user, user)
+        self.assertEqual(Booking.objects.filter(availability=availability)[0].note, note)
+
+    def test_booking_serialize_json_with_note(self):
+        """ GIVEN a booking; WHEN requesting json serialization; THEN it should be returned in json format """
+        availability = Availability.objects.get(pk=1)
+        user = aux.createUser("foo", "foo@example.com", "example")
+        note = "Patient: Wilfredo"
+        booking = Booking.objects.book(availability, user, note)
+
+        expected_json = {'id': 1, 'availability': availability.json(), 'username': user.username, 'note': note }
+
+        self.assertEqual(booking.json()["availability"] , expected_json["availability"])
+        self.assertEqual(booking.json()["username"], expected_json["username"])
+        self.assertEqual(booking.json()["note"], expected_json["note"])
