@@ -92,6 +92,7 @@ class Booking(models.Model):
     availability = models.ForeignKey(Availability, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cancelled = models.BooleanField(default=False)
+    note = models.TextField(default="")
 
     # Managers
     objects = BookingManager()
@@ -101,7 +102,8 @@ class Booking(models.Model):
         return {
                 'id': self.id,
                 'availability': self.availability.json(),
-                'username': self.user.username
+                'username': self.user.username,
+                'note': self.note
         }
 
     # Operations

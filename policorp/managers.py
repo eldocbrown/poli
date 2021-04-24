@@ -61,8 +61,8 @@ class TaskManager(models.Manager):
 
 class BookingManager(models.Manager):
 
-    def book(self, availability, user):
-        b = self.create(availability=availability, user=user)
+    def book(self, availability, user, note=""):
+        b = self.create(availability=availability, user=user, note=note)
         availability.book()
         return b
 
