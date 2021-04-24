@@ -1,0 +1,12 @@
+{% load static %}
+
+{% load i18n %}
+
+<div id="bookOnTheFlyContainer">
+  {% if user.is_supervisor %}
+  <h5>{% translate 'Book on the fly' %}</h5>
+
+  {% else %}
+  {% translate 'Unauthorized' %}
+  {% endif %}
+</div>
