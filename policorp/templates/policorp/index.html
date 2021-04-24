@@ -14,185 +14,192 @@
 
 {% block body %}
 
-{% get_current_language as LANGUAGE_CODE %}
+  {% get_current_language as LANGUAGE_CODE %}
 
-<script>
-  const loginurl = "{% url 'policorp:login' %}"
-  const csrftoken = '{{ csrf_token }}'
-  const username = '{{ user.username }}'
+  <script>
+    const loginurl = "{% url 'policorp:login' %}"
+    const csrftoken = '{{ csrf_token }}'
+    const username = '{{ user.username }}'
 
-  let localeGijGoComponent = 'en-us'
-  let formatGijGoDateComponent = 'mm/dd/yyyy'
-  const optionsGijGoDateComponent = { year: 'numeric', month: '2-digit', day: '2-digit' }
-  if ('{{LANGUAGE_CODE}}' === 'es') {
-    localeGijGoComponent = 'es-es'
-    formatGijGoDateComponent = 'dd/mm/yyyy'
-  }
-</script>
+    let localeGijGoComponent = 'en-us'
+    let formatGijGoDateComponent = 'mm/dd/yyyy'
+    const optionsGijGoDateComponent = { year: 'numeric', month: '2-digit', day: '2-digit' }
+    if ('{{LANGUAGE_CODE}}' === 'es') {
+      localeGijGoComponent = 'es-es'
+      formatGijGoDateComponent = 'dd/mm/yyyy'
+    }
+  </script>
 
-<div id="locationScheduleContainer">
+  <div id="locationScheduleContainer">
 
-  {% if user.is_supervisor %}
+    {% if user.is_supervisor %}
 
-  <div id="filter" class="d-flex flex-wrap">
-    <div id="locationSelector">
-      <div class="dropdown">
-        <button id="dropdownLocationButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% translate 'Select location' %}
-        </button>
-        <div id="locationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <div id="filter" class="d-flex flex-wrap">
+      <div id="locationSelector">
+        <div class="dropdown">
+          <button id="dropdownLocationButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% translate 'Select location' %}
+          </button>
+          <div id="locationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          </div>
+        </div>
+        <div id="locationList">
         </div>
       </div>
-      <div id="locationList">
+      <div id="datepickerContainer">
+        <input id="datepicker" width="276" />
+        <script>
+          let date = new Date();
+          var $datepicker = $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            //value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
+            value: date.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+            width: 180,
+            locale: localeGijGoComponent,
+            format: formatGijGoDateComponent
+          });
+        </script>
+      </div>
+      <button id="lookupBookingsButton" type="button" class="btn btn-primary" aria-label="Search" disabled>
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
+          <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"></path>
+        </svg>
+      </button>
+    </div>
+    <div id="locationDailyOccupancy" class="d-none flex-column">
+      <h5>{% translate 'Occupancy' %}</h5>
+      <div id="locationDailyOccupancyChart" class="d-flex">
       </div>
     </div>
-    <div id="datepickerContainer">
-      <input id="datepicker" width="276" />
+    <div id="locationSchedule"></div>
+  </div>
+  {% else %}
+  {% translate 'Unauthorized' %}
+  {% endif %}
+
+
+  <div id="locationConfigurationContainer">
+    {% if user.is_supervisor %}
+    <h5>{% translate 'Configure availabilities' %}</h5>
+    <div id="configLocationSelector">
+      <div class="dropdown">
+        <button id="configLocationDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% translate 'Select location' %}
+        </button>
+        <div id="configLocationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        </div>
+      </div>
+    </div>
+    <div id="configTaskSelector">
+      <div class="dropdown">
+        <button id="configTaskDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% translate 'Select activity' %}
+        </button>
+        <div id="configTaskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        </div>
+      </div>
+    </div>
+    <div id="configDatepickerContainer" class="d-flex flex-row align-items-center">
+      <label class="form-check-label" for="configDatepicker">
+        {% translate 'On' %}:&nbsp;
+      </label>
+      <input id="configDatepicker" width="276" />
       <script>
-        let date = new Date();
-        var $datepicker = $('#datepicker').datepicker({
+        let configDate = new Date();
+        var $configDatepicker = $('#configDatepicker').datepicker({
           uiLibrary: 'bootstrap4',
-          //value: `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`,
-          value: date.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+          value: configDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+          //value: `${configDate.getMonth() + 1}/${configDate.getDate()}/${configDate.getFullYear()}`,
           width: 180,
           locale: localeGijGoComponent,
           format: formatGijGoDateComponent
         });
       </script>
     </div>
-    <button id="lookupBookingsButton" type="button" class="btn btn-primary" aria-label="Search" disabled>
-      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"></path>
-        <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"></path>
-      </svg>
+    <div id="configTimepickerContainer" class="d-flex flex-row align-items-center">
+      <label class="form-check-label" for="configTimepicker">
+        {% translate 'At' %}:&nbsp;
+      </label>
+      <input id="configTimepicker" width="276" />
+      <script>
+        var $configTimepicker = $('#configTimepicker').timepicker({
+          uiLibrary: 'bootstrap4',
+          mode: '24hr',
+          value: '08:00',
+          width: 180
+        });
+      </script>
+    </div>
+    <div class="form-check" id="configExtendCheckContainer">
+      <input class="form-check-input" type="checkbox" value="" id="configExtendCheck">
+      <label class="form-check-label" for="configExtendCheck">
+        {% translate 'Extend' %}
+      </label>
+    </div>
+    <div id="configUntilTimepickerContainer" class="d-none flex-row align-items-center">
+      <label class="form-check-label" for="configUntilTimepicker">
+        {% translate 'Until' %}:&nbsp;
+      </label>
+      <input id="configUntilTimepicker" width="276" />
+      <script>
+        var $configUntilTimepicker = $('#configUntilTimepicker').timepicker({
+          uiLibrary: 'bootstrap4',
+          mode: '24hr',
+          value: '18:00',
+          width: 180
+        });
+      </script>
+    </div>
+    <div class="form-check" id="configRepeatDaysCheckContainer">
+      <input class="form-check-input" type="checkbox" value="" id="configRepeatDaysCheck">
+      <label class="form-check-label" for="configRepeatDaysCheck">
+        {% translate 'Repeat on days' %}
+      </label>
+    </div>
+    <div class="btn-group d-none flex-wrap" role="group" id="daysOfWeekContainer">
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Sunday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Monday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Tuesday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Wednesday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Thursday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Friday' %}</button>
+      <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Saturday' %}</button>
+    </div>
+    <div id="configUntilDatepickerContainer" class="d-none flex-row align-items-center">
+      <label class="form-check-label" for="configUntilDatepicker">
+        {% translate 'Finish on' %}:&nbsp;
+      </label>
+      <input id="configUntilDatepicker" width="276" />
+      <script>
+        let configUntilDate = new Date();
+        configUntilDate.setDate(configUntilDate.getDate()+1);
+        var $configUntilDatepicker = $('#configUntilDatepicker').datepicker({
+          uiLibrary: 'bootstrap4',
+          value: configUntilDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
+          //value: `${configUntilDate.getMonth() + 1}/${configUntilDate.getDate()}/${configUntilDate.getFullYear()}`,
+          width: 180,
+          locale: localeGijGoComponent,
+          format: formatGijGoDateComponent
+        });
+      </script>
+    </div>
+    <button id="createSingleAvailabilityButton" type="button" class="btn btn-primary" aria-label="Create" disabled>
+      {% translate 'Create' %}
     </button>
   </div>
-  <div id="locationDailyOccupancy" class="d-none flex-column">
-    <h5>{% translate 'Occupancy' %}</h5>
-    <div id="locationDailyOccupancyChart" class="d-flex">
-    </div>
-  </div>
-  <div id="locationSchedule"></div>
-</div>
-{% else %}
-{% translate 'Unauthorized' %}
-{% endif %}
-
-
-<div id="locationConfigurationContainer">
-  {% if user.is_supervisor %}
-  <h5>{% translate 'Configure availabilities' %}</h5>
-  <div id="configLocationSelector">
-    <div class="dropdown">
-      <button id="configLocationDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% translate 'Select location' %}
-      </button>
-      <div id="configLocationDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      </div>
-    </div>
-  </div>
-  <div id="configTaskSelector">
-    <div class="dropdown">
-      <button id="configTaskDropdownButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% translate 'Select activity' %}
-      </button>
-      <div id="configTaskDropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      </div>
-    </div>
-  </div>
-  <div id="configDatepickerContainer" class="d-flex flex-row align-items-center">
-    <label class="form-check-label" for="configDatepicker">
-      {% translate 'On' %}:&nbsp;
-    </label>
-    <input id="configDatepicker" width="276" />
-    <script>
-      let configDate = new Date();
-      var $configDatepicker = $('#configDatepicker').datepicker({
-        uiLibrary: 'bootstrap4',
-        value: configDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
-        //value: `${configDate.getMonth() + 1}/${configDate.getDate()}/${configDate.getFullYear()}`,
-        width: 180,
-        locale: localeGijGoComponent,
-        format: formatGijGoDateComponent
-      });
-    </script>
-  </div>
-  <div id="configTimepickerContainer" class="d-flex flex-row align-items-center">
-    <label class="form-check-label" for="configTimepicker">
-      {% translate 'At' %}:&nbsp;
-    </label>
-    <input id="configTimepicker" width="276" />
-    <script>
-      var $configTimepicker = $('#configTimepicker').timepicker({
-        uiLibrary: 'bootstrap4',
-        mode: '24hr',
-        value: '08:00',
-        width: 180
-      });
-    </script>
-  </div>
-  <div class="form-check" id="configExtendCheckContainer">
-    <input class="form-check-input" type="checkbox" value="" id="configExtendCheck">
-    <label class="form-check-label" for="configExtendCheck">
-      {% translate 'Extend' %}
-    </label>
-  </div>
-  <div id="configUntilTimepickerContainer" class="d-none flex-row align-items-center">
-    <label class="form-check-label" for="configUntilTimepicker">
-      {% translate 'Until' %}:&nbsp;
-    </label>
-    <input id="configUntilTimepicker" width="276" />
-    <script>
-      var $configUntilTimepicker = $('#configUntilTimepicker').timepicker({
-        uiLibrary: 'bootstrap4',
-        mode: '24hr',
-        value: '18:00',
-        width: 180
-      });
-    </script>
-  </div>
-  <div class="form-check" id="configRepeatDaysCheckContainer">
-    <input class="form-check-input" type="checkbox" value="" id="configRepeatDaysCheck">
-    <label class="form-check-label" for="configRepeatDaysCheck">
-      {% translate 'Repeat on days' %}
-    </label>
-  </div>
-  <div class="btn-group d-none flex-wrap" role="group" id="daysOfWeekContainer">
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Sunday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Monday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Tuesday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Wednesday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Thursday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Friday' %}</button>
-    <button type="button" class="btn btn-outline-secondary" data-toggle="button" aria-pressed="false" autocomplete="off">{% translate 'Saturday' %}</button>
-  </div>
-  <div id="configUntilDatepickerContainer" class="d-none flex-row align-items-center">
-    <label class="form-check-label" for="configUntilDatepicker">
-      {% translate 'Finish on' %}:&nbsp;
-    </label>
-    <input id="configUntilDatepicker" width="276" />
-    <script>
-      let configUntilDate = new Date();
-      configUntilDate.setDate(configUntilDate.getDate()+1);
-      var $configUntilDatepicker = $('#configUntilDatepicker').datepicker({
-        uiLibrary: 'bootstrap4',
-        value: configUntilDate.toLocaleDateString(localeGijGoComponent, optionsGijGoDateComponent),
-        //value: `${configUntilDate.getMonth() + 1}/${configUntilDate.getDate()}/${configUntilDate.getFullYear()}`,
-        width: 180,
-        locale: localeGijGoComponent,
-        format: formatGijGoDateComponent
-      });
-    </script>
-  </div>
-  <button id="createSingleAvailabilityButton" type="button" class="btn btn-primary" aria-label="Create" disabled>
-    {% translate 'Create' %}
-  </button>
-</div>
   {% else %}
   {% translate 'Unauthorized' %}
   {% endif %}
-</div>
 
+  <div id="bookOnTheFlyContainer">
+    {% if user.is_supervisor %}
+    <h5>{% translate 'Book on the fly' %}</h5>
+
+    {% else %}
+    {% translate 'Unauthorized' %}
+    {% endif %}
+  </div>
 
 <!-- Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

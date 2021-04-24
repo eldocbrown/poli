@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   loadFilters();
   document.querySelector('#locationScheduleContainer').style.display = 'block';
   document.querySelector('#locationConfigurationContainer').style.display = 'none';
+  document.querySelector('#bookOnTheFlyContainer').style.display = 'none';
   document.querySelector('#location-schedule-link').addEventListener('click', () => handleLocationScheduleLinkClick());
   document.querySelector('#location-config-link').addEventListener('click', () => handleLocationConfigurationLinkClick());
+  document.querySelector('#book-on-the-fly-link').addEventListener('click', () => handleBookOnTheFlyLinkClick());
   document.querySelector('#lookupBookingsButton').addEventListener('click', (event) => handleSearchClick(event));
   document.querySelector('#createSingleAvailabilityButton').addEventListener('click', () => handleCreateAvailabilityClick());
   document.querySelector('#configExtendCheck').addEventListener('click', (event) => handleExtendClick(event));
@@ -28,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function handleLocationScheduleLinkClick() {
   document.querySelector('#locationScheduleContainer').style.display = 'block';
   document.querySelector('#locationConfigurationContainer').style.display = 'none';
+  document.querySelector('#bookOnTheFlyContainer').style.display = 'none';
 }
 
 function handleLocationConfigurationLinkClick() {
@@ -39,6 +42,13 @@ function handleLocationConfigurationLinkClick() {
 
   document.querySelector('#locationScheduleContainer').style.display = 'none';
   document.querySelector('#locationConfigurationContainer').style.display = 'block';
+  document.querySelector('#bookOnTheFlyContainer').style.display = 'none';
+}
+
+function handleBookOnTheFlyLinkClick() {
+  document.querySelector('#locationScheduleContainer').style.display = 'none';
+  document.querySelector('#locationConfigurationContainer').style.display = 'none';
+  document.querySelector('#bookOnTheFlyContainer').style.display = 'block';
 }
 
 // *** SCHEDULE EVENTS ***
