@@ -4,3 +4,11 @@ export const availabilityCancelledMsgBody = gettext('You have successfully remov
 export const noteLabel = gettext('Note')
 export const selectLocation = gettext('Select location')
 export const selectActivity = gettext('Select activity')
+export const invalidDateMsg = gettext('Invalid date')
+export const formNotValid = gettext('Form not valid')
+
+export function showMessage(title, message) {
+  document.querySelector('#messageModalLabel').innerHTML = title;
+  document.querySelector('#messageModalBody').innerHTML = message;
+  $("#messageModal").modal('show');
+}

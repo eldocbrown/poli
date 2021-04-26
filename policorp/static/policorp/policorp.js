@@ -2,7 +2,7 @@ import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } fr
 import { createActionButton } from './createActionButton.js'
 import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
-import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel } from './messages.js'
+import { showMessage, emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel } from './messages.js'
 import { fetchUser } from './user.js'
 import { populateDropDownLocations } from './populateDropDownLocations.js'
 import { populateDropDownTasks } from './populateDropDownTasks.js'
@@ -491,12 +491,6 @@ function evaluateCreateSingleAvailabilityState() {
     button.disabled = false;
     button.style.cursor = 'pointer';
   }
-}
-
-function showMessage(title, message) {
-  document.querySelector('#messageModalLabel').innerHTML = title;
-  document.querySelector('#messageModalBody').innerHTML = message;
-  $("#messageModal").modal('show');
 }
 
 function getAvailabilitiesResponseErrors(response) {

@@ -8,7 +8,10 @@
   {% if user.is_supervisor %}
   <h5>{% translate 'Book on the fly' %}</h5>
 
-  <div class="locationSelector">
+  <div class="locationSelector d-flex flex-row align-items-center">
+    <label class="form-check-label">
+      {% translate 'Where' %}:&nbsp;
+    </label>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% translate 'Select location' %}
@@ -18,7 +21,10 @@
     </div>
   </div>
 
-  <div class="taskSelector">
+  <div class="taskSelector d-flex flex-row align-items-center">
+    <label class="form-check-label">
+      {% translate 'What' %}:&nbsp;
+    </label>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% translate 'Select activity' %}
@@ -26,6 +32,24 @@
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
       </div>
     </div>
+  </div>
+
+  <div class="dateTimePickerContainer d-flex flex-row align-items-center">
+    <label class="form-check-label">
+      {% translate 'When' %}:&nbsp;
+    </label>
+    <input name="datetime" width="312" />
+  </div>
+
+  <div class="noteContainer d-flex flex-column">
+    <label class="form-check-label">
+      {% translate 'Note' %}:
+    </label>
+    <textarea class="note"></textarea>
+  </div>
+
+  <div class="buttonContainer">
+    <button class="btn btn-primary" disabled>{% translate 'Book' %}</button>
   </div>
 
   {% else %}
