@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-16 15:28-0300\n"
+"POT-Creation-Date: 2021-04-26 18:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,28 +18,54 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: templates/policorp/index.html:41 templates/policorp/index.html:88
+#: templates/policorp/bookonthefly.html:9 templates/policorp/layout.html:45
+msgid "Book on the fly"
+msgstr "Reserva inmediata"
+
+#: templates/policorp/bookonthefly.html:13
+msgid "Where"
+msgstr "Dónde"
+
+#: templates/policorp/bookonthefly.html:17 templates/policorp/index.html:41
+#: templates/policorp/index.html:88
 msgid "Select location"
 msgstr "Seleccionar lugar"
+
+#: templates/policorp/bookonthefly.html:26
+msgid "What"
+msgstr "Qué"
+
+#: templates/policorp/bookonthefly.html:30 templates/policorp/index.html:97
+msgid "Select activity"
+msgstr "Seleccionar actividad"
+
+#: templates/policorp/bookonthefly.html:39
+msgid "When"
+msgstr "Cuándo"
+
+#: templates/policorp/bookonthefly.html:46
+msgid "Note"
+msgstr "Nota"
+
+#: templates/policorp/bookonthefly.html:52
+msgid "Book"
+msgstr "Reservar"
+
+#: templates/policorp/bookonthefly.html:56 templates/policorp/index.html:78
+#: templates/policorp/index.html:192 views.py:81 views.py:96 views.py:109
+#: views.py:117 views.py:130 views.py:135 views.py:146 views.py:151
+#: views.py:156 views.py:172 views.py:177 views.py:184 views.py:199
+#: views.py:204
+msgid "Unauthorized"
+msgstr "No autorizado"
 
 #: templates/policorp/index.html:71
 msgid "Occupancy"
 msgstr "Ocupación"
 
-#: templates/policorp/index.html:78 templates/policorp/index.html:192
-#: views.py:81 views.py:96 views.py:109 views.py:115 views.py:128 views.py:133
-#: views.py:144 views.py:149 views.py:154 views.py:170 views.py:175
-#: views.py:182 views.py:197 views.py:202
-msgid "Unauthorized"
-msgstr "No autorizado"
-
 #: templates/policorp/index.html:84
 msgid "Configure availabilities"
 msgstr "Configurar disponibilidad"
-
-#: templates/policorp/index.html:97
-msgid "Select activity"
-msgstr "Seleccionar actividad"
 
 #: templates/policorp/index.html:105
 msgid "On"
@@ -113,27 +139,27 @@ msgstr "Reservado"
 msgid "Available"
 msgstr "Disponible"
 
-#: templates/policorp/layout.html:9 templates/policorp/layout.html:26
+#: templates/policorp/layout.html:9 templates/policorp/layout.html:27
 msgid "Corporate"
 msgstr "Corporativo"
 
-#: templates/policorp/layout.html:39
+#: templates/policorp/layout.html:40
 msgid "Location"
 msgstr "Lugar"
 
-#: templates/policorp/layout.html:42
+#: templates/policorp/layout.html:43
 msgid "Schedule"
 msgstr "Agenda"
 
-#: templates/policorp/layout.html:43
+#: templates/policorp/layout.html:44
 msgid "Configuration"
 msgstr "Configuración"
 
-#: templates/policorp/layout.html:47
+#: templates/policorp/layout.html:49
 msgid "Log Out"
 msgstr "Cerrar Sesión"
 
-#: templates/policorp/layout.html:51
+#: templates/policorp/layout.html:53
 msgid "Log In"
 msgstr "Iniciar Sesión"
 
