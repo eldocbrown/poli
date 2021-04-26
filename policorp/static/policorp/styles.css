@@ -54,3 +54,7 @@
 .actionButton {
   margin: 10px;
 }
+
+#bookOnTheFlyContainer .dropdown {
+  margin-top: 10px;
+}

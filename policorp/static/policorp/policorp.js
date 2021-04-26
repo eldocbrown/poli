@@ -4,6 +4,11 @@ import { addMinutes } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
 import { emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel } from './messages.js'
 import { fetchUser } from './user.js'
+import { populateDropDownLocations } from './populateDropDownLocations.js'
+import { populateDropDownTasks } from './populateDropDownTasks.js'
+import { mySupervisedLocationsUrl, tasksUrl } from './urls.js'
+import { initialize as initializeBookOnTheFly } from './bookonthefly.js'
+import { clearNode } from './utils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -36,9 +41,9 @@ function handleLocationScheduleLinkClick() {
 function handleLocationConfigurationLinkClick() {
 
   clearNode(document.querySelector('#configLocationDropdownMenu'));
-  populateLocations(document.querySelector('#configLocationDropdownMenu'), handleConfigLocationSelectionClick);
+  populateDropDownLocations(mySupervisedLocationsUrl, document.querySelector('#configLocationDropdownMenu'), handleConfigLocationSelectionClick);
   clearNode(document.querySelector('#configTaskDropdownMenu'));
-  populateTasks(document.querySelector('#configTaskDropdownMenu'));
+  populateDropDownTasks(tasksUrl, document.querySelector('#configTaskDropdownMenu'), handleConfigTaskSelectionClick);
 
   document.querySelector('#locationScheduleContainer').style.display = 'none';
   document.querySelector('#locationConfigurationContainer').style.display = 'block';
@@ -46,6 +51,7 @@ function handleLocationConfigurationLinkClick() {
 }
 
 function handleBookOnTheFlyLinkClick() {
+  initializeBookOnTheFly();
   document.querySelector('#locationScheduleContainer').style.display = 'none';
   document.querySelector('#locationConfigurationContainer').style.display = 'none';
   document.querySelector('#bookOnTheFlyContainer').style.display = 'block';
@@ -351,46 +357,11 @@ function searchSchedule(date) {
 
 function loadFilters() {
 
-  populateLocations(document.querySelector('#locationDropdownMenu'), handleLocationSelectionClick);
+  populateDropDownLocations(mySupervisedLocationsUrl, document.querySelector('#locationDropdownMenu'), handleLocationSelectionClick);
 
   document.querySelector('#locationSelector').style.display = 'block';
   document.querySelector('#locationSchedule').style.display = 'none';
 
-}
-
-function populateLocations(dropDown, clickHandler) {
-  fetch(`/policorp/mysupervisedlocations/`)
-  .then(response => response.json())
-  .then(data => {
-      data.forEach( function(location) {
-        const option = document.createElement('a');
-        option.classList.add('dropdown-item');
-        option.id = 'locationOption';
-        option.dataset.locationid = location.id;
-        option.innerHTML = location.name;
-        option.addEventListener('click', (event) => clickHandler(event));
-
-        dropDown.append(option);
-      });
-  })
-}
-
-function populateTasks(dropDown) {
-  fetch(`/policorp/tasks/`)
-  .then(response => response.json())
-  .then(data => {
-      data.forEach( function(task) {
-        const option = document.createElement('a');
-        option.classList.add('dropdown-item');
-        option.id = 'taskOption';
-        option.dataset.taskid = task.id;
-        option.dataset.duration = task.duration;
-        option.innerHTML = `${task.name} (${toFormattedDuration(task.duration)})`;
-        option.addEventListener('click', (event) => handleConfigTaskSelectionClick(event));
-
-        dropDown.append(option);
-      });
-  })
 }
 
 function constructUrlLocationSchedule(locationid, date) {
@@ -506,26 +477,9 @@ function createAvailability(data) {
   return a;
 }
 
-function clearNode(node) {
-  const children = Array.from(node.children);
-  if (children !== undefined) { children.forEach((child) => { child.remove(); }) };
-  node.innerHTML = '';
-}
-
 function toFormattedTime(datetimeObj) {
   const timeFrom = datetimeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   return (timeFrom);
-}
-
-function toFormattedDuration(duration) {
-  if (duration < 60) {
-    return `${duration} min`;
-  } else {
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    if (minutes !== 0) { return `${hours} hs ${minutes} min`; }
-    else { return `${hours} hs`; }
-  }
 }
 
 function evaluateCreateSingleAvailabilityState() {
