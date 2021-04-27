@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from policorp.models import Availability, User #, Location, Task, Booking
+from policorp.models import Availability, User, Booking #, Location, Task,
 
 # class LocationSerializer(serializers.ModelSerializer):
 #
@@ -28,3 +28,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
+
+class BookingSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    availability = AvailabilitySerializer()
+
+    class Meta:
+        model = Booking
+        fields = ['id', 'availability', 'user', 'cancelled', 'note']
+        depth = 1
