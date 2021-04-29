@@ -5,19 +5,19 @@ from rest_framework import permissions
 from django.http import Http404
 
 from policorp.serializers import AvailabilitySerializer
-from policorp.permissions import IsLocationSupervisorOrReadOnly
+from policorp.permissions import IsLocationSupervisor
 from policorp.models import Availability
 
 
 class AvailabilityView(APIView):
     http_method_names = ['delete']
-    permission_classes = [IsLocationSupervisorOrReadOnly]
+    permission_classes = [IsLocationSupervisor]
 
     def get_object(self, availabilityid):
         try:
-            obj = Availability.objects.get(pk=availabilityid)
-            self.check_object_permissions(self.request, obj)
-            return obj
+            availability = Availability.objects.get(pk=availabilityid)
+            self.check_object_permissions(self.request, availability.where)
+            return availability
         except Availability.DoesNotExist:
             raise Http404
 

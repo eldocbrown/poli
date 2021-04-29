@@ -35,7 +35,7 @@ class TestAvailabilityView(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_availabilityView_supervisor_cant_delete_availability(self):
-        """ GIVEN an availability in a supervised location; WHEN DELETE /policorp/availability/1 ; THEN code 204 should be returned """
+        """ GIVEN an availability at a not supervised location; WHEN DELETE /policorp/availability/1 ; THEN code 403 should be returned """
 
         now = datetime.now(timezone.utc)
         l1 = Location.objects.get(pk=1)

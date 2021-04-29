@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission
 
 import sys
 
-class IsLocationSupervisorOrReadOnly(BasePermission):
+class IsLocationSupervisor(BasePermission):
     """
     Custom permission to only allow supervisors of an object to edit it.
     """
@@ -14,7 +14,7 @@ class IsLocationSupervisorOrReadOnly(BasePermission):
         #    return True
 
         # Write permissions are only allowed to a supervisor of the object.
-        return request.user in obj.where.supervisors.all()
+        return request.user in obj.supervisors.all()
 
 class IsSameUser(BasePermission):
 
