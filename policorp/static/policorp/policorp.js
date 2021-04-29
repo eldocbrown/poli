@@ -2,7 +2,7 @@ import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } fr
 import { createActionButton } from './createActionButton.js'
 import { addMinutes, encodeDateTime, decodeDateTime } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
-import { showMessage, emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel, availableTxt, bookedTxt } from './messages.js'
+import { showMessage, emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel, availableTxt, bookedTxt, scheduleTxt } from './messages.js'
 import { fetchUser } from './user.js'
 import { populateDropDownLocations } from './populateDropDownLocations.js'
 import { populateDropDownTasks } from './populateDropDownTasks.js'
@@ -324,7 +324,7 @@ function searchSchedule(date) {
         report.classList.add('d-flex');
 
         listHeading.id = 'scheduleHeading';
-        listHeading.innerHTML = gettext('Schedule');
+        listHeading.innerHTML = scheduleTxt;
         list.append(listHeading);
         const node = document.importNode(document.querySelector('#scheduleFilterTemplate').content, true);
         list.append(node);
@@ -373,7 +373,7 @@ function createBooking(data) {
   const a = document.createElement('div');
   a.id = 'booking';
   a.dataset.bookingid = data.id;
-  a.className = 'container p-3 my-3 border border-dark d-flex flex-row justify-content-between align-items-center bg-info';
+  a.className = 'container p-3 my-3 border border-dark d-flex flex-row justify-content-between align-items-center bookingContainer';
 
   // create availability info container
   const aInfo = document.createElement('div');
@@ -443,7 +443,7 @@ function createAvailability(data) {
   const a = document.createElement('div');
   a.id = 'availability';
   a.dataset.availabilityid = data.id;
-  a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center';
+  a.className = 'container p-3 my-3 border d-flex flex-row justify-content-between align-items-center availabilityContainer';
 
   // create availability info container
   const aInfo = document.createElement('div');
@@ -509,14 +509,14 @@ function appendDailyOccupancyChart(container, seriesLabel, booked, available) {
     labels: [seriesLabel],
     datasets: [{
         label: bookedTxt,
-        backgroundColor: 'blue',
-        borderColor: 'blue',
+        backgroundColor: '#00adb5',
+        borderColor: '#00adb5',
         data: [booked]
     },
     {
         label: availableTxt,
-        backgroundColor: 'LightGrey',
-        borderColor: 'LightGrey',
+        backgroundColor: '#eeeeee',
+        borderColor: '#eeeeee',
         data: [available]
     }]
   }

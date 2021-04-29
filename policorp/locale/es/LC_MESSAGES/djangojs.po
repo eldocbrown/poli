@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-29 12:18-0300\n"
+"POT-Creation-Date: 2021-04-29 17:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: static/policorp/bookonthefly.js:70 static/policorp/policorp.js:244
+#: static/policorp/bookonthefly.js:74 static/policorp/policorp.js:244
 msgid "Success"
 msgstr "Éxito"
 
@@ -27,42 +27,46 @@ msgid "Empty Schedule"
 msgstr "Agenda Vacía"
 
 #: static/policorp/messages.js:2
+msgid "Schedule"
+msgstr "Agenda"
+
+#: static/policorp/messages.js:3
 msgid "Availability removed"
 msgstr "Disponibilidad eliminada"
 
-#: static/policorp/messages.js:3
+#: static/policorp/messages.js:4
 msgid "You have successfully removed the availability"
 msgstr "Ha eliminado exitosamente la disponibilidad"
 
-#: static/policorp/messages.js:4
+#: static/policorp/messages.js:5
 msgid "Note"
 msgstr "Nota"
 
-#: static/policorp/messages.js:5
+#: static/policorp/messages.js:6
 msgid "Select location"
 msgstr "Seleccionar lugar"
 
-#: static/policorp/messages.js:6
+#: static/policorp/messages.js:7
 msgid "Select activity"
 msgstr "Seleccionar actividad"
 
-#: static/policorp/messages.js:7
+#: static/policorp/messages.js:8
 msgid "Invalid date"
 msgstr "Fecha inválida"
 
-#: static/policorp/messages.js:8
+#: static/policorp/messages.js:9
 msgid "Form not valid"
 msgstr "Formulario inválido"
 
-#: static/policorp/messages.js:9
+#: static/policorp/messages.js:10
 msgid "You have successfully created the booking."
 msgstr "Ha reservado exitosamente el turno."
 
-#: static/policorp/messages.js:10
+#: static/policorp/messages.js:11
 msgid "Booked"
 msgstr "Reservado"
 
-#: static/policorp/messages.js:11
+#: static/policorp/messages.js:12
 msgid "Available"
 msgstr "Disponible"
 

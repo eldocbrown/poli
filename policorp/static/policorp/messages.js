@@ -1,4 +1,5 @@
 export const emptyScheduleHeading = gettext('Empty Schedule')
+export const scheduleTxt = gettext('Schedule')
 export const availabilityCancelledMsgTitle = gettext('Availability removed')
 export const availabilityCancelledMsgBody = gettext('You have successfully removed the availability')
 export const noteLabel = gettext('Note')
