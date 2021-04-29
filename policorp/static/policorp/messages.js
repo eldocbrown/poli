@@ -6,6 +6,9 @@ export const selectLocation = gettext('Select location')
 export const selectActivity = gettext('Select activity')
 export const invalidDateMsg = gettext('Invalid date')
 export const formNotValid = gettext('Form not valid')
+export const bookingPostSuccessMsg = gettext('You have successfully created the booking.')
+export const bookedTxt = gettext('Booked')
+export const availableTxt = gettext('Available')
 
 export function showMessage(title, message) {
   document.querySelector('#messageModalLabel').innerHTML = title;

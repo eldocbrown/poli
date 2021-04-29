@@ -1,8 +1,8 @@
 import { createAvailabilitiesJsonData, appendNewAvailabilityDatesToJsonData } from './availabilities.js'
 import { createActionButton } from './createActionButton.js'
-import { addMinutes } from './dateTimeUtils.js'
+import { addMinutes, encodeDateTime, decodeDateTime } from './dateTimeUtils.js'
 import { getDateFromDatePickerValue } from './gijgoComponentUtils.js'
-import { showMessage, emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel } from './messages.js'
+import { showMessage, emptyScheduleHeading, availabilityCancelledMsgTitle, availabilityCancelledMsgBody, noteLabel, availableTxt, bookedTxt } from './messages.js'
 import { fetchUser } from './user.js'
 import { populateDropDownLocations } from './populateDropDownLocations.js'
 import { populateDropDownTasks } from './populateDropDownTasks.js'
@@ -420,11 +420,13 @@ function createBooking(data) {
   aInfo.append(whoContainer);
 
   // NOTE
-  const noteContainer = document.createElement('div');
-  noteContainer.id = 'noteContainer';
-  noteContainer.className = 'note';
-  if (data.note) { noteContainer.innerHTML = `${noteLabel}: ${data.note}`; }
-  aInfo.append(noteContainer);
+  if (data.note !== '') {
+    const noteContainer = document.createElement('div');
+    noteContainer.id = 'noteContainer';
+    noteContainer.className = 'note';
+    noteContainer.innerHTML = `${noteLabel}: ${data.note}`;
+    aInfo.append(noteContainer);
+  }
 
   // create CANCEL action button
   const aAction = document.createElement('div');
@@ -501,26 +503,18 @@ function getAvailabilitiesResponseErrors(response) {
   return errorCount;
 }
 
-function encodeDateTime(datetime) {
-  return datetime.toISOString().replace("Z", "+00:00");
-}
-
-function decodeDateTime(datetimestring) {
-  return new Date(datetimestring.replace("+00:00", "Z"));
-}
-
 function appendDailyOccupancyChart(container, seriesLabel, booked, available) {
 
   let dailyOccupancyData = {
     labels: [seriesLabel],
     datasets: [{
-        label: gettext('Booked'),
+        label: bookedTxt,
         backgroundColor: 'blue',
         borderColor: 'blue',
         data: [booked]
     },
     {
-        label: gettext('Available'),
+        label: availableTxt,
         backgroundColor: 'LightGrey',
         borderColor: 'LightGrey',
         data: [available]

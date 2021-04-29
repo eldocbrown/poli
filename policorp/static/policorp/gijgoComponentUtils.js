@@ -15,3 +15,17 @@ export function getDateFromDatePickerValue(strValue, locale = null) {
 
   return new Date(year, month, day)
 }
+
+export function getDateTimeFromDatePickerValue(strValue, locale = null) {
+  if (strValue.length < 16) { throw 'Invalid date. Date and Time string should have at least 10 characters' }
+
+  const date = getDateFromDatePickerValue(strValue, locale)
+
+  const hours = strValue.substring(11,13)
+  date.setHours(hours)
+
+  const minutes = strValue.substring(14,16)
+  date.setMinutes(minutes)
+
+  return date
+}

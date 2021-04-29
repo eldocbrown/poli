@@ -59,7 +59,7 @@
   margin-top: 10px;
 }
 
-.note {
+#bookOnTheFlyContainer .note {
   padding: 10px;
   resize: none;
   max-width: 400px;

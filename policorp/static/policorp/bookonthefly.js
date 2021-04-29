@@ -1,14 +1,18 @@
 import { populateDropDownLocations } from './populateDropDownLocations.js'
 import { populateDropDownTasks } from './populateDropDownTasks.js'
-import { mySupervisedLocationsUrl, tasksUrl } from './urls.js'
+import { mySupervisedLocationsUrl, tasksUrl, bookOnTheFlyUrl } from './urls.js'
 import { clearNode } from './utils.js'
-import { showMessage, selectLocation, selectActivity, invalidDateMsg, formNotValid } from './messages.js'
+import { showMessage, selectLocation, selectActivity, invalidDateMsg, formNotValid, bookingPostSuccessMsg } from './messages.js'
+import { encodeDateTime } from './dateTimeUtils.js'
+import { getDateTimeFromDatePickerValue } from './gijgoComponentUtils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('#bookOnTheFlyContainer .buttonContainer button').addEventListener('click', () => handleBookButtonClick())
 
 })
+
+let datetimepicker = undefined
 
 export function initialize() {
   // Location dropdown
@@ -30,7 +34,7 @@ export function initialize() {
 
   // Date Picker
   const date = new Date()
-  const datetimepicker = $('#bookOnTheFlyContainer .dateTimePickerContainer input[name="datetime"]').datetimepicker({
+  datetimepicker = $('#bookOnTheFlyContainer .dateTimePickerContainer input[name="datetime"]').datetimepicker({
     footer: true,
     modal: true,
     width: 200,
@@ -63,32 +67,74 @@ function handleTaskSelectionClick(event) {
 function handleBookButtonClick() {
 
   try {
-    if (formIsValid()) {
-      doBook()
-      initialize()
+    if (formIsValid()) { // Validate form
+      doBook(contentJSONGenerator) // Post the booking
+      .then(
+        (booking) => { // Resolved
+          showMessage( gettext('Success'), bookingPostSuccessMsg )
+          initialize()
+        }
+        , (error) => showMessage('Error', error)) // Rejected
     }
     else {
-      console.log(formNotValid)
+      showMessage('Error', formNotValid) // Invalid Form
     }
   }
   catch(err) {
-    showMessage('Error', err)
+    showMessage('Error', err) // Something didn't work as expected
   }
 
 }
 
 function formIsValid() {
-  if (document.querySelector('#bookOnTheFlyContainer .dateTimePickerContainer input[name="datetime"]').value !== "") {
-    return true
-  }
-  else {
+  const dateTimeValue = document.querySelector('#bookOnTheFlyContainer .dateTimePickerContainer input[name="datetime"]').value
+  if (dateTimeValue === undefined) {
     throw invalidDateMsg
   }
+  else if (dateTimeValue.length < 16 ){
+    throw invalidDateMsg
+  }
+  return true
 }
 
-function doBook() {
-  // TODO
-  console.log('booked')
+function doBook(contentJSONGenerator) {
+  const contentJSON = contentJSONGenerator()
+  return fetch(bookOnTheFlyUrl, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/json' },
+    mode: 'same-origin',
+    body: JSON.stringify(contentJSON)
+  })
+  .then(response => {
+    if (response.status === 204) {
+      return Promise.resolve(contentJSON)
+    }
+    else {
+        throw `Response status code: ${response.status}`
+    }
+  })
+  .catch((error) => {
+    return Promise.reject(error)
+  })
+}
+
+function contentJSONGenerator() {
+
+  const noteTxtArea = document.querySelector('#bookOnTheFlyContainer .noteContainer textarea')
+  const whereButton = document.querySelector('#bookOnTheFlyContainer .locationSelector .dropdown button')
+  const whatButton = document.querySelector('#bookOnTheFlyContainer .taskSelector .dropdown button')
+
+  const json = {
+    "availability": {
+      "when": encodeDateTime(getDateTimeFromDatePickerValue(datetimepicker.value(), localeGijGoComponent)),
+      "where": whereButton.dataset.locationid,
+      "what": whatButton.dataset.taskid
+    },
+    "note": noteTxtArea.value,
+    "user": username
+  }
+
+  return json
 }
 
 function evaluateBookButtonState() {

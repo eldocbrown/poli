@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from policorp.classViews.availabilityView import AvailabilityView
 from policorp.classViews.userView import UserView
+from policorp.classViews.bookOnTheFlyView import BookOnTheFlyView
 
 app_name = "policorp"
 
@@ -24,7 +25,8 @@ urlpatterns = [
 
 classUrlPatterns = [
     path('availability/<int:availabilityid>/', AvailabilityView.as_view(), name='availability'),
-    path('user/<str:username>/', UserView.as_view(), name='user')
+    path('user/<str:username>/', UserView.as_view(), name='user'),
+    path('bookonthefly/', BookOnTheFlyView.as_view(), name='bookonthefly')
 ]
 
 classUrlPatterns = format_suffix_patterns(classUrlPatterns)

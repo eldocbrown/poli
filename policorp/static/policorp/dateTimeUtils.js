@@ -12,3 +12,11 @@ export function toFormattedDuration(duration) {
     else { return `${hours} hs`; }
   }
 }
+
+export function encodeDateTime(datetime) {
+  return datetime.toISOString().replace("Z", "+00:00");
+}
+
+export function decodeDateTime(datetimestring) {
+  return new Date(datetimestring.replace("+00:00", "Z"));
+}

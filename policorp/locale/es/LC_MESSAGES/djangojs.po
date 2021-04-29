@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-26 18:14-0300\n"
+"POT-Creation-Date: 2021-04-29 12:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: static/policorp/bookonthefly.js:70 static/policorp/policorp.js:244
+msgid "Success"
+msgstr "Éxito"
 
 #: static/policorp/messages.js:1
 msgid "Empty Schedule"
@@ -50,6 +54,18 @@ msgstr "Fecha inválida"
 msgid "Form not valid"
 msgstr "Formulario inválido"
 
+#: static/policorp/messages.js:9
+msgid "You have successfully created the booking."
+msgstr "Ha reservado exitosamente el turno."
+
+#: static/policorp/messages.js:10
+msgid "Booked"
+msgstr "Reservado"
+
+#: static/policorp/messages.js:11
+msgid "Available"
+msgstr "Disponible"
+
 #: static/policorp/policorp.js:82
 msgid "Invalid Date"
 msgstr "Fecha Inválida"
@@ -57,10 +73,6 @@ msgstr "Fecha Inválida"
 #: static/policorp/policorp.js:205 static/policorp/policorp.js:228
 msgid "There was an error generating the availability configuration data"
 msgstr "Hubo un error al generar los datos de configuración de disponibilidad"
-
-#: static/policorp/policorp.js:244
-msgid "Success"
-msgstr "Éxito"
 
 #: static/policorp/policorp.js:244
 msgid "You have successfully created an availability configuration"
@@ -81,9 +93,3 @@ msgstr "Turno cancelado"
 #: static/policorp/policorp.js:256
 msgid "You have successfully cancelled the booking"
 msgstr "Ha cancelado exitosamente el turno"
-
-#~ msgid "Booked"
-#~ msgstr "Reservado"
-
-#~ msgid "Available"
-#~ msgstr "Disponible"
